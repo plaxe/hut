@@ -177,6 +177,108 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    // Улучшение мобильного меню
+    if (window.innerWidth < 768) {
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        
+        if (navbarCollapse && navbarToggler) {
+            // Создаем и добавляем кнопку закрытия в меню
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-menu-btn';
+            closeButton.innerHTML = '&times;';
+            closeButton.setAttribute('aria-label', 'Close menu');
+            navbarCollapse.appendChild(closeButton);
+            
+            // Функция для открытия меню
+            function openMenu() {
+                navbarCollapse.classList.add('show');
+                document.body.classList.add('menu-open');
+                
+                // Предотвращаем прокрутку основного содержимого
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Функция для закрытия меню
+            function closeMenu() {
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
+                
+                // Возвращаем прокрутку
+                document.body.style.overflow = '';
+            }
+            
+            // Обработчик для открытия меню
+            navbarToggler.addEventListener('click', function(e) {
+                e.preventDefault();
+                openMenu();
+            });
+            
+            // Обработчик для кнопки закрытия
+            closeButton.addEventListener('click', function() {
+                closeMenu();
+            });
+            
+            // Копируем логотип из шапки в мобильное меню, если его там еще нет
+            const mainLogo = document.querySelector('.logo');
+            const menuLogo = navbarCollapse.querySelector('.logo');
+            
+            if (mainLogo && !menuLogo) {
+                const logoClone = mainLogo.cloneNode(true);
+                navbarCollapse.insertBefore(logoClone, navbarCollapse.firstChild);
+            }
+            
+            // Добавляем контакты внизу мобильного меню
+            if (!navbarCollapse.querySelector('.mobile-contacts')) {
+                const contactsDiv = document.createElement('div');
+                contactsDiv.className = 'mobile-contacts';
+                
+                // E-mail контакт
+                const emailLink = document.createElement('a');
+                emailLink.href = 'mailto:uakhutir@gmail.com';
+                emailLink.textContent = 'uakhutir@gmail.com';
+                
+                // Телефонный контакт
+                const phoneLink = document.createElement('a');
+                phoneLink.href = 'tel:+380974018115';
+                phoneLink.textContent = '+38 097 401 81 15';
+                
+                contactsDiv.appendChild(emailLink);
+                contactsDiv.appendChild(phoneLink);
+                
+                navbarCollapse.appendChild(contactsDiv);
+            }
+            
+            // Закрываем меню при клике по пунктам меню
+            const navLinks = document.querySelectorAll('.navbar-collapse .nav-link');
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    closeMenu();
+                });
+            });
+            
+            // Закрываем меню при свайпе влево
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            navbarCollapse.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            navbarCollapse.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                // Если свайп влево (значение touchStartX больше touchEndX)
+                if (touchStartX - touchEndX > 50) {
+                    closeMenu();
+                }
+            }
+        }
+    }
 });
 
 // Функция для обновления стилей разделителей
@@ -303,6 +405,207 @@ function updateFooter() {
     }
 }
 
+// Функция для обновления мобильного меню
+function updateMobileMenu() {
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    
+    if (!navbarCollapse || !navbarToggler) return;
+    
+    // Если это мобильное устройство
+    if (window.innerWidth < 768) {
+        // Устанавливаем правильные стили для мобильного меню
+        navbarCollapse.style.position = 'fixed';
+        navbarCollapse.style.top = '0';
+        navbarCollapse.style.width = '100vw';
+        navbarCollapse.style.height = '100vh';
+        navbarCollapse.style.backgroundColor = '#000';
+        navbarCollapse.style.zIndex = '9990';
+        navbarCollapse.style.padding = '80px 30px 30px 30px';
+        navbarCollapse.style.display = 'flex';
+        navbarCollapse.style.flexDirection = 'column';
+        
+        // Если кнопка закрытия еще не добавлена
+        if (!document.querySelector('.close-menu-btn')) {
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-menu-btn';
+            closeButton.innerHTML = '&times;';
+            closeButton.setAttribute('aria-label', 'Close menu');
+            navbarCollapse.appendChild(closeButton);
+            
+            // Добавляем обработчик для кнопки закрытия
+            closeButton.addEventListener('click', function() {
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
+                document.body.style.overflow = '';
+            });
+        }
+        
+        // Очищаем содержимое, кроме кнопки закрытия
+        const closeButton = document.querySelector('.close-menu-btn');
+        if (closeButton) {
+            const parent = closeButton.parentNode;
+            while (parent.firstChild) {
+                if (parent.firstChild !== closeButton) {
+                    parent.removeChild(parent.firstChild);
+                } else {
+                    break;
+                }
+            }
+        }
+        
+        // 1. Добавляем мелкий текст сверху
+        const introText = document.createElement('div');
+        introText.className = 'mobile-intro-text';
+        introText.innerHTML = 'ЮА.Хутір – це не просто продукти, це шлях до здорового життя. Довіряйте якості, обирайте ЮА.Хутір – гармонія природи та сучасності в кожному продукті.';
+        introText.style.color = 'white';
+        introText.style.fontSize = '14px';
+        introText.style.lineHeight = '1.4';
+        introText.style.marginBottom = '30px';
+        introText.style.paddingRight = '30px';
+        navbarCollapse.appendChild(introText);
+        
+        // 2. Добавляем логотип
+        const mainLogo = document.querySelector('.logo');
+        if (mainLogo) {
+            const logoClone = mainLogo.cloneNode(true);
+            logoClone.style.marginBottom = '40px';
+            navbarCollapse.appendChild(logoClone);
+        }
+        
+        // 3. Добавляем меню
+        const navItems = document.querySelector('.navbar-nav');
+        if (navItems) {
+            const menuClone = navItems.cloneNode(true);
+            menuClone.style.marginBottom = '40px';
+            
+            // Стилизуем пункты меню
+            const navLinks = menuClone.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.style.color = 'white';
+                link.style.fontSize = '24px';
+                link.style.fontWeight = 'normal';
+                link.style.marginBottom = '20px';
+                link.style.display = 'block';
+                link.style.textAlign = 'left';
+                link.style.padding = '0';
+                
+                // Добавляем обработчик для закрытия меню при клике
+                link.addEventListener('click', function() {
+                    navbarCollapse.classList.remove('show');
+                    document.body.classList.remove('menu-open');
+                    document.body.style.overflow = '';
+                });
+            });
+            
+            navbarCollapse.appendChild(menuClone);
+        }
+        
+        // 4. Добавляем переключатель языка
+        const langSwitcher = document.createElement('div');
+        langSwitcher.className = 'language-switch';
+        langSwitcher.innerHTML = 'Мова: <span>En</span>';
+        langSwitcher.style.color = 'white';
+        langSwitcher.style.marginTop = 'auto';
+        langSwitcher.style.marginBottom = '20px';
+        langSwitcher.style.borderTop = '1px solid rgba(255, 255, 255, 0.2)';
+        langSwitcher.style.paddingTop = '20px';
+        navbarCollapse.appendChild(langSwitcher);
+        
+        // 5. Добавляем контакты
+        const contactsDiv = document.createElement('div');
+        contactsDiv.className = 'mobile-contacts';
+        
+        // Телефонный контакт
+        const phoneLink = document.createElement('a');
+        phoneLink.href = 'tel:+380974018115';
+        phoneLink.textContent = '+38 097 401 88 15';
+        phoneLink.style.color = 'white';
+        phoneLink.style.textDecoration = 'none';
+        phoneLink.style.display = 'block';
+        phoneLink.style.padding = '15px 0';
+        phoneLink.style.textAlign = 'center';
+        phoneLink.style.border = '1px solid white';
+        phoneLink.style.borderRadius = '30px';
+        phoneLink.style.marginBottom = '10px';
+        
+        // E-mail контакт
+        const emailLink = document.createElement('a');
+        emailLink.href = 'mailto:uakhutir@gmail.com';
+        emailLink.textContent = 'uakhutir@gmail.com';
+        emailLink.style.color = 'white';
+        emailLink.style.textDecoration = 'none';
+        emailLink.style.display = 'block';
+        emailLink.style.padding = '15px 0';
+        emailLink.style.textAlign = 'center';
+        emailLink.style.border = '1px solid white';
+        emailLink.style.borderRadius = '30px';
+        
+        contactsDiv.appendChild(phoneLink);
+        contactsDiv.appendChild(emailLink);
+        contactsDiv.style.marginBottom = '20px';
+        
+        navbarCollapse.appendChild(contactsDiv);
+        
+        // Обновляем стили кнопки открытия меню
+        navbarToggler.style.zIndex = '9999';
+        
+        // Добавляем обработчики для свайпа
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        navbarCollapse.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        navbarCollapse.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) {
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
+                document.body.style.overflow = '';
+            }
+        }, { passive: true });
+        
+    } else {
+        // На десктопе возвращаем стандартные стили
+        navbarCollapse.style.position = '';
+        navbarCollapse.style.top = '';
+        navbarCollapse.style.width = '';
+        navbarCollapse.style.height = '';
+        navbarCollapse.style.backgroundColor = '';
+        navbarCollapse.style.zIndex = '';
+        navbarCollapse.style.padding = '';
+        navbarCollapse.style.display = '';
+        navbarCollapse.style.flexDirection = '';
+        
+        // Удаляем кнопку закрытия, если она есть
+        const closeButton = document.querySelector('.close-menu-btn');
+        if (closeButton) {
+            closeButton.remove();
+        }
+        
+        // Восстанавливаем оригинальное меню, если оно было изменено
+        const originalNav = document.querySelector('.navbar-nav:not(.cloned)');
+        if (originalNav) {
+            navbarCollapse.appendChild(originalNav);
+        }
+        
+        // Удаляем все добавленные элементы
+        const introText = navbarCollapse.querySelector('.mobile-intro-text');
+        if (introText) introText.remove();
+        
+        const clonedLogo = navbarCollapse.querySelector('.logo');
+        if (clonedLogo) clonedLogo.remove();
+        
+        const langSwitcher = navbarCollapse.querySelector('.language-switch');
+        if (langSwitcher) langSwitcher.remove();
+        
+        const mobileContacts = navbarCollapse.querySelector('.mobile-contacts');
+        if (mobileContacts) mobileContacts.remove();
+    }
+}
+
 // Добавляем класс для мобильных устройств
 function checkMobile() {
     const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
@@ -312,9 +615,11 @@ function checkMobile() {
     if (viewportWidth < 768) {
         updateDividers();
         updateFooter();
+        updateMobileMenu();
     } else {
         // Возвращаем стандартные стили для десктопа
         updateFooter();
+        updateMobileMenu();
     }
 }
 
@@ -325,6 +630,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (window.innerWidth < 768) {
         updateDividers();
         updateFooter();
+        updateMobileMenu();
     }
 });
 window.addEventListener('resize', checkMobile); 

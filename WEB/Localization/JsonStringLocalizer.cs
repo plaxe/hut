@@ -44,7 +44,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         var filePath = GetJsonPath();
         if (!File.Exists(filePath))
         {
-            _logger.LogWarning($"Resource file not found: {filePath}");
+            //_logger.LogWarning($"Resource file not found: {filePath}");
             return Enumerable.Empty<LocalizedString>();
         }
 
@@ -81,38 +81,38 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         }
 
         var filePath = GetJsonPath();
-        _logger.LogInformation($"Looking for resource file: {filePath}");
+        //_logger.LogInformation($"Looking for resource file: {filePath}");
         
         if (!File.Exists(filePath))
         {
-            _logger.LogWarning($"Resource file not found: {filePath}");
+           // _logger.LogWarning($"Resource file not found: {filePath}");
             return name;
         }
 
         var jsonString = File.ReadAllText(filePath);
-        _logger.LogInformation($"Found JSON content: {jsonString}");
+        //_logger.LogInformation($"Found JSON content: {jsonString}");
         var jsonDoc = JsonDocument.Parse(jsonString);
 
         var parts = name.Split('.');
-        _logger.LogInformation($"Looking for key parts: {string.Join(" -> ", parts)}");
+       // _logger.LogInformation($"Looking for key parts: {string.Join(" -> ", parts)}");
         var current = jsonDoc.RootElement;
 
         foreach (var part in parts)
         {
             if (current.ValueKind != JsonValueKind.Object)
             {
-                _logger.LogWarning($"Current element is not an object when looking for part: {part}");
+               // _logger.LogWarning($"Current element is not an object when looking for part: {part}");
                 return name;
             }
 
             if (!current.TryGetProperty(part, out var property))
             {
-                _logger.LogWarning($"Could not find property: {part}");
+               // _logger.LogWarning($"Could not find property: {part}");
                 return name;
             }
 
             current = property;
-            _logger.LogInformation($"Found part {part}, current value: {current}");
+           // _logger.LogInformation($"Found part {part}, current value: {current}");
         }
 
         var result = current.GetString() ?? name;
@@ -123,7 +123,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             
         _memoryCache.Set(cacheKey, result, cacheOptions);
         
-        _logger.LogInformation($"Final result for key {name}: {result}");
+       // _logger.LogInformation($"Final result for key {name}: {result}");
         return result;
     }
 

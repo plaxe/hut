@@ -330,8 +330,122 @@ input[type="button"] {
         margin-bottom: 15px;
     }
     
-    .footer-row {
-        margin-bottom: 25px;
+    /* Улучшаем мобильное меню - полноэкранное с черным фоном */
+    /* Стиль для кнопки закрытия */
+    .navbar-toggler {
+        z-index: 9999;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+    
+    /* Стили для мобильного меню */
+    .navbar-collapse {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Начинаем за пределами экрана справа */
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        z-index: 9990;
+        transition: right 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        padding: 80px 30px 30px 30px;
+        overflow-y: auto;
+    }
+    
+    /* Когда меню открыто */
+    .navbar-collapse.show {
+        right: 0;
+    }
+    
+    /* Вступительный текст в мобильном меню */
+    .navbar-collapse .mobile-intro-text {
+        color: white;
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 30px;
+        padding-right: 30px;
+    }
+    
+    /* Логотип в мобильном меню */
+    .navbar-collapse .logo {
+        margin-bottom: 40px;
+        text-align: left;
+    }
+    
+    .navbar-collapse .logo img {
+        max-width: 60px;
+        height: auto;
+    }
+    
+    /* Пункты меню */
+    .navbar-collapse .navbar-nav {
+        margin: 0 0 40px 0;
+    }
+    
+    .navbar-collapse .nav-link {
+        color: white !important;
+        font-size: 24px;
+        font-weight: normal;
+        margin-bottom: 20px;
+        padding: 0;
+        display: block;
+        transition: opacity 0.2s;
+        text-align: left;
+        min-height: auto;
+    }
+    
+    .navbar-collapse .nav-link:hover,
+    .navbar-collapse .nav-link:active {
+        opacity: 0.7;
+    }
+    
+    /* Язык в мобильном меню */
+    .navbar-collapse .language-switch {
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 20px;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    
+    /* Контакты в мобильном меню */
+    .navbar-collapse .mobile-contacts {
+        margin-bottom: 20px;
+    }
+    
+    .navbar-collapse .mobile-contacts a {
+        color: white;
+        display: block;
+        padding: 15px 0;
+        margin-bottom: 10px;
+        text-decoration: none;
+        text-align: center;
+        border: 1px solid white;
+        border-radius: 30px;
+    }
+    
+    /* Кнопка закрытия (X) */
+    .close-menu-btn {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        color: white;
+        background: transparent;
+        border: none;
+        font-size: 30px;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 9999;
+        min-height: auto;
+    }
+    
+    /* Запрет прокрутки основного содержимого при открытом меню */
+    body.menu-open {
+        overflow: hidden;
     }
 }
 
