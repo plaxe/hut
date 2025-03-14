@@ -5,13 +5,17 @@
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#3E5F8A">
     <title>@Localizer["site.title"]</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="~/styles/fonts.css" rel="stylesheet" asp-append-version="true">
     <link href="~/styles/theme.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/styles/mobile-fixes.css" rel="stylesheet" asp-append-version="true">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -103,6 +107,223 @@
 
     @RenderBody()
 
+    <section class="amarant-section" id="amarant">
+        <div class="container">
+            <h2 class="text-center mb-5">@Localizer["amarant.title"]</h2>
+
+            <div class="amarant-content">
+                <div class="feature-item feature-top-left">
+                    <div class="feature-icon">
+                        <img src="images/icons/phytosterols.svg" alt="Фітостероли">
+                    </div>
+                    <h3>@Localizer["amarant.features.phytosterols.title"]</h3>
+                    <p>@Localizer["amarant.features.phytosterols.description"]</p>
+                </div>
+
+                <div class="feature-item feature-top-right">
+                    <div class="feature-icon">
+                        <img src="images/icons/vitamins.svg" alt="Вітаміни">
+                    </div>
+                    <h3>@Localizer["amarant.features.vitamins.title"]</h3>
+                    <p>@Localizer["amarant.features.vitamins.description"]</p>
+                </div>
+
+                <div class="amarant-image">
+                    <img src="images/amarant.png" alt="Амарант">
+                </div>
+
+                <div class="feature-item feature-bottom-left">
+                    <div class="feature-icon">
+                        <img src="images/icons/protein.svg" alt="Білок">
+                    </div>
+                    <h3>@Localizer["amarant.features.protein.title"]</h3>
+                    <p>@Localizer["amarant.features.protein.description"]</p>
+                </div>
+
+                <div class="feature-item feature-bottom-right">
+                    <div class="feature-icon">
+                        <img src="images/icons/squalene.svg" alt="Сквален">
+                    </div>
+                    <h3>@Localizer["amarant.features.squalene.title"]</h3>
+                    <p>@Localizer["amarant.features.squalene.description"]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="principles-section">
+        <div class="container mt-3">
+            <div class="principles-grid">
+                <div class="principles-left">
+                    <div class="title-container">
+                        <h2>@Localizer["principles.title"]</h2>
+                        <h3>@Localizer["principles.subtitle"]</h3>
+                    </div>
+                    <p class="principles-description">
+                        @Localizer["principles.description"]
+                    </p>
+                </div>
+                <div class="principles-center">
+                    <!-- Пустая центральная колонка -->
+                </div>
+                <div class="principles-right">
+                    <p class="company-type">@Localizer["company.type"]</p>
+                    <h2 class="company-name">@Localizer["company.name"]</h2>
+                    <p class="company-description">
+                        @Localizer["company.description"]
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="principles-cards">
+        <div class="container">
+            <div class="principles-header">
+                <div class="principle-title">
+                    <span class="number">01</span>
+                    <h3>@Localizer["principles.cards.scientificity.title"]</h3>
+                </div>
+                <div class="principle-title">
+                    <span class="number">02</span>
+                    <h3>@Localizer["principles.cards.ecology.title"]</h3>
+                </div>
+                <div class="principle-title">
+                    <span class="number">03</span>
+                    <h3>@Localizer["principles.cards.development.title"]</h3>
+                </div>
+            </div>
+            <div class="principles-dividers">
+                <div class="divider"></div>
+                <div class="divider"></div>
+                <div class="divider"></div>
+            </div>
+            <div class="principles-cards-grid">
+                <div class="principle-card">
+                    <p>@Localizer["principles.cards.scientificity.description"]</p>
+                </div>
+
+                <div class="principle-card">
+                    <p>@Localizer["principles.cards.ecology.description"]</p>
+                </div>
+
+                <div class="principle-card">
+                    <p>@Localizer["principles.cards.development.description"]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция с товарами -->
+    <section id="products" class="products-section">
+        <div class="container">
+            <h2 class="section-title">@Localizer["products.title"]</h2>
+            <p class="section-description">@Localizer["products.description"]</p>
+
+            <div class="products-grid">
+                <div class="products-row-top">
+                    <div class="product-card">
+                        <div class="product-card-inner">
+                            <div class="product-card-front">
+                                <img src="images/products/product1.png" alt="Кульки">
+                            </div>
+                            <div class="product-card-back">
+                                <h3>@Localizer["products.categories.snacks.title"]</h3>
+                                <p>@Localizer["products.categories.snacks.description"]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card-inner">
+                            <div class="product-card-front">
+                                <img src="images/products/product2.png" alt="Крекери">
+                            </div>
+                            <div class="product-card-back">
+                                <h3>@Localizer["products.categories.flour.title"]</h3>
+                                <p>@Localizer["products.categories.flour.description"]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card-inner">
+                            <div class="product-card-front">
+                                <img src="images/products/product3.png" alt="Печиво">
+                            </div>
+                            <div class="product-card-back">
+                                <h3>@Localizer["products.categories.oil.title"]</h3>
+                                <p>@Localizer["products.categories.oil.description"]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="products-row-bottom">
+                    <div class="product-card">
+                        <div class="product-card-inner">
+                            <div class="product-card-front">
+                                <img src="images/products/product4.png" alt="Марципан">
+                            </div>
+                            <div class="product-card-back">
+                                <h3>@Localizer["products.categories.snacks.title"]</h3>
+                                <p>@Localizer["products.categories.snacks.description"]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-card-inner">
+                            <div class="product-card-front">
+                                <img src="images/products/product5.png" alt="Борошно">
+                            </div>
+                            <div class="product-card-back">
+                                <h3>@Localizer["products.categories.flour.title"]</h3>
+                                <p>@Localizer["products.categories.flour.description"]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция с картой мира -->
+    <section class="world-map-section">
+        <div class="container">
+            <div class="world-map-title">
+                <h2>@Localizer["worldMap.title"]</h2>
+            </div>
+
+            <div class="world-map-stats">
+                <div class="map-stat-item">
+                    <p>@Localizer["worldMap.stats.northAmerica"]</p>
+                </div>
+
+                <div class="map-stat-item">
+                    <p>@Localizer["worldMap.stats.europe"]</p>
+                </div>
+
+                <div class="map-stat-item">
+                    <p>@Localizer["worldMap.stats.asia"]</p>
+                </div>
+
+                <div class="map-stat-item">
+                    <p>@Localizer["worldMap.stats.middleEastAndAfrica"]</p>
+                </div>
+
+                <div class="map-stat-item">
+                    <p>@Localizer["worldMap.stats.latinAmerica"]</p>
+                </div>
+            </div>
+            <div class="world-map-container">
+                @{
+                var mapImage = System.Globalization.CultureInfo.CurrentUICulture.Name == "en-US"
+                ? "images/icons/map_en.svg"
+                : "images/icons/map.svg";
+                }
+                <img src="@mapImage" alt="@Localizer["worldMap.title"]" style="width: 100%; height: auto;">
+            </div>
+        </div>
+    </section>
+    
+
     <footer class="footer-section">
         <div class="container">
             <div class="footer-grid">
@@ -140,11 +361,11 @@
                         <div class="contact-info">
                             <div class="contact-item">
                                 <span class="contact-label">@Localizer["footer.email"]</span>
-                                <a href="mailto:info@ua-hutir.com" class="contact-value">info@ua-hutir.com</a>
+                                <a href="mailto:info@ua-hutir.com" class="contact-value">uakhutir@gmail.com</a>
                             </div>
                             <div class="contact-item contact-item-secondary">
                                 <span class="contact-label">@Localizer["footer.phone"]</span>
-                                <a href="tel:+380123456789" class="contact-value">+38 (012) 345-67-89</a>
+                                <a href="tel:+380123456789" class="contact-value">0974018815</a>
                             </div>
                         </div>
                         <div class="footer-logos">

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using WEB.Localization;
 using WEB.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace WEB;
 
@@ -54,8 +55,8 @@ public class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
+            // Закомментируем UseHsts() так как HTTPS будет обрабатывать Nginx
+            // app.UseHsts();
         } 
         
         var supportedCultures = new[] {
@@ -76,7 +77,15 @@ public class Program
         localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
         localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
 
-        app.UseHttpsRedirection();
+        // Добавляем настройку доверия прокси-заголовкам
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                              Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+        });
+
+        // Убираем перенаправление на HTTPS, так как этим будет заниматься Nginx
+        // app.UseHttpsRedirection();
         app.UseStaticFiles();
         
         // Правильный порядок middleware

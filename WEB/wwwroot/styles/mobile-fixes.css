@@ -1,0 +1,459 @@
+/* 
+   Файл исправлений для мобильных устройств
+   Предотвращает нежелательное масштабирование и улучшает тактильную отзывчивость
+*/
+
+/* Общие исправления для сенсорных устройств */
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+html, body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Исправления для активных элементов */
+a, button, .btn, 
+[role="button"], 
+input[type="submit"],
+input[type="button"] {
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Предотвращаем дергание при прокрутке на iOS устройствах */
+@supports (-webkit-overflow-scrolling: touch) {
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+    }
+}
+
+/* Увеличиваем область касания для мобильных устройств */
+@media (max-width: 767.98px) {
+    a, button, .btn, 
+    [role="button"], 
+    input[type="submit"],
+    input[type="button"],
+    .nav-link {
+        min-height: 44px; /* Минимальная высота интерактивных элементов по рекомендации Apple */
+        padding: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Исправляем навигацию для лучшей работы на мобильных */
+    .navbar-nav {
+        padding: 15px 0;
+    }
+    
+    .navbar-nav .nav-item {
+        margin-bottom: 8px;
+    }
+    
+    /* Исправляем размер шрифтов для лучшей читаемости */
+    body {
+        font-size: 16px; /* Минимальный рекомендуемый размер для мобильных */
+    }
+    
+    /* Предотвращаем растекание изображений за пределы экрана */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Увеличиваем отступы между элементами на мобильных */
+    .section {
+        padding: 40px 0;
+    }
+    
+    /* Улучшаем работу с сенсорными событиями */
+    .product-card, .feature-item {
+        transition: transform 0.2s ease;
+    }
+    
+    .product-card:active, .feature-item:active {
+        transform: scale(0.98);
+    }
+    
+    /* Уменьшаем размер шрифта логотипа в hero секции */
+    .hero-section .logo-text {
+        font-size: 3rem !important; /* Уменьшенный размер шрифта для мобильных */
+        line-height: 1.1;
+    }
+    
+    /* Уменьшаем размер шрифта для большого логотипа внизу страницы */
+    .footer-logo-text {
+        font-size: 3rem !important;
+    }
+    
+    /* Улучшаем пропорции hero-секции на мобильных */
+    .hero-section {
+        padding: 180px 0;
+    }
+    
+    .hero-section .hero-text {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    .hero-section .small-text {
+        font-size: 0.85rem;
+    }
+    
+    /* Улучшаем расположение элементов героя на мобильных */
+    .hero-section .bird-image {
+        max-width: 80%;
+        margin-top: 20px;
+    }
+    
+    /* Улучшаем отображение для продуктовых карточек */
+    .products-grid {
+        display: block;
+    }
+    
+    .products-row-top,
+    .products-row-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    /* Стили для продуктовых карточек на мобильных */
+    .product-card {
+        margin-bottom: 20px;
+        perspective: 1000px;
+        height: auto;
+        width: 100%;
+    }
+    
+    .product-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+    
+    .product-card-inner.mobile-friendly {
+        cursor: pointer;
+    }
+    
+    .product-card-inner.flipped {
+        transform: rotateY(180deg);
+    }
+    
+    .product-card-front, .product-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    
+    .product-card-front {
+        background-color: #f5f5f5;
+        color: black;
+    }
+    
+    .product-card-back {
+        background-color: #3E5F8A;
+        color: white;
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    /* Исправляем размеры контейнеров для карточек, чтобы они хорошо отображались */
+    .products-grid, .products-row-top, .products-row-bottom {
+        display: block;
+    }
+    
+    /* Исправляем отображение разделителей в секции принципов */
+    .principles-dividers {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 15px 0;
+        width: 100%;
+        padding: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .principles-dividers .divider {
+        height: 8px;
+        width: 100%;
+        margin: 0;
+        border-radius: 4px;
+        display: block;
+        box-sizing: border-box;
+    }
+    
+    /* Переопределяем контейнер принципов для мобильных */
+    .principles-cards .container {
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 100%;
+    }
+    
+    /* Полная ширина для заголовков и карточек */
+    .principles-header, 
+    .principles-cards-grid {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    /* Исправляем заголовки принципов */
+    .principles-header {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .principle-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    
+    .principle-title .number {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    
+    .principle-title h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    /* Исправляем карточки принципов */
+    .principles-cards-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .principle-card {
+        padding: 15px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    /* Исправляем отступы в секции принципов */
+    .principles-section {
+        padding: 40px 0;
+    }
+    
+    .principles-cards {
+        padding: 0 0 40px;
+    }
+    
+    /* Переопределяем стили накладывающихся полосок для мобильных устройств */
+    .principles-dividers .divider:nth-child(1),
+    .principles-dividers .divider:nth-child(2),
+    .principles-dividers .divider:nth-child(3) {
+        margin: 0 !important; /* Убираем все отступы */
+        width: 100% !important; /* Принудительно задаем ширину */
+        z-index: 1 !important; /* Сбрасываем z-index */
+        position: relative !important;
+    }
+    
+    .principles-dividers .divider:nth-child(1) {
+        background-color: #E6EFE7 !important;
+    }
+    
+    .principles-dividers .divider:nth-child(2) {
+        background-color: #CDD9CD !important;
+    }
+    
+    .principles-dividers .divider:nth-child(3) {
+        background-color: #B3C5B3 !important;
+    }
+    
+    /* Улучшаем отображение футера на мобильных устройствах */
+    .footer-section {
+        padding: 40px 0;
+    }
+    
+    /* Увеличиваем иконки в футере */
+    .social-links {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
+        margin-top: 15px;
+    }
+    
+    .social-link {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .social-link img {
+        width: 24px;
+        height: 24px;
+    }
+    
+    /* Улучшаем отображение логотипа в футере */
+    .footer-logo-text {
+        font-size: 3rem !important;
+        letter-spacing: 0.1em !important;
+        margin-top: 20px;
+    }
+    
+    /* Исправляем отступы и выравнивание в контактной информации */
+    .contact-info {
+        margin-top: 20px;
+    }
+    
+    .contact-item {
+        margin-bottom: 15px;
+    }
+    
+    .footer-row {
+        margin-bottom: 25px;
+    }
+}
+
+/* Дополнительные исправления для очень маленьких экранов */
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    h1, .h1 {
+        font-size: 32px;
+    }
+    
+    h2, .h2 {
+        font-size: 28px;
+    }
+    
+    /* Для улучшения отображения при поворотах устройства */
+    @media (orientation: landscape) {
+        .hero-section {
+            min-height: 450px;
+        }
+    }
+    
+    /* Еще больше уменьшаем размер логотипа на очень маленьких экранах */
+    .hero-section .logo-text {
+        font-size: 2.5rem !important;
+    }
+    
+    .footer-logo-text {
+        font-size: 2.5rem !important;
+    }
+    
+    /* Уменьшаем отступы в секциях */
+    .section, .hero-section {
+        padding: 120px 0;
+    }
+    
+    .divider.my-7 {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Дополнительные исправления для разделителей на самых маленьких экранах */
+    .principles-dividers {
+        margin: 15px 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden; /* Чтобы предотвратить горизонтальную прокрутку */
+    }
+    
+    .principles-dividers .divider {
+        height: 6px;
+        width: 100% !important;
+        margin: 0 auto !important;
+        border-radius: 3px;
+    }
+    
+    /* Более специфичные переопределения для полосок на маленьких экранах */
+    .principles-dividers .divider:nth-child(1),
+    .principles-dividers .divider:nth-child(2),
+    .principles-dividers .divider:nth-child(3) {
+        width: 100% !important;
+        margin: 0 !important;
+        position: static !important;
+        display: block !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+    
+    /* Исправляем стили для родительских контейнеров */
+    .principles-cards {
+        padding-left: 0;
+        padding-right: 0;
+        overflow: hidden; /* Предотвращаем переполнение */
+    }
+    
+    .principles-cards .container {
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 100%;
+    }
+    
+    /* Глобальные отступы для всех секций, но сохраняем переопределение для principles-cards */
+    section:not(.principles-cards) {
+        padding: 120px 0;
+    }
+    
+    /* Еще больше увеличиваем иконки в футере для очень маленьких экранов */
+    .social-link {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .social-link img {
+        width: 28px;
+        height: 28px;
+    }
+    
+    /* Улучшаем отображение логотипа в футере для маленьких экранов */
+    .footer-logo-text {
+        font-size: 2.5rem !important;
+        letter-spacing: 0.15em !important;
+        margin-top: 15px;
+        word-spacing: 0.2em;
+    }
+    
+    /* Вертикальное расположение контактной информации для очень маленьких экранов */
+    .footer-row {
+        flex-direction: column;
+    }
+}
+
+/* Специфические стили для разделителей, независимые от медиа-запросов */
+.principles-dividers {
+    position: relative;
+}
+
+.principles-dividers .divider {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+} 
