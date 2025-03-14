@@ -1,0 +1,213 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Localizer["site.title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="~/styles/fonts.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/styles/theme.css" rel="stylesheet" asp-append-version="true">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <div class="logo">
+                <img src="~/images/logo.svg" alt="@Localizer["site.logo.alt"]" asp-append-version="true">
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">@Localizer["navigation.home"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">@Localizer["navigation.about"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products">@Localizer["navigation.products"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">@Localizer["navigation.contacts"]</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav language-switch">
+                    @{
+                        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+                        if (currentCulture == "uk-UA")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="en-US">Мова: &nbsp; 
+                            
+                            <svg width="6" height="13" viewBox="0 0 6 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.9925 7.80583V7.6075H3.54167H2.43667H0V7.82L2.86167 12.07H3.07417L5.9925 7.80583ZM2.43667 4.47667H3.54167H5.9925V4.27833L3.07417 0H2.86167L0 4.2925V4.47667H2.43667Z" fill="white"/>
+                            </svg>
+                        EN</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="uk-UA">Language: &nbsp; 
+                            
+                            <svg width="6" height="13" viewBox="0 0 6 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.9925 7.80583V7.6075H3.54167H2.43667H0V7.82L2.86167 12.07H3.07417L5.9925 7.80583ZM2.43667 4.47667H3.54167H5.9925V4.27833L3.07417 0H2.86167L0 4.2925V4.47667H2.43667Z" fill="white"/>
+                            </svg>
+                        UA</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container position-relative">
+            <div class="row">
+                <div class="col-lg-8">
+                    <p class="small-text text-white mb-4">
+                        @Localizer["hero.subtitle"]
+                    </p>
+                    <div class="logo">
+                        <h1 class="logo-text">@Localizer["hero.title"]</h1>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <div class="logos-container">
+                        <img src="~/images/ish-logo.svg" alt="@Localizer["images.ish.alt"]" class="logo-image" asp-append-version="true">
+                    </div>
+                </div>
+            </div>
+                
+            <div class="divider my-7"></div>
+                
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <p class="hero-text text-white">
+                        @Localizer["hero.description"]
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <img src="~/images/bird.svg" alt="@Localizer["images.bird.alt"]" class="bird-image" asp-append-version="true">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @RenderBody()
+
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <p class="footer-text">
+                        @Localizer["footer.description"]
+                    </p>
+                    <h1 class="footer-logo-text">@Localizer["hero.title"]</h1>
+                </div>
+                
+                <div class="footer-right">
+                    <div class="footer-row">
+                        <h3 class="footer-title">@Localizer["footer.contacts"]</h3>
+                    </div>
+                    
+                    <div class="footer-row">
+                        <h3 class="social-title">@Localizer["footer.social"]</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link">
+                                <img src="~/images/icons/linkedin.svg" alt="@Localizer["footer.social_links.linkedin"]" asp-append-version="true">
+                            </a>
+                            <a href="#" class="social-link">
+                                <img src="~/images/icons/instagram.svg" alt="@Localizer["footer.social_links.instagram"]" asp-append-version="true">
+                            </a>
+                            <a href="#" class="social-link">
+                                <img src="~/images/icons/facebook.svg" alt="@Localizer["footer.social_links.facebook"]" asp-append-version="true">
+                            </a>
+                            <a href="#" class="social-link">
+                                <img src="~/images/icons/whatsup.svg" alt="@Localizer["footer.social_links.whatsapp"]" asp-append-version="true">
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-row">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <span class="contact-label">@Localizer["footer.email"]</span>
+                                <a href="mailto:info@ua-hutir.com" class="contact-value">info@ua-hutir.com</a>
+                            </div>
+                            <div class="contact-item contact-item-secondary">
+                                <span class="contact-label">@Localizer["footer.phone"]</span>
+                                <a href="tel:+380123456789" class="contact-value">+38 (012) 345-67-89</a>
+                            </div>
+                        </div>
+                        <div class="footer-logos">
+                            <img src="~/images/footer-logos.svg" alt="@Localizer["images.company.alt"]" asp-append-version="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
+
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - WEB</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/WEB.styles.css" asp-append-version="true"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WEB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2025 - WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> *@

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="50" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <!-- Placeholder for actual logos from Figma -->
+        <path d="M0 0h50v50h-50z" fill="white" fill-opacity="0.8"/>
+        <path d="M75 0h50v50h-50z" fill="white" fill-opacity="0.8"/>
+        <path d="M150 0h50v50h-50z" fill="white" fill-opacity="0.8"/>
+    </g>
+</svg>

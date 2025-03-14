@@ -1,0 +1,135 @@
+{
+  "site": {
+    "title": "UA.Khutir",
+    "logo": {
+      "alt": "UA.Khutir Logo"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "products": "Products",
+    "contacts": "Contacts"
+  },
+  "hero": {
+    "title": "UA.Khutir",
+    "subtitle": "UA.Khutir is not just products, it's a path to a healthy life. Trust quality, choose UA.Khutir — harmony of nature and modernity in every product.",
+    "description": "We combine the power of amaranth with traditional flavors, creating products that care for your health and the environment."
+  },
+  "amarant": {
+    "title": "The rapidly growing popularity is due to the special chemical composition of the plant",
+    "features": {
+      "phytosterols": {
+        "title": "Phytosterols",
+        "description": "Amaranth contains phytosterols that actively remove free radicals, cholesterol, and tocopherol, which significantly affects the overall physical and emotional health of a person."
+      },
+      "vitamins": {
+        "title": "Vitamins",
+        "description": "The active composition of amaranth includes vitamin D, retinol, potassium, magnesium, and sodium, as well as a huge list of beneficial trace elements that activate the body's metabolic processes, leading to cell regeneration."
+      },
+      "protein": {
+        "title": "Protein",
+        "description": "Amaranth is enriched with protein and lysine, which are characterized by usefulness and nutrition for body cells, and protein from amaranth is absorbed by the body many times better than even dairy proteins."
+      },
+      "squalene": {
+        "title": "Squalene",
+        "description": "Also an element - squalene, which, penetrating the human body, saturates cells with oxygen, increases their immune protection, which makes the body stronger, more resilient, more enduring and longer-lasting."
+      }
+    }
+  },
+  "principles": {
+    "title": "Main Principles",
+    "subtitle": "of our work",
+    "description": "Responsible and conscientious approach to production, innovative solutions and recipes, combined with a sincere desire to do quality and useful work.",
+    "cards": {
+      "scientificity": {
+        "title": "Scientific Approach",
+        "description": "Development of new recipes, work on production technology, and experiments in its processes to obtain optimal taste and product composition."
+      },
+      "ecology": {
+        "title": "Environmental Friendliness",
+        "description": "Equipment with minimal power consumption, without emissions into the environment. We aim to transition to work from \"green\" energy (sun, wind)."
+      },
+      "development": {
+        "title": "Development",
+        "description": "We are working on creating and expanding a line of healthy amaranth products, providing a truly healthy alternative to an already saturated market."
+      }
+    }
+  },
+  "company": {
+    "type": "LLC",
+    "name": "UA.Khutir",
+    "description": "Was founded in Kyiv in 2024, with production in Talne, which is located in the heart of Ukraine, to create quality, healthy and affordable food for everyone, by people who care about a healthy and happy nation."
+  },
+  "worldMap": {
+    "title": "Amaranth Distribution Worldwide",
+    "stats": {
+      "northAmerica": "North America: USA, dominant market, more than 30% of total volume. Canada less than 15%, but significant growth expected.",
+      "europe": "Europe: UK: largest market in Europe about 5%. Netherlands about 4%. France about 3%. Italy about 2%. Other European countries: about 9%",
+      "asia": "Asia: China: largest market in Asia, about 8%. Japan about 4%. India about 3%. ASEAN about 3%. Australia: about 2%. Other Asian countries: about 0.2%",
+      "middleEastAndAfrica": "Middle East and Africa: Saudi Arabia: about 1%. United Arab Emirates: about 0.5%. Israel: about 0.5%. South Africa: about 0.5%. Other Middle East and African countries: about 2%",
+      "latinAmerica": "Latin America: 7.5%"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "description": "We are a team of enthusiasts who believe in the power of natural ingredients and their impact on human health. Our mission is to create products that are not only delicious but also beneficial for health.",
+    "values": {
+      "title": "Our Values",
+      "quality": {
+        "title": "Quality",
+        "description": "We use only the best ingredients and strictly control quality at all stages of production"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Constantly improving our recipes and production technologies"
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "We care about the environment and use environmentally friendly technologies"
+      }
+    }
+  },
+  "products": {
+    "title": "Our Products",
+    "description": "We offer a wide range of amaranth-based products",
+    "categories": {
+      "flour": {
+        "title": "Flour",
+        "description": "Amaranth flour - a source of protein and nutrients"
+      },
+      "oil": {
+        "title": "Oil",
+        "description": "Amaranth oil rich in squalene and vitamins"
+      },
+      "snacks": {
+        "title": "Snacks",
+        "description": "Healthy snacks for a nutritious break"
+      }
+    }
+  },
+  "images": {
+    "bird": {
+      "alt": "Bird"
+    },
+    "ish": {
+      "alt": "ISH Logo"
+    },
+    "company": {
+      "alt": "Company Logos"
+    }
+  },
+  "footer": {
+    "description": "Amaranth is a plant with enormous potential to improve health and well-being of people worldwide. We believe that our products will help make the world better.",
+    "contacts": "Contacts:",
+    "social": "Social Media:",
+    "email": "E-mail:",
+    "phone": "Phone:",
+    "social_links": {
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "whatsapp": "WhatsApp"
+    }
+  }
+} 
