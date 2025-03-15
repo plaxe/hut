@@ -465,11 +465,38 @@ function updateMobileMenu() {
         introText.style.paddingRight = '30px';
         navbarCollapse.appendChild(introText);
         
-        // 2. Добавляем логотип
+        // 2. Добавляем логотип и делаем его ссылкой на главную
         const mainLogo = document.querySelector('.logo');
         if (mainLogo) {
-            const logoClone = mainLogo.cloneNode(true);
+            let logoClone;
+            
+            // Проверяем, является ли логотип уже ссылкой
+            if (mainLogo.tagName === 'A') {
+                // Если логотип уже ссылка, клонируем его как есть
+                logoClone = mainLogo.cloneNode(true);
+            } else {
+                // Если логотип не ссылка, создаем ссылку и помещаем в нее клон логотипа
+                logoClone = document.createElement('a');
+                logoClone.href = '/';
+                logoClone.className = 'logo';
+                
+                // Клонируем содержимое логотипа
+                const logoContent = mainLogo.innerHTML;
+                logoClone.innerHTML = logoContent;
+                
+                // Копируем стили и атрибуты
+                Array.from(mainLogo.attributes).forEach(attr => {
+                    if (attr.name !== 'class') { // класс уже установлен
+                        logoClone.setAttribute(attr.name, attr.value);
+                    }
+                });
+            }
+            
+            // Применяем стили для клонированного логотипа
             logoClone.style.marginBottom = '40px';
+            logoClone.style.display = 'block';
+            logoClone.style.textDecoration = 'none';
+            
             navbarCollapse.appendChild(logoClone);
         }
         
@@ -623,8 +650,42 @@ function checkMobile() {
     }
 }
 
-// Проверяем при загрузке страницы и при изменении размера окна
+// Функция проверяет и делает логотип ссылкой при загрузке страницы
+function makeLogoClickable() {
+    // Найдем все логотипы на странице
+    const logos = document.querySelectorAll('.logo:not(a)');
+    
+    logos.forEach(logo => {
+        // Если логотип не является ссылкой
+        if (logo.tagName !== 'A') {
+            // Создаем родительский элемент-ссылку
+            const logoLink = document.createElement('a');
+            logoLink.href = '/';
+            logoLink.className = 'logo';
+            logoLink.style.textDecoration = 'none';
+            logoLink.style.display = logo.style.display || 'block';
+            
+            // Копируем все стили и атрибуты, кроме класса
+            Array.from(logo.attributes).forEach(attr => {
+                if (attr.name !== 'class') {
+                    logoLink.setAttribute(attr.name, attr.value);
+                }
+            });
+            
+            // Копируем все дочерние элементы в ссылку
+            while (logo.firstChild) {
+                logoLink.appendChild(logo.firstChild);
+            }
+            
+            // Заменяем исходный элемент на новую ссылку
+            logo.parentNode.replaceChild(logoLink, logo);
+        }
+    });
+}
+
+// Добавляем проверку логотипа при загрузке страницы
 window.addEventListener('DOMContentLoaded', function() {
+    makeLogoClickable();
     checkMobile();
     // Запускаем один раз для мобильных устройств
     if (window.innerWidth < 768) {

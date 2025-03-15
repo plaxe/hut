@@ -373,6 +373,16 @@ input[type="button"] {
     .navbar-collapse .logo {
         margin-bottom: 40px;
         text-align: left;
+        text-decoration: none;
+        color: white;
+        display: block;
+    }
+    
+    .navbar-collapse .logo:hover,
+    .navbar-collapse .logo:focus {
+        text-decoration: none;
+        color: white;
+        opacity: 0.9;
     }
     
     .navbar-collapse .logo img {
