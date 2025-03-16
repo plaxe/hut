@@ -210,15 +210,15 @@ input[type="button"] {
     }
     
     .principle-block:nth-child(1) .divider {
-        background-color: #3E5F8A;
+        background-color: #E6EFE7;
     }
     
     .principle-block:nth-child(2) .divider {
-        background-color: #DA903D;
+        background-color: #CDD9CD;
     }
     
     .principle-block:nth-child(3) .divider {
-        background-color: #A3B18A;
+        background-color: #B3C5B3;
     }
     
     /* Исправляем заголовки принципов */
@@ -380,15 +380,15 @@ input[type="button"] {
     }
     
     .principle-block:nth-child(1) .divider {
-        background-color: #3E5F8A;
+        background-color: #E6EFE7;
     }
     
     .principle-block:nth-child(2) .divider {
-        background-color: #DA903D;
+        background-color: #CDD9CD;
     }
     
     .principle-block:nth-child(3) .divider {
-        background-color: #A3B18A;
+        background-color: #B3C5B3;
     }
     
     /* Уменьшаем отступы в секции принципов */
