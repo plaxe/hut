@@ -73,7 +73,7 @@ input[type="button"] {
     
     /* Увеличиваем отступы между элементами на мобильных */
     .section {
-        padding: 40px 0;
+        padding: 120px 0;
     }
     
     /* Улучшаем работу с сенсорными событиями */
@@ -87,7 +87,7 @@ input[type="button"] {
     
     /* Уменьшаем размер шрифта логотипа в hero секции */
     .hero-section .logo-text {
-        font-size: 3rem !important; /* Уменьшенный размер шрифта для мобильных */
+        font-size: 5rem !important; /* Уменьшенный размер шрифта для мобильных */
         line-height: 1.1;
     }
     
@@ -112,7 +112,7 @@ input[type="button"] {
     
     /* Улучшаем расположение элементов героя на мобильных */
     .hero-section .bird-image {
-        max-width: 80%;
+        max-width: 50%;
         margin-top: 20px;
     }
     
@@ -251,237 +251,112 @@ input[type="button"] {
     }
     
     .principle-card {
-        padding: 15px;
-        margin-bottom: 10px;
         width: 100%;
+        padding: 20px;
+        margin-bottom: 15px;
     }
     
-    /* Исправляем отступы в секции принципов */
     .principles-section {
         padding: 40px 0;
     }
     
     .principles-cards {
-        padding: 0 0 40px;
-    }
-    
-    /* Переопределяем стили накладывающихся полосок для мобильных устройств */
-    .principles-dividers .divider:nth-child(1),
-    .principles-dividers .divider:nth-child(2),
-    .principles-dividers .divider:nth-child(3) {
-        margin: 0 !important; /* Убираем все отступы */
-        width: 100% !important; /* Принудительно задаем ширину */
-        z-index: 1 !important; /* Сбрасываем z-index */
-        position: relative !important;
-    }
-    
-    .principles-dividers .divider:nth-child(1) {
-        background-color: #E6EFE7 !important;
-    }
-    
-    .principles-dividers .divider:nth-child(2) {
-        background-color: #CDD9CD !important;
-    }
-    
-    .principles-dividers .divider:nth-child(3) {
-        background-color: #B3C5B3 !important;
-    }
-    
-    /* Улучшаем отображение футера на мобильных устройствах */
-    .footer-section {
         padding: 40px 0;
     }
     
-    /* Увеличиваем иконки в футере */
+    .principles-dividers .divider:nth-child(1),
+    .principles-dividers .divider:nth-child(2),
+    .principles-dividers .divider:nth-child(3) {
+        width: 100%;
+        margin: 4px 0;
+    }
+    
+    .principles-dividers .divider:nth-child(1) {
+        background-color: #3E5F8A;
+    }
+    
+    .principles-dividers .divider:nth-child(2) {
+        background-color: #DA903D;
+    }
+    
+    .principles-dividers .divider:nth-child(3) {
+        background-color: #A3B18A;
+    }
+    
+    .footer-section {
+        padding: 30px 0;
+    }
+    
     .social-links {
         display: flex;
-        align-items: center;
+        gap: 15px;
         justify-content: flex-start;
-        gap: 20px;
-        margin-top: 15px;
+        margin-bottom: 20px;
     }
     
     .social-link {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
     .social-link img {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
     }
     
-    /* Улучшаем отображение логотипа в футере */
     .footer-logo-text {
-        font-size: 3rem !important;
-        letter-spacing: 0.1em !important;
-        margin-top: 20px;
+        font-size: 3rem;
+        line-height: 1.1;
+        text-align: left;
+        margin-bottom: 20px;
     }
     
-    /* Исправляем отступы и выравнивание в контактной информации */
     .contact-info {
-        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
     
     .contact-item {
-        margin-bottom: 15px;
-    }
-    
-    /* Улучшаем мобильное меню - полноэкранное с черным фоном */
-    /* Стиль для кнопки закрытия */
-    .navbar-toggler {
-        z-index: 9999;
-        position: absolute;
-        right: 15px;
-        top: 15px;
-    }
-    
-    /* Стили для мобильного меню */
-    .navbar-collapse {
-        position: fixed;
-        top: 0;
-        right: -100%; /* Начинаем за пределами экрана справа */
-        width: 100vw;
-        height: 100vh;
-        background-color: #000;
-        z-index: 9990;
-        transition: right 0.3s ease;
         display: flex;
         flex-direction: column;
-        padding: 80px 30px 30px 30px;
-        overflow-y: auto;
+        gap: 5px;
     }
     
-    /* Когда меню открыто */
-    .navbar-collapse.show {
-        right: 0;
-    }
-    
-    /* Вступительный текст в мобильном меню */
-    .navbar-collapse .mobile-intro-text {
-        color: white;
-        font-size: 14px;
-        line-height: 1.4;
-        margin-bottom: 30px;
-        padding-right: 30px;
-    }
-    
-    /* Логотип в мобильном меню */
-    .navbar-collapse .logo {
-        margin-bottom: 40px;
-        text-align: left;
-        text-decoration: none;
-        color: white;
-        display: block;
-    }
-    
-    .navbar-collapse .logo:hover,
-    .navbar-collapse .logo:focus {
-        text-decoration: none;
-        color: white;
-        opacity: 0.9;
-    }
-    
-    .navbar-collapse .logo img {
-        max-width: 60px;
-        height: auto;
-    }
-    
-    /* Пункты меню */
-    .navbar-collapse .navbar-nav {
-        margin: 0 0 40px 0;
-    }
-    
-    .navbar-collapse .nav-link {
-        color: white !important;
-        font-size: 24px;
-        font-weight: normal;
-        margin-bottom: 20px;
-        padding: 0;
-        display: block;
-        transition: opacity 0.2s;
-        text-align: left;
-        min-height: auto;
-    }
-    
-    .navbar-collapse .nav-link:hover,
-    .navbar-collapse .nav-link:active {
-        opacity: 0.7;
-    }
-    
-    /* Язык в мобильном меню */
-    .navbar-collapse .language-switch {
-        margin-top: auto;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        padding-top: 20px;
-        color: white;
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-    
-    /* Контакты в мобильном меню */
-    .navbar-collapse .mobile-contacts {
-        margin-bottom: 20px;
-    }
-    
-    .navbar-collapse .mobile-contacts a {
-        color: white;
-        display: block;
-        padding: 15px 0;
-        margin-bottom: 10px;
-        text-decoration: none;
-        text-align: center;
-        border: 1px solid white;
-        border-radius: 30px;
-    }
-    
-    /* Кнопка закрытия (X) */
-    .close-menu-btn {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        color: white;
-        background: transparent;
-        border: none;
-        font-size: 30px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 9999;
-        min-height: auto;
-    }
-    
-    /* Запрет прокрутки основного содержимого при открытом меню */
-    body.menu-open {
-        overflow: hidden;
+    /* Переопределяем позицию переключателя языка */
+    .language-switch {
+        margin-top: 20px;
+        margin-left: 0 !important;
+        width: 100%;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
     }
 }
 
-/* Дополнительные исправления для очень маленьких экранов */
 @media (max-width: 575.98px) {
     .container {
-        padding-left: 20px;
-        padding-right: 20px;
+        min-width: 100%;
+        max-width: 100%;
+        padding: 0 15px;
     }
     
     h1, .h1 {
-        font-size: 32px;
+        font-size: 2rem;
     }
     
     h2, .h2 {
-        font-size: 28px;
+        font-size: 1.75rem;
     }
     
-    /* Для улучшения отображения при поворотах устройства */
     @media (orientation: landscape) {
         .hero-section {
-            min-height: 450px;
+            padding: 120px 0;
         }
     }
     
-    /* Еще больше уменьшаем размер логотипа на очень маленьких экранах */
     .hero-section .logo-text {
         font-size: 2.5rem !important;
     }
@@ -490,94 +365,89 @@ input[type="button"] {
         font-size: 2.5rem !important;
     }
     
-    /* Уменьшаем отступы в секциях */
+    /* Уменьшаем отступы секций на мобильных */
     .section, .hero-section {
-        padding: 120px 0;
+        padding: 180px 0;
     }
     
     .divider.my-7 {
         margin-top: 2rem !important;
         margin-bottom: 2rem !important;
     }
+
+    .hero-section .bird-image {
+        max-width: 30%;
+        margin-top: 20px;
+    }
     
-    /* Дополнительные исправления для разделителей на самых маленьких экранах */
+    /* Улучшаем отображение разделителей */
     .principles-dividers {
-        margin: 15px 0;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        overflow: hidden; /* Чтобы предотвратить горизонтальную прокрутку */
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin: 10px 0;
     }
     
     .principles-dividers .divider {
         height: 6px;
-        width: 100% !important;
-        margin: 0 auto !important;
+        width: 100%;
+        margin: 3px 0;
         border-radius: 3px;
     }
     
-    /* Более специфичные переопределения для полосок на маленьких экранах */
     .principles-dividers .divider:nth-child(1),
     .principles-dividers .divider:nth-child(2),
     .principles-dividers .divider:nth-child(3) {
-        width: 100% !important;
-        margin: 0 !important;
-        position: static !important;
-        display: block !important;
-        left: 0 !important;
-        right: 0 !important;
+        width: 100%;
+        margin: 3px 0;
     }
     
-    /* Исправляем стили для родительских контейнеров */
+    /* Уменьшаем отступы в секции принципов */
     .principles-cards {
-        padding-left: 0;
-        padding-right: 0;
-        overflow: hidden; /* Предотвращаем переполнение */
+        padding: 30px 0;
     }
     
+    /* Уменьшаем горизонтальные отступы в контейнере принципов */
     .principles-cards .container {
-        padding-left: 0;
-        padding-right: 0;
-        max-width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
     }
     
-    /* Глобальные отступы для всех секций, но сохраняем переопределение для principles-cards */
+    /* Вертикальные отступы для всех секций кроме карточек принципов */
     section:not(.principles-cards) {
         padding: 120px 0;
     }
     
-    /* Еще больше увеличиваем иконки в футере для очень маленьких экранов */
+    /* Уменьшаем размер социальных иконок в футере */
     .social-link {
-        width: 45px;
-        height: 45px;
+        width: 40px;
+        height: 40px;
     }
     
     .social-link img {
-        width: 28px;
-        height: 28px;
+        width: 18px;
+        height: 18px;
     }
     
-    /* Улучшаем отображение логотипа в футере для маленьких экранов */
+    /* Уменьшаем размер шрифта логотипа в футере */
     .footer-logo-text {
-        font-size: 2.5rem !important;
-        letter-spacing: 0.15em !important;
-        margin-top: 15px;
-        word-spacing: 0.2em;
+        font-size: 2.25rem !important;
+        line-height: 1.1;
+        text-align: center;
+        margin-bottom: 15px;
     }
     
-    /* Вертикальное расположение контактной информации для очень маленьких экранов */
+    /* Центрируем контент в футере */
     .footer-row {
         flex-direction: column;
+        text-align: center;
     }
 }
 
-/* Специфические стили для разделителей, независимые от медиа-запросов */
 .principles-dividers {
-    position: relative;
+    max-width: 100%;
 }
 
 .principles-dividers .divider {
-    position: relative;
-    display: block;
-    box-sizing: border-box;
+    border-radius: 5px;
 } 
