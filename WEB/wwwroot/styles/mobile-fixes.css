@@ -183,18 +183,24 @@ input[type="button"] {
     }
     
     /* Исправляем отображение разделителей в секции принципов */
-    .principles-dividers {
+    .principles-grid {
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        margin: 15px 0;
+        gap: 30px;
         width: 100%;
         padding: 0;
         max-width: 100%;
         box-sizing: border-box;
     }
     
-    .principles-dividers .divider {
+    .principle-block {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .principle-block .divider {
         height: 8px;
         width: 100%;
         margin: 0;
@@ -203,30 +209,19 @@ input[type="button"] {
         box-sizing: border-box;
     }
     
-    /* Переопределяем контейнер принципов для мобильных */
-    .principles-cards .container {
-        padding-left: 0;
-        padding-right: 0;
-        max-width: 100%;
+    .principle-block:nth-child(1) .divider {
+        background-color: #3E5F8A;
     }
     
-    /* Полная ширина для заголовков и карточек */
-    .principles-header, 
-    .principles-cards-grid {
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 20px;
-        padding-right: 20px;
+    .principle-block:nth-child(2) .divider {
+        background-color: #DA903D;
+    }
+    
+    .principle-block:nth-child(3) .divider {
+        background-color: #A3B18A;
     }
     
     /* Исправляем заголовки принципов */
-    .principles-header {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
     .principle-title {
         display: flex;
         align-items: center;
@@ -244,16 +239,12 @@ input[type="button"] {
     }
     
     /* Исправляем карточки принципов */
-    .principles-cards-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
     .principle-card {
         width: 100%;
         padding: 20px;
         margin-bottom: 15px;
+        background-color: #fff;
+        border-radius: 8px;
     }
     
     .principles-section {
@@ -262,25 +253,6 @@ input[type="button"] {
     
     .principles-cards {
         padding: 40px 0;
-    }
-    
-    .principles-dividers .divider:nth-child(1),
-    .principles-dividers .divider:nth-child(2),
-    .principles-dividers .divider:nth-child(3) {
-        width: 100%;
-        margin: 4px 0;
-    }
-    
-    .principles-dividers .divider:nth-child(1) {
-        background-color: #3E5F8A;
-    }
-    
-    .principles-dividers .divider:nth-child(2) {
-        background-color: #DA903D;
-    }
-    
-    .principles-dividers .divider:nth-child(3) {
-        background-color: #A3B18A;
     }
     
     .footer-section {
@@ -381,25 +353,42 @@ input[type="button"] {
     }
     
     /* Улучшаем отображение разделителей */
-    .principles-dividers {
+    .principles-grid {
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        margin: 10px 0;
+        gap: 30px;
+        width: 100%;
+        padding: 0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
-    .principles-dividers .divider {
-        height: 6px;
+    .principle-block {
         width: 100%;
-        margin: 3px 0;
-        border-radius: 3px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
     
-    .principles-dividers .divider:nth-child(1),
-    .principles-dividers .divider:nth-child(2),
-    .principles-dividers .divider:nth-child(3) {
+    .principle-block .divider {
+        height: 8px;
         width: 100%;
-        margin: 3px 0;
+        margin: 0;
+        border-radius: 4px;
+        display: block;
+        box-sizing: border-box;
+    }
+    
+    .principle-block:nth-child(1) .divider {
+        background-color: #3E5F8A;
+    }
+    
+    .principle-block:nth-child(2) .divider {
+        background-color: #DA903D;
+    }
+    
+    .principle-block:nth-child(3) .divider {
+        background-color: #A3B18A;
     }
     
     /* Уменьшаем отступы в секции принципов */
