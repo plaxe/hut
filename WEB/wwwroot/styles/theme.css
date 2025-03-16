@@ -844,6 +844,11 @@ body {
 
 .navbar-collapse {
     margin-top: 0 !important;
+    display: none;
+}
+
+.navbar-collapse.show {
+    display: block;
 }
 
 .navbar-toggler {
@@ -853,10 +858,22 @@ body {
     position: fixed;
     right: 15px;
     top: 1.5rem;
+    z-index: 1100;
+    cursor: pointer;
 }
 
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    transition: all 0.2s ease;
+}
+
+/* Стили для кнопки navbar-toggler при открытом меню */
+body.menu-open .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M6 6L24 24M6 24L24 6'/%3e%3c/svg%3e") !important;
+}
+
+body.menu-open .navbar-toggler {
+    background-color: #ffffff;
 }
 
 /* Адаптивность */
@@ -874,16 +891,49 @@ body {
 
 @media (max-width: 991.98px) {
     .navbar-collapse {
-        background: rgba(33, 37, 41, 0.9);
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        margin-top: 1rem;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 40%;
+        height: 100vh;
+        background-color: #000000;
+        transition: right 0.2s ease-in-out;
+        margin: 0 !important;
+        padding: 6rem 2rem 2rem;
+        z-index: 1000;
+        display: block !important;
+        overflow-y: auto;
+        will-change: right;
     }
     
+    .navbar-collapse.show {
+        right: 0 !important;
+    }
+
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    /* Затемнение фона при открытом меню */
+    body.menu-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+    }
+
     .nav-link {
+        color: #ffffff !important;
         font-size: 20px;
         line-height: 19px;
+        padding: 1rem 0 !important;
+        display: block;
     }
 
     .main-title {
@@ -915,6 +965,37 @@ body {
 
     .bird-image {
         max-width: 20%;
+    }
+
+    .navbar-collapse {
+        width: 40%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .navbar-collapse {
+        width: 50%;
+    }
+
+    .products-row-top,
+    .products-row-bottom {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .products-grid {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+
+    .product-card {
+        width: 100%;
+        max-width: none;
+    }
+
+    .products-title h2,
+    .products-title p {
+        font-size: 1.5rem;
     }
 }
 
