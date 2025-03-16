@@ -6,9 +6,15 @@
 @media (max-width: 991.98px) {
     /* Стили для навигационных ссылок в меню */
     .navbar-nav .nav-link {
-        font-size: 16px;
+        font-size: 3rem;
         padding: 10px 5px !important;
-        text-align: center;
+        line-height: 2.5rem;
+        /* text-align: center; */
+    }
+
+    .language-switch {
+        margin-top: 5rem;
+        border-bottom: 1.33px solid #FFFFFF4D;
     }
     
     .language-switch .nav-link {
@@ -19,14 +25,14 @@
     
     /* Уменьшаем отступы в меню */
     .navbar-collapse {
-        padding: 5rem 2rem 2rem;
+        padding: 1.5rem;
     }
 }
 
 @media (max-width: 767.98px) {
     /* Стили для навигационных ссылок в меню */
     .navbar-nav .nav-link {
-        font-size: 16px;
+        font-size: 3rem;
         padding: 10px 5px !important;
     }
     
@@ -57,7 +63,7 @@
 @media (max-width: 575.98px) {
     /* Стили для навигационных ссылок в очень узком меню */
     .navbar-nav .nav-link {
-        font-size: 16px;
+        font-size: 2rem;
         padding: 10px 5px !important;
     }
     
@@ -68,8 +74,14 @@
     
     /* Уменьшаем отступы в меню */
     .navbar-collapse {
-        padding: 4rem 1.5rem 1.5rem;
+        padding: 1rem 1.5rem 1.5rem;
     }
+}
+
+
+.logo-mobile {
+    margin-top: 10rem;
+    margin-bottom: 5rem;
 }
 
 /* Общие исправления для сенсорных устройств */
@@ -369,7 +381,7 @@ input[type="button"] {
     
     /* Переопределяем позицию переключателя языка */
     .language-switch {
-        margin-top: 20px;
+        margin-top: 3rem;
         margin-left: 0 !important;
         width: 100%;
         padding-top: 15px;

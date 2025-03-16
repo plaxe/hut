@@ -899,11 +899,20 @@ body.menu-open .navbar-toggler {
         background-color: #000000;
         transition: right 0.2s ease-in-out;
         margin: 0 !important;
-        padding: 6rem 2rem 2rem;
+        padding: 1.5rem;
         z-index: 1000;
         display: block !important;
         overflow-y: auto;
         will-change: right;
+    }
+
+    .mobile-menu-text {
+        width: 80%;
+        font-size: 0.8rem;
+        font-weight: 300;
+        line-height: 1.5;
+        color: #dddddd;
+        
     }
     
     .navbar-collapse.show {
