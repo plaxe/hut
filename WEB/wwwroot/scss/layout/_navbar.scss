@@ -60,7 +60,7 @@
           padding: 1rem 1.5rem;
   .navbar-nav {
     display: flex;
-    margin-left: auto;
+    margin-left: initial;
     margin-right: 2rem;
     
     &.navbar-nav-mobile {
@@ -130,23 +130,25 @@
       text-align: left;
       width: 100%;
       margin: 0;
+      margin-bottom: 0.5rem;
     }
     
     .nav-link {
       text-align: left;
       padding-left: 0 !important;
-      padding: $spacing-xs 0 !important;
-      font-size: 18px;
+      padding: 0.3rem 0 !important;
+      font-size: 3rem;
       color: $color-light !important;
-      border-bottom: 1px solid rgba($color-white, 0.1);
+      border-bottom: none;
+      line-height: 1.2;
       
       @media (max-width: $breakpoint-md) {
-        font-size: 16px;
+        font-size: 2.5rem;
         padding: 0.4rem 0 !important;
       }
       
       @media (max-width: $breakpoint-sm) {
-        font-size: 15px;
+        font-size: 2.5rem;
         padding: 0.3rem 0 !important;
       }
     }
@@ -283,7 +285,7 @@
   text-decoration: none;
   color: $color-light;
   border: 1px solid rgba($color-light, 0.3);
-  border-radius: $border-radius-sm;
+  border-radius: $border-radius-lg;
   padding: 0.8rem;
   width: 48%;
   transition: $transition-base;
