@@ -856,9 +856,9 @@ body {
     background-color: #ffffff;
     border: none;
     padding: 0.5rem;
-    position: absolute;
+    position: fixed;
     right: 15px;
-    top: 1.5rem;
+    top: 15px;
     z-index: 1200;
     cursor: pointer;
     width: 40px;
