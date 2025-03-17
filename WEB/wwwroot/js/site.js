@@ -12,8 +12,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Удаляем класс menu-open при загрузке страницы, чтобы начать с правильного состояния
     document.body.classList.remove('menu-open');
     
-    // Прямой обработчик для кнопки меню больше не нужен, так как Bootstrap сам переключает состояние
-    // Вместо этого будем полагаться только на события Bootstrap
+    // Добавляем прямой обработчик для кнопки меню
+    if (hamburger && navbarCollapse) {
+        hamburger.addEventListener('click', function() {
+            console.log('Hamburger clicked');
+            // Проверяем, открыто ли меню
+            const isOpen = navbarCollapse.classList.contains('show');
+            console.log('Menu is currently ' + (isOpen ? 'open' : 'closed'));
+            
+            // Если меню закрыто, открываем его
+            if (!isOpen) {
+                navbarCollapse.classList.add('show');
+                document.body.classList.add('menu-open');
+                console.log('Menu opened via direct handler');
+            } else {
+                // Если меню открыто, закрываем его
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
+                console.log('Menu closed via direct handler');
+            }
+        });
+    }
     
     // Отслеживаем события Bootstrap для меню
     if (navbarCollapse) {
@@ -25,6 +44,16 @@ document.addEventListener('DOMContentLoaded', function() {
         navbarCollapse.addEventListener('hide.bs.collapse', function() {
             console.log('Menu is closing');
             document.body.classList.remove('menu-open');
+        });
+        
+        // Закрытие меню при клике на ссылку
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
+                console.log('Menu closed via link click');
+            });
         });
     }
     
@@ -102,19 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bsCollapse.hide();
             console.log('Menu closed via overlay click');
         }
-    });
-
-    // Close menu when clicking on links
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            if (navbarCollapse && document.body.classList.contains('menu-open')) {
-                // Используем Bootstrap API для закрытия меню
-                const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                bsCollapse.hide();
-                console.log('Menu closed via link click');
-            }
-        });
     });
 });
 
