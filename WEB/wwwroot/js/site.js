@@ -12,29 +12,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Удаляем класс menu-open при загрузке страницы, чтобы начать с правильного состояния
     document.body.classList.remove('menu-open');
     
+    // Функция для обработки клика по кнопке меню
+    function toggleMenu(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log('Hamburger clicked');
+        
+        // Проверяем, открыто ли меню
+        const isOpen = navbarCollapse.classList.contains('show');
+        console.log('Menu is currently ' + (isOpen ? 'open' : 'closed'));
+        
+        // Если меню закрыто, открываем его
+        if (!isOpen) {
+            navbarCollapse.classList.add('show');
+            document.body.classList.add('menu-open');
+            console.log('Menu opened via direct handler');
+        } else {
+            // Если меню открыто, закрываем его
+            navbarCollapse.classList.remove('show');
+            document.body.classList.remove('menu-open');
+            console.log('Menu closed via direct handler');
+        }
+    }
+    
     // Добавляем прямой обработчик для кнопки меню
     if (hamburger && navbarCollapse) {
-        hamburger.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Hamburger clicked');
-            
-            // Проверяем, открыто ли меню
-            const isOpen = navbarCollapse.classList.contains('show');
-            console.log('Menu is currently ' + (isOpen ? 'open' : 'closed'));
-            
-            // Если меню закрыто, открываем его
-            if (!isOpen) {
-                navbarCollapse.classList.add('show');
-                document.body.classList.add('menu-open');
-                console.log('Menu opened via direct handler');
-            } else {
-                // Если меню открыто, закрываем его
-                navbarCollapse.classList.remove('show');
-                document.body.classList.remove('menu-open');
-                console.log('Menu closed via direct handler');
-            }
-        });
+        // Удаляем предыдущие обработчики, если они есть
+        hamburger.removeEventListener('click', toggleMenu);
+        
+        // Добавляем обработчик клика
+        hamburger.addEventListener('click', toggleMenu, { passive: false });
     }
     
     // Отслеживаем события Bootstrap для меню
@@ -81,16 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Улучшаем отклик при нажатии
     document.addEventListener('touchstart', function(){}, {passive: true});
-
-    // Исправляем проблему с фиксированной позицией на iOS
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        const fixedElements = document.querySelectorAll('.navbar');
-        window.addEventListener('scroll', function() {
-            fixedElements.forEach(function(element) {
-                element.style.transform = 'translateZ(0)';
-            });
-        });
-    }
 
     // Добавляем плавную прокрутку для якорных ссылок
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -1,0 +1,19 @@
+/* Стили для кнопки гамбургер меню */
+.navbar-toggler {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Остальные стили для меню */
+/* ... existing code ... */ 
