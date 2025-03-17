@@ -938,12 +938,12 @@ body.menu-open .navbar-toggler {
     }
 
     .mobile-menu-text {
+        display: block;
         width: 80%;
         font-size: 0.8rem;
         font-weight: 300;
         line-height: 1.5;
         color: #dddddd;
-        
     }
     
     .navbar-collapse.show {
@@ -1654,4 +1654,9 @@ body.menu-open .navbar-toggler {
     .contact-item {
         align-items: center;
     }
+}
+
+/* Скрываем mobile-menu-text на десктопе */
+.mobile-menu-text {
+    display: none;
 }
