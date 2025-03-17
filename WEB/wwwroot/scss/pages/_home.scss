@@ -1,0 +1,721 @@
+// Стили для hero-section
+.hero-section {
+  background-image: url('../images/header_logo.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 70vh;
+  padding: 15rem 0 20px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    @include absolute-position(0, 0, 0, 0);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.bird-image {
+  max-width: 35%;
+  height: auto;
+  margin-left: auto;
+  display: block;
+  
+  @include respond-to(xxl) {
+    max-width: 30%;
+  }
+}
+
+.logos-container {
+  @include flex(row, flex-end, flex-end);
+  height: 100%;
+  padding-bottom: $spacing-md;
+}
+
+.logo-image {
+  height: 64px;
+  width: auto;
+}
+
+// Стили для секции Амарант
+.amarant-section {
+  background-color: $color-primary;
+  padding: $spacing-xxl 0;
+  color: $color-light;
+  
+  h2 {
+    font-size: 1.7rem;
+    font-weight: $font-weight-medium;
+    max-width: 500px;
+    margin: 0 auto $spacing-xl;
+    text-align: center;
+  }
+}
+
+.amarant-content {
+  position: relative;
+  display: grid;
+  grid-template-areas: 
+    "top-left center top-right"
+    "bottom-left center bottom-right";
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.amarant-image {
+  grid-area: center;
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  grid-row: span 2;
+  
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+}
+
+.feature-item {
+  position: relative;
+  max-width: 300px;
+  
+  &.feature-top-left {
+    grid-area: top-left;
+    justify-self: end;
+  }
+  
+  &.feature-top-right {
+    grid-area: top-right;
+    justify-self: start;
+  }
+  
+  &.feature-bottom-left {
+    grid-area: bottom-left;
+    justify-self: end;
+  }
+  
+  &.feature-bottom-right {
+    grid-area: bottom-right;
+    justify-self: start;
+  }
+  
+  h3 {
+    font-size: 0.85rem;
+    font-weight: $font-weight-light;
+    margin-bottom: $spacing-sm;
+    display: inline-block;
+    border: 1px solid rgba($color-white, 0.3);
+    border-radius: $border-radius-lg;
+    padding: $spacing-xs $spacing-md;
+    text-align: center;
+  }
+  
+  p {
+    font-size: $font-size-sm;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+}
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: $spacing-sm;
+  
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Адаптивность для секции Амарант
+@include respond-to(lg) {
+  .amarant-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+  
+  .amarant-image {
+    order: 1;
+    margin-bottom: $spacing-md;
+  }
+  
+  .feature-item {
+    max-width: 100%;
+    text-align: center;
+    margin: $spacing-md auto;
+    
+    &.feature-top-left {
+      order: 2;
+    }
+    
+    &.feature-top-right {
+      order: 3;
+    }
+    
+    &.feature-bottom-left {
+      order: 4;
+    }
+    
+    &.feature-bottom-right {
+      order: 5;
+    }
+    
+    h3 {
+      display: inline-block;
+      margin: 0 auto $spacing-sm;
+    }
+  }
+  
+  .feature-icon {
+    margin: 0 auto $spacing-sm;
+  }
+}
+
+@include respond-to(md) {
+  .amarant-content {
+    gap: $spacing-md;
+  }
+  
+  .feature-item {
+    max-width: 90%;
+    margin: $spacing-sm auto;
+    
+    h3 {
+      font-size: 0.8rem;
+      padding: $spacing-xs $spacing-sm;
+    }
+    
+    p {
+      font-size: 0.75rem;
+    }
+  }
+  
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+// Стили для секции Принципы
+.principles-section {
+  padding: $spacing-sm 0;
+  background-color: $color-white;
+  color: $color-text-primary;
+}
+
+.principles-grid {
+  @include grid(1fr 1fr 1fr, auto, $spacing-md);
+  
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+}
+
+.principles-left {
+  padding-right: $spacing-md;
+  
+  .title-container {
+    margin-bottom: $spacing-md;
+  }
+  
+  h2 {
+    font-size: $font-size-hero;
+    font-weight: $font-weight-semibold;
+    line-height: 1.2;
+    color: $color-text-primary;
+    margin-bottom: 0;
+  }
+  
+  h3 {
+    font-size: $font-size-hero;
+    font-weight: $font-weight-semibold;
+    line-height: 1.2;
+    color: $color-primary-opacity;
+    margin-top: 0;
+  }
+  
+  @include respond-to(lg) {
+    padding: 0;
+  }
+}
+
+.principles-description {
+  font-size: $font-size-sm;
+  line-height: 1.1;
+  color: rgba($color-text-primary, 0.6);
+  font-weight: $font-weight-regular;
+}
+
+.principles-right {
+  padding-left: $spacing-md;
+  
+  @include respond-to(lg) {
+    padding: 0;
+  }
+}
+
+.company-type {
+  font-size: $font-size-xxl;
+  color: $color-text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.company-name {
+  font-size: 3.5rem;
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.company-description {
+  font-size: $font-size-sm;
+  line-height: 1.1;
+  color: rgba($color-text-primary, 0.6);
+}
+
+.principles-center {
+  @include respond-to(lg) {
+    display: none;
+  }
+}
+
+// Стили для карточек принципов
+.principles-cards {
+  padding: 0;
+  background-color: $color-white;
+  position: relative;
+}
+
+.principles-header {
+  @include grid(repeat(3, 1fr), auto, $spacing-md);
+  margin-bottom: $spacing-md;
+  
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.principle-title {
+  @include flex(row, flex-start, center, $spacing-sm);
+  letter-spacing: -0.05rem;
+  
+  .number {
+    font-size: 1.5rem;
+    color: $color-text-primary;
+    opacity: 0.3;
+  }
+  
+  h3 {
+    font-size: 1.3rem;
+    color: $color-text-primary;
+    font-weight: $font-weight-medium;
+    margin: 0;
+  }
+}
+
+.principle-block {
+  position: relative;
+  overflow: visible;
+  
+  @include respond-to(lg) {
+    overflow: visible;
+    margin-bottom: $spacing-md;
+  }
+  
+  .divider {
+    height: 32px;
+    border-radius: 40px;
+    position: relative;
+    width: 110%;
+    
+    @include respond-to(lg) {
+      width: 100%;
+      height: 16px;
+      transform: none !important;
+      margin: $spacing-sm 0;
+    }
+  }
+  
+  &:nth-child(1) .divider {
+    background-color: $color-divider-1;
+    z-index: 1;
+  }
+  
+  &:nth-child(2) .divider {
+    background-color: $color-divider-2;
+    z-index: 2;
+    transform: translateX(-20px);
+  }
+  
+  &:nth-child(3) .divider {
+    background-color: $color-divider-3;
+    z-index: 3;
+    transform: translateX(-40px);
+  }
+}
+
+.principles-dividers {
+  @include grid(repeat(3, 1fr), auto, 0);
+  position: relative;
+  overflow: visible;
+  
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+  }
+  
+  .divider {
+    height: 32px;
+    border-radius: 40px;
+    position: relative;
+    width: 110%;
+    
+    &:nth-child(1) {
+      background-color: $color-divider-1;
+      z-index: 1;
+    }
+    
+    &:nth-child(2) {
+      background-color: $color-divider-2;
+      z-index: 2;
+      transform: translateX(-20px);
+    }
+    
+    &:nth-child(3) {
+      background-color: $color-divider-3;
+      z-index: 3;
+      transform: translateX(-40px);
+    }
+  }
+}
+
+.principles-cards-grid {
+  @include grid(repeat(3, 1fr), auto, $spacing-md);
+  
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.principle-card {
+  background: $color-white;
+  padding: $spacing-md 0 $spacing-xl 0;
+  position: relative;
+  
+  @include respond-to(lg) {
+    margin-bottom: $spacing-sm;
+    padding: $spacing-md;
+  }
+  
+  p {
+    font-size: $font-size-base;
+    line-height: 1.5;
+    color: rgba($color-text-primary, 0.6);
+    margin: 0;
+  }
+}
+
+.principle-arrow {
+  position: relative;
+  margin-top: $spacing-md;
+  
+  img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+// Стили для секции товаров
+.products-section {
+  padding: $spacing-xl 0;
+  background-color: $color-white;
+}
+
+.products-title {
+  text-align: center;
+  margin-bottom: $spacing-md;
+  
+  h2 {
+    font-size: $font-size-title;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    letter-spacing: -0.1rem;
+  }
+  
+  p {
+    font-size: $font-size-title;
+    font-weight: $font-weight-semibold;
+    color: rgba($color-text-primary, 0.3);
+    line-height: 0.9;
+    margin: 0;
+  }
+  
+  @include respond-to(lg) {
+    h2, p {
+      font-size: $font-size-xxl;
+    }
+  }
+  
+  @include respond-to(sm) {
+    h2, p {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.products-grid {
+  @include grid(auto auto, auto, $spacing-md);
+  max-width: 720px;
+  margin: 0 auto;
+  
+  @include respond-to(lg) {
+    max-width: 100%;
+    padding: 0 $spacing-sm;
+  }
+}
+
+.products-row-top {
+  @include grid(repeat(3, 1fr), auto, $spacing-md);
+  
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+    gap: $spacing-sm;
+  }
+  
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
+
+.products-row-bottom {
+  @include grid(repeat(2, 1fr), auto, $spacing-md);
+  justify-content: center;
+  padding: 0 calc(16.666% + 1rem);
+  
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+    gap: $spacing-sm;
+  }
+  
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+}
+
+.product-card {
+  perspective: 1000px;
+  aspect-ratio: 1;
+  cursor: pointer;
+  
+  @include respond-to(lg) {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.product-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.product-card:hover .product-card-inner {
+  transform: rotateY(180deg);
+}
+
+.product-card-front,
+.product-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+}
+
+.product-card-front {
+  background-color: $color-white;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.product-card-back {
+  background-color: $color-primary;
+  color: $color-white;
+  transform: rotateY(180deg);
+  @include flex(column, center, center);
+  padding: 1.5rem;
+  
+  h3 {
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-xs;
+    font-weight: $font-weight-medium;
+  }
+  
+  p {
+    font-size: $font-size-sm;
+    line-height: 1.4;
+    margin: 0;
+    color: rgba($color-white, 0.9);
+  }
+}
+
+// Стили для секции распространения амаранта
+.distribution-section {
+  padding: $spacing-xxl 0;
+  background-color: $color-white;
+  color: $color-primary;
+}
+
+.distribution-title {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+  
+  h2 {
+    font-size: $font-size-title;
+    font-weight: $font-weight-medium;
+    color: $color-primary;
+    margin-bottom: $spacing-md;
+  }
+}
+
+.distribution-map {
+  width: 100%;
+  margin: 0 auto $spacing-xl;
+  position: relative;
+  
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.distribution-grid {
+  @include grid(repeat(5, 1fr), auto, $spacing-md);
+  margin: 0 auto;
+  
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+}
+
+.distribution-item {
+  text-align: center;
+  
+  @include respond-to(lg) {
+    @include flex(column, center, center);
+    text-align: center;
+    padding: 0 $spacing-sm;
+  }
+  
+  p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: $font-weight-regular;
+    margin: 0;
+    color: rgba($color-primary, 0.9);
+  }
+}
+
+.distribution-percentage {
+  font-size: 0.6rem;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+  margin-bottom: $spacing-xs;
+}
+
+// Стили для секции карты мира
+.world-map-section {
+  padding: $spacing-xxl 0;
+  background-color: $color-white;
+}
+
+.world-map-title {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+  
+  h2 {
+    font-size: $font-size-title;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.world-map-container {
+  width: 100%;
+  max-width: $container-width;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 $spacing-sm;
+  
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+  }
+  
+  @include respond-to(lg) {
+    padding: 0 10px;
+  }
+  
+  @include respond-to(sm) {
+    padding: 0 5px;
+  }
+}
+
+.world-map-stats {
+  @include grid(repeat(5, 1fr), auto, $spacing-md);
+  margin-top: $spacing-xl;
+  
+  @include respond-to(lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-stat-item {
+  text-align: left;
+  
+  p {
+    font-size: $font-size-sm;
+    line-height: 1.4;
+    font-weight: $font-weight-light;
+    margin: 0;
+    color: rgba($color-text-primary, 0.7);
+  }
+} 

@@ -1,11 +1,12 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using WEB.Localization;
 using WEB.Models;
 using Microsoft.AspNetCore.HttpOverrides;
+using WEB.Services;
+using Microsoft.Extensions.Options;
 
 namespace WEB;
 
@@ -49,6 +50,38 @@ public class Program
                 loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), memoryCache);
         });
 
+        builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
+
+        // Добавляем HttpContext
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        // Настройка forwarding
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
+        // Настройка локализации
+        builder.Services.Configure<RequestLocalizationOptions>(
+            options =>
+            {
+                var supportedCultures = new[] 
+                { 
+                    new CultureInfo("uk-UA"),
+                    new CultureInfo("en-US"),
+                    new CultureInfo("ru-RU")
+                };
+                options.DefaultRequestCulture = new RequestCulture("uk-UA");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.SetDefaultCulture("uk-UA");
+            });
+
+        // Регистрируем сервис компиляции SCSS
+        builder.Services.AddScoped<ScssCompilerService>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -59,38 +92,25 @@ public class Program
             // app.UseHsts();
         } 
         
-        var supportedCultures = new[] {
-            new CultureInfo("uk-UA"),
-            new CultureInfo("en-US")
-        };
-
-        var localizationOptions = new RequestLocalizationOptions
+        // Компилируем SCSS при запуске приложения
+        using (var scope = app.Services.CreateScope())
         {
-            DefaultRequestCulture = new RequestCulture("uk-UA"),
-            SupportedCultures = supportedCultures,
-            SupportedUICultures = supportedCultures
-        };
+            var scssCompiler = scope.ServiceProvider.GetRequiredService<ScssCompilerService>();
+            scssCompiler.CompileScss();
+        }
 
-        var provider = new RouteDataRequestCultureProvider();
-        localizationOptions.RequestCultureProviders.Clear();
-        localizationOptions.RequestCultureProviders.Add(provider);
-        localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
-        localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
+        // Подключаем forwarded headers
+        app.UseForwardedHeaders();
 
-        // Добавляем настройку доверия прокси-заголовкам
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
-                              Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-        });
-
-        // Убираем перенаправление на HTTPS, так как этим будет заниматься Nginx
-        // app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
         app.UseStaticFiles();
         
         // Правильный порядок middleware
         app.UseRouting();
-        app.UseRequestLocalization(localizationOptions);
+
+        // Настройка локализации
+        app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
         app.UseOutputCache();
         app.UseAuthorization();
 

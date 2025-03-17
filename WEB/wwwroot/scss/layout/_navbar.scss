@@ -1,0 +1,389 @@
+// Стили навигационной панели
+.navbar {
+  position: absolute;
+  width: 100%;
+  z-index: $z-index-navbar;
+  padding: 1.5rem 0;
+  background-color: transparent !important;
+  
+  .container {
+    @include flex(row, flex-start, flex-start, 2rem);
+    position: relative;
+  }
+}
+
+.navbar-brand {
+  margin: 0;
+  
+  img {
+    transition: $transition-base;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.navbar-nav {
+  margin: 0;
+}
+
+.nav-link {
+  color: $color-white !important;
+  font-family: 'Gilroy', sans-serif;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-base;
+  line-height: $font-size-base;
+  letter-spacing: -0.02em;
+  padding: $spacing-xs $spacing-md !important;
+  transition: $transition-base;
+  text-shadow: $shadow-base;
+  
+  &:hover {
+    color: $color-white !important;
+    transform: translateY(-2px);
+  }
+}
+
+.language-switch {
+  margin-left: auto;
+  
+  .nav-link {
+    padding: $spacing-xs $spacing-sm !important;
+    @include flex(row, center, center, 0.5rem);
+  }
+}
+
+// Стили для меню и панели навигации в мобильном виде
+.navbar-collapse {
+  overflow: hidden;
+  margin-top: 0 !important;
+  display: none;
+  
+  &.show {
+    display: block;
+  }
+  
+  @include respond-to(lg) {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 60%;
+    height: 100vh;
+    background-color: $color-black;
+    transition: right 0.2s ease-in-out;
+    margin: 0 !important;
+    padding: 1.5rem;
+    z-index: $z-index-navbar;
+    overflow-y: auto;
+    will-change: right;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start !important;
+    
+    &.show {
+      right: 0 !important;
+    }
+  }
+  
+  @include respond-to(md) {
+    width: 70%;
+  }
+  
+  @include respond-to(sm) {
+    width: 85%;
+    padding: 1rem;
+  }
+  
+  @include respond-to(xs) {
+    width: 100%;
+    padding: 0.8rem;
+  }
+}
+
+// Стили для кнопки гамбургер меню
+.navbar-toggler {
+  background-color: $color-white;
+  border: none;
+  padding: $spacing-xs;
+  @include fixed-position(15px, 15px, auto, auto, $z-index-toggler);
+  cursor: pointer;
+  @include size(40px);
+  @include flex(row, center, center);
+  outline: none;
+  
+  &::before {
+    display: none;
+  }
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+}
+
+// Стили для мобильного меню
+.mobile-menu-text {
+  display: block;
+  width: 80%;
+  max-width: 80%;
+  font-size: 0.8rem;
+  font-weight: $font-weight-light;
+  line-height: 1.4;
+  color: $color-light;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  
+  @include respond-to(md) {
+    width: 90%;
+    font-size: 0.75rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+  
+  @include respond-to(sm) {
+    width: 100%;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+  }
+  
+  @include respond-to(xs) {
+    font-size: 0.65rem;
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+  
+  @include respond-to-height(md) {
+    font-size: 0.65rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  @include respond-to-height(sm) {
+    font-size: 0.55rem;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  @media (min-width: $breakpoint-lg) {
+    display: none;
+  }
+}
+
+.mobile-menu-top {
+  margin-top: 1rem;
+  
+  @include respond-to-height(md) {
+    margin-top: 0.5rem;
+  }
+  
+  @include respond-to-height(sm) {
+    margin-top: 0.3rem;
+  }
+}
+
+.mobile-menu-center {
+  flex-grow: 0;
+  @include flex(column, flex-start, flex-start);
+  padding: 0;
+}
+
+.logo-mobile {
+  margin-bottom: 1.5rem;
+  align-self: flex-start;
+  
+  img {
+    height: 80px;
+    width: auto;
+  }
+  
+  @include respond-to(md) {
+    margin-bottom: 1rem;
+  }
+  
+  @include respond-to(sm) {
+    margin-bottom: 0.8rem;
+    
+    img {
+      height: 70px;
+    }
+  }
+  
+  @include respond-to(xs) {
+    margin-bottom: 0.6rem;
+    
+    img {
+      height: 55px;
+    }
+  }
+  
+  @include respond-to-height(md) {
+    margin-bottom: 0.5rem;
+    
+    img {
+      height: 80px;
+    }
+  }
+  
+  @include respond-to-height(sm) {
+    margin-bottom: 0.3rem;
+    
+    img {
+      height: 70px;
+    }
+  }
+}
+
+.navbar-nav-mobile {
+  align-items: flex-start !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  
+  .nav-item {
+    text-align: left;
+    width: 100%;
+  }
+  
+  .nav-link {
+    text-align: left;
+    padding-left: 0 !important;
+    padding: $spacing-xs 0 !important;
+    font-size: 18px;
+    color: $color-light !important;
+    
+    @include respond-to(md) {
+      font-size: 16px;
+      padding: 0.4rem 0 !important;
+    }
+    
+    @include respond-to(sm) {
+      font-size: 15px;
+      padding: 0.3rem 0 !important;
+    }
+    
+    @include respond-to(xs) {
+      font-size: 14px;
+      padding: 0.25rem 0 !important;
+    }
+    
+    @include respond-to-height(md) {
+      font-size: 14px;
+      padding: 0.2rem 0 !important;
+    }
+    
+    @include respond-to-height(sm) {
+      font-size: 13px;
+      padding: 0.15rem 0 !important;
+    }
+  }
+}
+
+.mobile-menu-bottom {
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  
+  @include respond-to-height(md) {
+    margin-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  @include respond-to-height(sm) {
+    margin-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+}
+
+.contact-mobile {
+  @include flex(row, space-between, center, 1rem);
+  width: 100%;
+}
+
+.contact-mobile-value {
+  @include flex(row, center, center);
+  text-decoration: none;
+  color: $color-light;
+  border: 1px solid rgba($color-light, 0.3);
+  border-radius: $border-radius-sm;
+  padding: 0.8rem;
+  width: 48%;
+  transition: $transition-base;
+  
+  &:hover {
+    background-color: rgba($color-light, 0.1);
+  }
+  
+  a {
+    color: $color-light;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  
+  @include respond-to(sm) {
+    padding: 0.5rem;
+    
+    a {
+      font-size: 0.75rem;
+    }
+  }
+  
+  @include respond-to(xs) {
+    padding: 0.4rem;
+    
+    a {
+      font-size: 0.7rem;
+    }
+  }
+  
+  @include respond-to-height(md) {
+    padding: 0.4rem;
+    
+    a {
+      font-size: 0.7rem;
+    }
+  }
+  
+  @include respond-to-height(sm) {
+    padding: 0.3rem;
+    
+    a {
+      font-size: 0.65rem;
+    }
+  }
+}
+
+// Стили для body при открытом меню
+body.menu-open {
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: $z-index-overlay;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  
+  .navbar-toggler {
+    background-color: $color-white;
+  }
+  
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M6 6L24 24M6 24L24 6'/%3e%3c/svg%3e") !important;
+  }
+} 

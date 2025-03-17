@@ -77,4 +77,9 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="LibSassHost" Version="1.3.3" />
+      <PackageReference Include="LibSassHost.Native.win-x64" Version="1.3.3" />
+    </ItemGroup>
+
 </Project>

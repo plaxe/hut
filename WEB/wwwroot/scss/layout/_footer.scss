@@ -1,0 +1,222 @@
+// Стили для футера
+.footer-section {
+  padding: $spacing-xxl 0;
+  background-color: $color-white;
+  color: $color-text-primary;
+  
+  @include respond-to(lg) {
+    padding: $spacing-lg 0 $spacing-md;
+  }
+  
+  @include respond-to(md) {
+    padding: $spacing-md 0 1.5rem;
+  }
+  
+  @include respond-to(sm) {
+    padding: 1.5rem 0 $spacing-sm;
+  }
+}
+
+.footer-grid {
+  @include grid(1fr 1fr, auto, $spacing-xl);
+  
+  @include respond-to(lg) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.footer-left {
+  @include flex(column, space-between, flex-start);
+  
+  @include respond-to(lg) {
+    text-align: center;
+  }
+}
+
+.footer-text {
+  font-size: $font-size-base;
+  line-height: 1;
+  font-weight: $font-weight-regular;
+  color: $color-text-primary;
+}
+
+.footer-logo {
+  max-width: 320px;
+  
+  @include respond-to(lg) {
+    margin: 0 auto;
+  }
+}
+
+.footer-right {
+  @include flex(column, flex-start, flex-start, $spacing-sm);
+  
+  @include respond-to(lg) {
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
+.footer-row {
+  @include flex(column, flex-start, flex-start, 0.2rem);
+  
+  &:last-child {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    
+    @include respond-to(lg) {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+.footer-title {
+  font-size: $font-size-title;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  margin: 0;
+  
+  @include respond-to(lg) {
+    font-size: $font-size-xxl;
+    margin-bottom: $spacing-xs;
+  }
+  
+  @include respond-to(md) {
+    font-size: 1.8rem;
+    margin-bottom: $spacing-xs;
+  }
+  
+  @include respond-to(sm) {
+    font-size: 1.6rem;
+    margin-bottom: 0.2rem;
+  }
+}
+
+.social-title {
+  font-size: $font-size-base;
+  color: $color-primary;
+  margin: 0;
+  font-weight: $font-weight-medium;
+  
+  @include respond-to(sm) {
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+  }
+}
+
+.social-links {
+  @include flex(row, flex-start, center, 0.7rem);
+  
+  @include respond-to(lg) {
+    justify-content: center;
+  }
+  
+  @include respond-to(sm) {
+    gap: 0.5rem;
+  }
+}
+
+.social-link {
+  @include size(24px);
+  @include flex(row, center, center);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover img {
+    transform: scale(1.1);
+  }
+  
+  @include respond-to(sm) {
+    @include size(20px);
+  }
+}
+
+.contact-info {
+  @include flex(row, flex-start, flex-start, $spacing-sm);
+  margin-bottom: 0;
+  flex: 1;
+  
+  @include respond-to(lg) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
+.contact-item {
+  @include flex(column, flex-start, flex-start);
+  align-items: flex-start;
+  min-width: 200px;
+  
+  @include respond-to(lg) {
+    align-items: center;
+    margin-bottom: 0;
+  }
+}
+
+.contact-label {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  
+  @include respond-to(sm) {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+}
+
+.contact-value {
+  font-size: $font-size-base;
+  color: rgba($color-text-primary, 0.5);
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  
+  @include respond-to(sm) {
+    font-size: 0.9rem;
+  }
+}
+
+.footer-logos {
+  @include flex(row, flex-end, center, $spacing-md);
+  margin-left: auto;
+  
+  @include respond-to(lg) {
+    justify-content: center;
+    margin-top: $spacing-sm;
+    margin-left: 0;
+  }
+  
+  @include respond-to(md) {
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+  
+  @include respond-to(sm) {
+    gap: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  
+  img {
+    height: 3.5rem;
+    width: auto;
+    
+    @include respond-to(md) {
+      height: 3.2rem;
+    }
+    
+    @include respond-to(sm) {
+      height: 2.8rem;
+    }
+  }
+} 

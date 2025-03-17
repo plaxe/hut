@@ -1,0 +1,475 @@
+// Подключение шрифтов Mazzard
+
+// MazzardH
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Thin.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-ThinItalic.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-ExtraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-ExtraLightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Light.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-LightItalic.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Regular.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Italic.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Medium.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-MediumItalic.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-SemiBold.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-SemiBoldItalic.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Bold.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-BoldItalic.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-ExtraBoldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-Black.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardH';
+  src: url('../fonts/mazzard/MazzardH-BlackItalic.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: italic;
+}
+
+// MazzardM
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Thin.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-ThinItalic.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-ExtraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-ExtraLightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Light.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-LightItalic.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Regular.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Italic.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Medium.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-MediumItalic.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-SemiBold.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-SemiBoldItalic.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Bold.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-BoldItalic.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-ExtraBoldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-Black.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardM';
+  src: url('../fonts/mazzard/MazzardM-BlackItalic.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: italic;
+}
+
+// MazzardL
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Thin.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-ThinItalic.otf') format('opentype');
+  font-weight: $font-weight-thin;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-ExtraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-ExtraLightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Light.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-LightItalic.otf') format('opentype');
+  font-weight: $font-weight-light;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Regular.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Italic.otf') format('opentype');
+  font-weight: $font-weight-regular;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Medium.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-MediumItalic.otf') format('opentype');
+  font-weight: $font-weight-medium;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-SemiBold.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-SemiBoldItalic.otf') format('opentype');
+  font-weight: $font-weight-semibold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Bold.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-BoldItalic.otf') format('opentype');
+  font-weight: $font-weight-bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-ExtraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-ExtraBoldItalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-Black.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MazzardL';
+  src: url('../fonts/mazzard/MazzardL-BlackItalic.otf') format('opentype');
+  font-weight: $font-weight-black;
+  font-style: italic;
+}
+
+// Основные стили текста
+.small-text {
+  font-size: $font-size-sm;
+  line-height: 1;
+  font-weight: $font-weight-light;
+  max-width: 600px;
+}
+
+.main-title {
+  font-size: $font-size-logo;
+  font-weight: $font-weight-medium;
+  line-height: 1.2;
+  letter-spacing: -0.2rem;
+  margin: 0;
+}
+
+.hero-text {
+  font-size: $font-size-hero;
+  line-height: 0.9;
+  font-weight: $font-weight-medium;
+}
+
+.logo-text {
+  font-size: $font-size-logo;
+  font-weight: $font-weight-medium;
+  line-height: 1.2;
+  letter-spacing: -0.2rem;
+  margin: 0;
+  color: $color-white;
+}
+
+.footer-logo-text {
+  font-size: $font-size-logo;
+  font-weight: $font-weight-medium;
+  line-height: 0.7;
+  letter-spacing: -0.5rem;
+  margin: 0;
+  color: $color-text-primary;
+}
+
+// Вспомогательные классы для типографики
+.text-center {
+  text-align: center;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-white {
+  color: $color-white;
+}
+
+.text-primary {
+  color: $color-primary;
+}
+
+.text-light {
+  color: $color-light;
+}
+
+.text-muted {
+  color: $color-text-muted;
+}
+
+.font-thin {
+  font-weight: $font-weight-thin;
+}
+
+.font-light {
+  font-weight: $font-weight-light;
+}
+
+.font-regular {
+  font-weight: $font-weight-regular;
+}
+
+.font-medium {
+  font-weight: $font-weight-medium;
+}
+
+.font-semibold {
+  font-weight: $font-weight-semibold;
+}
+
+.font-bold {
+  font-weight: $font-weight-bold;
+}
+
+.font-black {
+  font-weight: $font-weight-black;
+} 

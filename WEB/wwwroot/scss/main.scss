@@ -1,0 +1,18 @@
+// Импорт утилит
+@import 'utils/variables';
+@import 'utils/mixins';
+
+// Импорт базовых стилей
+@import 'base/reset';
+@import 'base/typography';
+
+// Импорт компонентов layout
+@import 'layout/container';
+@import 'layout/navbar';
+@import 'layout/footer';
+
+// Импорт компонентов
+@import 'components/navbar-toggler';
+
+// Импорт стилей для страниц
+@import 'pages/home'; 

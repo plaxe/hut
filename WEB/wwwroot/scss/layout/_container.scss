@@ -1,0 +1,22 @@
+.container {
+  min-width: $container-width;
+  max-width: $container-width;
+  margin: 0 auto;
+  padding: 0 $spacing-sm;
+  
+  @include respond-to(xxl) {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+.my-7 {
+  margin-top: $spacing-lg !important;
+  margin-bottom: $spacing-xl !important;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba($color-white, 0.3);
+  margin: $spacing-md 0;
+} 

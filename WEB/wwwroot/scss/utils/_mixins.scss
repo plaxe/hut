@@ -1,0 +1,150 @@
+// Миксины для responsive design
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $breakpoint-xs) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (max-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (max-width: $breakpoint-xl) {
+      @content;
+    }
+  } @else if $breakpoint == xxl {
+    @media (max-width: $breakpoint-xxl) {
+      @content;
+    }
+  }
+}
+
+// Для устройств с маленькой высотой
+@mixin respond-to-height($height) {
+  @if $height == sm {
+    @media (max-height: 600px) {
+      @content;
+    }
+  } @else if $height == md {
+    @media (max-height: 700px) {
+      @content;
+    }
+  }
+}
+
+// Миксин для flexbox
+@mixin flex($direction: row, $justify: flex-start, $align: flex-start, $gap: 0) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  @if $gap > 0 {
+    gap: $gap;
+  }
+}
+
+// Центрирование элемента
+@mixin center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Абсолютное позиционирование
+@mixin absolute-position($top: auto, $right: auto, $bottom: auto, $left: auto) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+// Фиксированное позиционирование
+@mixin fixed-position($top: auto, $right: auto, $bottom: auto, $left: auto, $z-index: auto) {
+  position: fixed;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+  @if $z-index != auto {
+    z-index: $z-index;
+  }
+}
+
+// Устанавливает размеры элемента
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}
+
+// Устанавливает max-width и делает margin: 0 auto
+@mixin container($max-width: $container-width, $padding: 0 $spacing-sm) {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: $padding;
+}
+
+// Миксин для текстовых стилей
+@mixin text-style($size, $weight, $line-height: normal, $color: inherit) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height;
+  color: $color;
+}
+
+// Обрезать текст с многоточием
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Миксин для кнопок
+@mixin button($bg-color, $text-color, $padding: $spacing-xs $spacing-sm, $radius: $border-radius-sm) {
+  display: inline-block;
+  background-color: $bg-color;
+  color: $text-color;
+  padding: $padding;
+  border-radius: $radius;
+  border: none;
+  cursor: pointer;
+  transition: $transition-base;
+  text-decoration: none;
+}
+
+// Миксин для переходов
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+// Миксин для теней
+@mixin box-shadow($shadow: $shadow-base) {
+  box-shadow: $shadow;
+}
+
+// Миксин для overlay
+@mixin overlay($bg-color: rgba(0, 0, 0, 0.5), $z-index: 1) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $bg-color;
+  z-index: $z-index;
+}
+
+// Миксин для grid
+@mixin grid($columns: 1fr, $rows: auto, $gap: $spacing-sm) {
+  display: grid;
+  grid-template-columns: $columns;
+  grid-template-rows: $rows;
+  gap: $gap;
+} 
