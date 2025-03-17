@@ -70,7 +70,7 @@
     
     /* Уменьшаем отступы в меню */
     .navbar-collapse {
-        padding: 4rem 1rem 1rem;
+        /* padding: 4rem 1rem 1rem; */
     }
 }
 
@@ -202,6 +202,7 @@ input[type="button"] {
     /* Уменьшаем размер шрифта для большого логотипа внизу страницы */
     .footer-logo-text {
         font-size: 3rem !important;
+        letter-spacing: -0.1rem;
     }
     
     /* Улучшаем пропорции hero-секции на мобильных */
@@ -392,6 +393,7 @@ input[type="button"] {
         line-height: 1.1;
         text-align: left;
         margin-bottom: 20px;
+        letter-spacing: -0.1rem;
     }
     
     .contact-info {
@@ -442,6 +444,7 @@ input[type="button"] {
     
     .footer-logo-text {
         font-size: 2.5rem !important;
+        letter-spacing: -0.1rem;
     }
     
     /* Уменьшаем отступы секций на мобильных */
@@ -531,6 +534,7 @@ input[type="button"] {
         line-height: 1.1;
         text-align: center;
         margin-bottom: 15px;
+        letter-spacing: -0.1rem;
     }
     
     /* Центрируем контент в футере */
