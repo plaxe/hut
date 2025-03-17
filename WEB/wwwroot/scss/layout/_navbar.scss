@@ -278,6 +278,8 @@
 .contact-mobile {
   @include flex(row, space-between, center, 1rem);
   width: 100%;
+  padding: 1rem 0 5rem 0rem;
+  border-top: 1px solid rgba($color-light, 0.3);
 }
 
 .contact-mobile-value {
