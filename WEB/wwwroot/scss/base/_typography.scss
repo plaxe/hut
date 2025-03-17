@@ -410,6 +410,37 @@
   letter-spacing: -0.2rem;
   margin: 0;
   color: $color-white;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  
+  @media (max-width: $breakpoint-xxl) {
+    font-size: 8rem;
+  }
+  
+  @media (max-width: $breakpoint-xl) {
+    font-size: 7rem;
+  }
+  
+  @media (max-width: $breakpoint-lg) {
+    font-size: 6rem;
+    letter-spacing: -0.15rem;
+  }
+  
+  @media (max-width: $breakpoint-md) {
+    font-size: 5rem;
+    letter-spacing: -0.1rem;
+  }
+  
+  @media (max-width: $breakpoint-sm) {
+    font-size: 4rem;
+    letter-spacing: -0.05rem;
+  }
+  
+  @media (max-width: $breakpoint-xs) {
+    font-size: 3.5rem;
+    letter-spacing: 0;
+  }
 }
 
 .footer-logo-text {
@@ -419,6 +450,41 @@
   letter-spacing: -0.5rem;
   margin: 0;
   color: $color-text-primary;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  
+  @media (max-width: $breakpoint-xxl) {
+    font-size: 8rem;
+  }
+  
+  @media (max-width: $breakpoint-xl) {
+    font-size: 7rem;
+    letter-spacing: -0.4rem;
+  }
+  
+  @media (max-width: $breakpoint-lg) {
+    font-size: 6rem;
+    letter-spacing: -0.3rem;
+  }
+  
+  @media (max-width: $breakpoint-md) {
+    font-size: 5rem;
+    letter-spacing: -0.2rem;
+    margin: auto;
+  }
+  
+  @media (max-width: $breakpoint-sm) {
+    font-size: 4rem;
+    letter-spacing: -0.1rem;
+    margin: auto;
+  }
+  
+  @media (max-width: $breakpoint-xs) {
+    font-size: 3.5rem;
+    letter-spacing: -0.05rem;
+    margin: auto;
+  }
 }
 
 // Вспомогательные классы для типографики
