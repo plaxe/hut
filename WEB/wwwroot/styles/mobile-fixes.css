@@ -14,7 +14,7 @@
 
     .language-switch {
         margin-top: 5rem;
-        border-bottom: 1.33px solid #FFFFFF4D;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     
     .language-switch .nav-link {
@@ -26,6 +26,20 @@
     /* Уменьшаем отступы в меню */
     .navbar-collapse {
         padding: 1.5rem;
+    }
+
+    .contact-mobile-value {
+        /* padding: 24px 40px; */
+        width: 200px;
+        border: 1.33px solid #FFFFFF4D;
+        border-radius: 40px;
+    
+    }
+
+
+    
+    .contact-mobile-value a:hover {
+        color: #FFFFFF !important;
     }
 }
 
@@ -76,13 +90,26 @@
     .navbar-collapse {
         padding: 1rem 1.5rem 1.5rem;
     }
+
+    .contact-mobile-value {
+        /* padding: 24px 40px; */
+        width: 120px;
+        border: 1.33px solid #FFFFFF4D;
+        border-radius: 40px;    
+    }
+        
+    .contact-mobile-value a{
+        width: 70px;
+        font-size: 0.7rem;    
+    }
 }
 
 
 .logo-mobile {
-    margin-top: 10rem;
-    margin-bottom: 5rem;
+    margin-top: 7rem;
+    margin-bottom: 3rem;
 }
+
 
 /* Общие исправления для сенсорных устройств */
 * {
@@ -129,16 +156,16 @@ input[type="button"] {
         padding: 10px;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        /* justify-content: center; */
     }
     
     /* Исправляем навигацию для лучшей работы на мобильных */
     .navbar-nav {
-        padding: 15px 0;
+        /* padding: 15px 0; */
     }
     
     .navbar-nav .nav-item {
-        margin-bottom: 8px;
+        /* margin-bottom: 8px; */
     }
     
     /* Исправляем размер шрифтов для лучшей читаемости */
@@ -384,8 +411,7 @@ input[type="button"] {
         margin-top: 3rem;
         margin-left: 0 !important;
         width: 100%;
-        padding-top: 15px;
-        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 15px;       
     }
 }
 
@@ -512,6 +538,9 @@ input[type="button"] {
         flex-direction: column;
         text-align: center;
     }
+}
+
+@media (max-width: 344.98px) {
 }
 
 .principles-dividers {
