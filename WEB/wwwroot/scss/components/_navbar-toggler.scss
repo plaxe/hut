@@ -1,7 +1,7 @@
 // Стили для кнопки переключения меню
 .navbar-toggler {
   background-color: $color-white;
-  border: none;
+  border: 1px solid #cfcfcf;
   padding: $spacing-xs;
   @include fixed-position(15px, 15px, auto, auto, $z-index-toggler);
   cursor: pointer;

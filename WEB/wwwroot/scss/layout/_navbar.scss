@@ -24,48 +24,7 @@
   }
 }
 
-// Десктопное меню
-@media (min-width: $breakpoint-lg + 1px) {
-  .navbar-collapse {
-    display: flex !important;
-    flex-basis: auto;
-    flex-grow: 1;
-    align-items: center;
-  }
-
-  .navbar-nav {
-    display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    margin-right: 2rem;
-    
-    .nav-item {
-      margin: 0 15px;
-    }
-    
-    .nav-link {
-      padding: $spacing-xs $spacing-sm !important;
-      position: relative;
-      
-      &:after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: 0;
-        left: 50%;
-        background-color: $color-white;
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
-      }
-      
-      &:hover:after {
-        width: 80%;
-      }
-    }
-  }
-}
-
+// Общие стили для навигационных ссылок
 .nav-link {
   color: $color-white !important;
   font-family: $font-family-primary;
@@ -85,12 +44,133 @@
   }
 }
 
+// Стили для переключателя языка
 .language-switch {
   margin-left: auto;
   
   .nav-link {
     padding: $spacing-xs $spacing-sm !important;
     @include flex(row, center, center, 0.5rem);
+  }
+}
+
+.navbar-collapse {
+  display: flex;
+  align-items: center;
+          padding: 1rem 1.5rem;
+  .navbar-nav {
+    display: flex;
+    margin-left: auto;
+    margin-right: 2rem;
+    
+    &.navbar-nav-mobile {
+      @media (min-width: ($breakpoint-lg + 1px)) {
+        flex-direction: row;
+        
+        .nav-item {
+          margin: 0 15px;
+        }
+        
+        .nav-link {
+          color: $color-white !important;
+          position: relative;
+          
+          &:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: $color-white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+          }
+          
+          &:hover:after {
+            width: 80%;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Мобильные стили для меню
+@media (max-width: $breakpoint-lg) {
+  .navbar-collapse {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 60%;
+    height: 100vh;
+    background-color: $color-black;
+    transition: right 0.2s ease-in-out;
+    margin: 0 !important;
+    padding: 1rem 1.5rem;
+    z-index: $z-index-navbar;
+    overflow-y: auto;
+    will-change: right;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start !important;
+    
+    &.show {
+      right: 0 !important;
+    }
+  }
+  
+  .navbar-nav.navbar-nav-mobile {
+    width: 100%;
+    flex-direction: column;
+    margin: 0;
+    
+    .nav-item {
+      text-align: left;
+      width: 100%;
+      margin: 0;
+    }
+    
+    .nav-link {
+      text-align: left;
+      padding-left: 0 !important;
+      padding: $spacing-xs 0 !important;
+      font-size: 18px;
+      color: $color-light !important;
+      border-bottom: 1px solid rgba($color-white, 0.1);
+      
+      @media (max-width: $breakpoint-md) {
+        font-size: 16px;
+        padding: 0.4rem 0 !important;
+      }
+      
+      @media (max-width: $breakpoint-sm) {
+        font-size: 15px;
+        padding: 0.3rem 0 !important;
+      }
+    }
+  }
+}
+
+// Адаптивные настройки для ширины меню на разных экранах
+@media (max-width: $breakpoint-md) {
+  .navbar-collapse {
+    width: 70%;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .navbar-collapse {
+    width: 85%;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: $breakpoint-xs) {
+  .navbar-collapse {
+    width: 100%;
+    padding: 0.8rem;
   }
 }
 
@@ -117,67 +197,7 @@
   height: 24px;
 }
 
-// Стили для меню и панели навигации в мобильном виде
-@media (max-width: $breakpoint-lg) {
-  .navbar-collapse {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 60%;
-    height: 100vh;
-    background-color: $color-black;
-    transition: right 0.2s ease-in-out;
-    margin: 0 !important;
-    padding: 1.5rem;
-    z-index: $z-index-navbar;
-    overflow-y: auto;
-    will-change: right;
-    display: flex !important;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start !important;
-    
-    &.show {
-      right: 0 !important;
-    }
-  }
-  
-  .navbar-nav {
-    width: 100%;
-    
-    .nav-item {
-      width: 100%;
-      margin: 0;
-    }
-    
-    .nav-link {
-      padding: $spacing-sm 0 !important;
-      border-bottom: 1px solid rgba($color-white, 0.1);
-    }
-  }
-}
-
-@media (max-width: $breakpoint-md) {
-  .navbar-collapse {
-    width: 70%;
-  }
-}
-
-@media (max-width: $breakpoint-sm) {
-  .navbar-collapse {
-    width: 85%;
-    padding: 1rem;
-  }
-}
-
-@media (max-width: $breakpoint-xs) {
-  .navbar-collapse {
-    width: 100%;
-    padding: 0.8rem;
-  }
-}
-
-// Стили для мобильного меню
+// Стили для мобильного меню - дополнительные элементы
 .mobile-menu-text {
   display: block;
   width: 80%;
@@ -203,7 +223,7 @@
     margin-bottom: 0.8rem;
   }
   
-  @media (min-width: $breakpoint-lg + 1px) {
+  @media (min-width: ($breakpoint-lg + 1px)) {
     display: none;
   }
 }
@@ -238,42 +258,19 @@
       height: 60px;
     }
   }
-}
-
-.navbar-nav-mobile {
-  align-items: flex-start !important;
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-  justify-content: flex-start !important;
-  text-align: left !important;
   
-  .nav-item {
-    text-align: left;
-    width: 100%;
-  }
-  
-  .nav-link {
-    text-align: left;
-    padding-left: 0 !important;
-    padding: $spacing-xs 0 !important;
-    font-size: 18px;
-    color: $color-light !important;
-    
-    @media (max-width: $breakpoint-md) {
-      font-size: 16px;
-      padding: 0.4rem 0 !important;
-    }
-    
-    @media (max-width: $breakpoint-sm) {
-      font-size: 15px;
-      padding: 0.3rem 0 !important;
-    }
+  @media (min-width: ($breakpoint-lg + 1px)) {
+    display: none;
   }
 }
 
 .mobile-menu-bottom {
   margin-top: 1rem;
   padding-bottom: 1rem;
+  
+  @media (min-width: ($breakpoint-lg + 1px)) {
+    display: none;
+  }
 }
 
 .contact-mobile {
