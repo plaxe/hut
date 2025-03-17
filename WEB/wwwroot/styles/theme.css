@@ -1002,7 +1002,7 @@ body.menu-open .navbar-toggler {
     }
 
     .language-switch {
-        margin: 0 0 1.5rem 0;
+        margin: 0 0 0.5rem 0;
     }
 
     .language-switch .nav-link {
@@ -1077,7 +1077,7 @@ body.menu-open .navbar-toggler {
     }
 
     .language-switch {
-        margin: 0 0 1rem 0;
+        margin: 0 0 0.3rem 0;
     }
     
     .language-switch .nav-link {
@@ -1205,7 +1205,7 @@ body.menu-open .navbar-toggler {
     }
 
     .language-switch {
-        margin: 0 0 0.5rem 0;
+        margin: 0 0 0.2rem 0;
     }
 
     .language-switch .nav-link {
@@ -1264,7 +1264,7 @@ body.menu-open .navbar-toggler {
     }
 
     .language-switch {
-        margin: 0 0 0.3rem 0;
+        margin: 0 0 0.1rem 0;
     }
 
     .language-switch .nav-link {
@@ -1326,7 +1326,7 @@ body.menu-open .navbar-toggler {
     }
 
     .language-switch {
-        margin: 0 0 0.2rem 0;
+        margin: 0 0 0.1rem 0;
     }
 
     .language-switch .nav-link {
@@ -1983,7 +1983,7 @@ body.menu-open .navbar-toggler {
     }
     
     .footer-logos img {
-        height: 2.2rem;
+        height: 3.2rem;
     }
 }
 
@@ -2011,7 +2011,7 @@ body.menu-open .navbar-toggler {
     }
     
     .footer-logos img {
-        height: 1.8rem;
+        height: 2.8rem;
     }
     
     .contact-label {
