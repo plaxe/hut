@@ -861,6 +861,10 @@ body {
     top: 1.5rem;
     z-index: 1100;
     cursor: pointer;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .navbar-toggler-icon {
