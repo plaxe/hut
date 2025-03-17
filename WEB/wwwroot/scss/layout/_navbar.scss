@@ -7,12 +7,12 @@
   background-color: transparent !important;
   
   .container {
-    @include flex(row, flex-start, flex-start, 2rem);
+    @include flex(row, space-between, center, 2rem);
     position: relative;
   }
 }
 
-.navbar-brand {
+.navbar-brand, .logo {
   margin: 0;
   
   img {
@@ -24,20 +24,60 @@
   }
 }
 
-.navbar-nav {
-  margin: 0;
+// Десктопное меню
+@media (min-width: $breakpoint-lg + 1px) {
+  .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+    flex-grow: 1;
+    align-items: center;
+  }
+
+  .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 2rem;
+    
+    .nav-item {
+      margin: 0 15px;
+    }
+    
+    .nav-link {
+      padding: $spacing-xs $spacing-sm !important;
+      position: relative;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: $color-white;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+      
+      &:hover:after {
+        width: 80%;
+      }
+    }
+  }
 }
 
 .nav-link {
   color: $color-white !important;
-  font-family: 'Gilroy', sans-serif;
+  font-family: $font-family-primary;
   font-weight: $font-weight-medium;
   font-size: $font-size-base;
   line-height: $font-size-base;
-  letter-spacing: -0.02em;
-  padding: $spacing-xs $spacing-md !important;
+  letter-spacing: 0.01em;
+  padding: $spacing-xs $spacing-sm !important;
   transition: $transition-base;
   text-shadow: $shadow-base;
+  text-decoration: none;
+  display: block;
   
   &:hover {
     color: $color-white !important;
@@ -51,54 +91,6 @@
   .nav-link {
     padding: $spacing-xs $spacing-sm !important;
     @include flex(row, center, center, 0.5rem);
-  }
-}
-
-// Стили для меню и панели навигации в мобильном виде
-.navbar-collapse {
-  overflow: hidden;
-  margin-top: 0 !important;
-  display: none;
-  
-  &.show {
-    display: block;
-  }
-  
-  @include respond-to(lg) {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 60%;
-    height: 100vh;
-    background-color: $color-black;
-    transition: right 0.2s ease-in-out;
-    margin: 0 !important;
-    padding: 1.5rem;
-    z-index: $z-index-navbar;
-    overflow-y: auto;
-    will-change: right;
-    display: flex !important;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start !important;
-    
-    &.show {
-      right: 0 !important;
-    }
-  }
-  
-  @include respond-to(md) {
-    width: 70%;
-  }
-  
-  @include respond-to(sm) {
-    width: 85%;
-    padding: 1rem;
-  }
-  
-  @include respond-to(xs) {
-    width: 100%;
-    padding: 0.8rem;
   }
 }
 
@@ -125,6 +117,66 @@
   height: 24px;
 }
 
+// Стили для меню и панели навигации в мобильном виде
+@media (max-width: $breakpoint-lg) {
+  .navbar-collapse {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 60%;
+    height: 100vh;
+    background-color: $color-black;
+    transition: right 0.2s ease-in-out;
+    margin: 0 !important;
+    padding: 1.5rem;
+    z-index: $z-index-navbar;
+    overflow-y: auto;
+    will-change: right;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start !important;
+    
+    &.show {
+      right: 0 !important;
+    }
+  }
+  
+  .navbar-nav {
+    width: 100%;
+    
+    .nav-item {
+      width: 100%;
+      margin: 0;
+    }
+    
+    .nav-link {
+      padding: $spacing-sm 0 !important;
+      border-bottom: 1px solid rgba($color-white, 0.1);
+    }
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .navbar-collapse {
+    width: 70%;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .navbar-collapse {
+    width: 85%;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: $breakpoint-xs) {
+  .navbar-collapse {
+    width: 100%;
+    padding: 0.8rem;
+  }
+}
+
 // Стили для мобильного меню
 .mobile-menu-text {
   display: block;
@@ -137,56 +189,22 @@
   margin-bottom: 1.5rem;
   text-align: left;
   
-  @include respond-to(md) {
+  @media (max-width: $breakpoint-md) {
     width: 90%;
     font-size: 0.75rem;
     line-height: 1.3;
     margin-bottom: 1rem;
   }
   
-  @include respond-to(sm) {
+  @media (max-width: $breakpoint-sm) {
     width: 100%;
     font-size: 0.85rem;
     line-height: 1.2;
     margin-bottom: 0.8rem;
   }
   
-  @include respond-to(xs) {
-    font-size: 0.65rem;
-    line-height: 1.2;
-    margin-bottom: 0.6rem;
-  }
-  
-  @include respond-to-height(md) {
-    font-size: 0.65rem;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-    max-height: none;
-    overflow-y: visible;
-  }
-  
-  @include respond-to-height(sm) {
-    font-size: 0.55rem;
-    line-height: 1.1;
-    margin-bottom: 0.3rem;
-    max-height: none;
-    overflow-y: visible;
-  }
-  
-  @media (min-width: $breakpoint-lg) {
+  @media (min-width: $breakpoint-lg + 1px) {
     display: none;
-  }
-}
-
-.mobile-menu-top {
-  margin-top: 1rem;
-  
-  @include respond-to-height(md) {
-    margin-top: 0.5rem;
-  }
-  
-  @include respond-to-height(sm) {
-    margin-top: 0.3rem;
   }
 }
 
@@ -205,39 +223,19 @@
     width: auto;
   }
   
-  @include respond-to(md) {
+  @media (max-width: $breakpoint-md) {
     margin-bottom: 1rem;
+    
+    img {
+      height: 70px;
+    }
   }
   
-  @include respond-to(sm) {
+  @media (max-width: $breakpoint-sm) {
     margin-bottom: 0.8rem;
     
     img {
-      height: 70px;
-    }
-  }
-  
-  @include respond-to(xs) {
-    margin-bottom: 0.6rem;
-    
-    img {
-      height: 55px;
-    }
-  }
-  
-  @include respond-to-height(md) {
-    margin-bottom: 0.5rem;
-    
-    img {
-      height: 80px;
-    }
-  }
-  
-  @include respond-to-height(sm) {
-    margin-bottom: 0.3rem;
-    
-    img {
-      height: 70px;
+      height: 60px;
     }
   }
 }
@@ -261,29 +259,14 @@
     font-size: 18px;
     color: $color-light !important;
     
-    @include respond-to(md) {
+    @media (max-width: $breakpoint-md) {
       font-size: 16px;
       padding: 0.4rem 0 !important;
     }
     
-    @include respond-to(sm) {
+    @media (max-width: $breakpoint-sm) {
       font-size: 15px;
       padding: 0.3rem 0 !important;
-    }
-    
-    @include respond-to(xs) {
-      font-size: 14px;
-      padding: 0.25rem 0 !important;
-    }
-    
-    @include respond-to-height(md) {
-      font-size: 14px;
-      padding: 0.2rem 0 !important;
-    }
-    
-    @include respond-to-height(sm) {
-      font-size: 13px;
-      padding: 0.15rem 0 !important;
     }
   }
 }
@@ -291,16 +274,6 @@
 .mobile-menu-bottom {
   margin-top: 1rem;
   padding-bottom: 1rem;
-  
-  @include respond-to-height(md) {
-    margin-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  
-  @include respond-to-height(sm) {
-    margin-top: 0.3rem;
-    padding-bottom: 0.3rem;
-  }
 }
 
 .contact-mobile {
@@ -329,35 +302,11 @@
     white-space: nowrap;
   }
   
-  @include respond-to(sm) {
+  @media (max-width: $breakpoint-sm) {
     padding: 0.5rem;
     
     a {
       font-size: 0.75rem;
-    }
-  }
-  
-  @include respond-to(xs) {
-    padding: 0.4rem;
-    
-    a {
-      font-size: 0.7rem;
-    }
-  }
-  
-  @include respond-to-height(md) {
-    padding: 0.4rem;
-    
-    a {
-      font-size: 0.7rem;
-    }
-  }
-  
-  @include respond-to-height(sm) {
-    padding: 0.3rem;
-    
-    a {
-      font-size: 0.65rem;
     }
   }
 }
