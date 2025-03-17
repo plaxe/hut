@@ -859,17 +859,24 @@ body {
     position: fixed;
     right: 15px;
     top: 1.5rem;
-    z-index: 1100;
+    z-index: 1200;
     cursor: pointer;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
     transition: all 0.2s ease;
+    width: 24px;
+    height: 24px;
 }
 
 /* Стили для кнопки navbar-toggler при открытом меню */

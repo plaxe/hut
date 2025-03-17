@@ -14,8 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Добавляем прямой обработчик для кнопки меню
     if (hamburger && navbarCollapse) {
-        hamburger.addEventListener('click', function() {
+        hamburger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             console.log('Hamburger clicked');
+            
             // Проверяем, открыто ли меню
             const isOpen = navbarCollapse.classList.contains('show');
             console.log('Menu is currently ' + (isOpen ? 'open' : 'closed'));
@@ -50,9 +53,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                navbarCollapse.classList.remove('show');
-                document.body.classList.remove('menu-open');
-                console.log('Menu closed via link click');
+                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                    navbarCollapse.classList.remove('show');
+                    document.body.classList.remove('menu-open');
+                    console.log('Menu closed via link click');
+                }
             });
         });
     }
@@ -123,12 +128,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Закрытие меню при клике на затемненную область
     document.addEventListener('click', function(e) {
         if (document.body.classList.contains('menu-open') && 
+            navbarCollapse && 
             !navbarCollapse.contains(e.target) && 
+            hamburger && 
             e.target !== hamburger && 
             !hamburger.contains(e.target)) {
-            // Используем Bootstrap API для закрытия меню
-            const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-            bsCollapse.hide();
+            
+            navbarCollapse.classList.remove('show');
+            document.body.classList.remove('menu-open');
             console.log('Menu closed via overlay click');
         }
     });
