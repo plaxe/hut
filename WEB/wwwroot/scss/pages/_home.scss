@@ -475,8 +475,11 @@
 }
 
 .products-grid {
-  @include grid(auto auto, auto, $spacing-md);
-  max-width: 720px;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: $spacing-md;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   
   @include respond-to(lg) {
@@ -486,34 +489,44 @@
 }
 
 .products-row-top {
-  @include grid(repeat(3, 1fr), auto, $spacing-md);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+  width: 100%;
   
   @include respond-to(lg) {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 0;
     gap: $spacing-sm;
+  }
+  
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
   }
   
   @include respond-to(sm) {
     grid-template-columns: 1fr;
-    gap: $spacing-sm;
   }
 }
 
 .products-row-bottom {
-  @include grid(repeat(2, 1fr), auto, $spacing-md);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+  width: 66%;
+  margin: 0 auto;
   justify-content: center;
-  padding: 0 calc(16.666% + 1rem);
   
   @include respond-to(lg) {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 0;
+    width: 70%;
     gap: $spacing-sm;
   }
   
+  @include respond-to(md) {
+    width: 80%;
+  }
+  
   @include respond-to(sm) {
+    width: 90%;
     grid-template-columns: 1fr;
-    gap: $spacing-sm;
   }
 }
 
@@ -521,10 +534,19 @@
   perspective: 1000px;
   aspect-ratio: 1;
   cursor: pointer;
+  width: 100%;
+  height: 300px;
   
   @include respond-to(lg) {
-    width: 100%;
-    max-width: none;
+    height: 280px;
+  }
+  
+  @include respond-to(md) {
+    height: 260px;
+  }
+  
+  @include respond-to(sm) {
+    height: 250px;
   }
 }
 
