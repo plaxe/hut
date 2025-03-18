@@ -81,10 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Предотвращаем масштабирование при жесте сведения/разведения пальцев
     document.addEventListener('touchmove', function(event) {
-        if (event.scale !== 1) {
+        if (event.scale !== 1 && event.touches.length > 1) {
             event.preventDefault();
         }
-    }, { passive: false });
+    }, { passive: true });
 
     // Улучшаем отклик при нажатии
     document.addEventListener('touchstart', function(){}, {passive: true});
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
     // Закрытие меню при клике на затемненную область
     document.addEventListener('click', function(e) {
         if (document.body.classList.contains('menu-open') && 
@@ -131,12 +131,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target !== hamburger && 
             !hamburger.contains(e.target)) {
             
-            navbarCollapse.classList.remove('show');
-            document.body.classList.remove('menu-open');
+                navbarCollapse.classList.remove('show');
+                document.body.classList.remove('menu-open');
             console.log('Menu closed via overlay click');
         }
-    });
-});
+                });
+            });
 
 // Добавляем класс для мобильных устройств
 function checkMobile() {

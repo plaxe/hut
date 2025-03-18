@@ -115,14 +115,19 @@
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
+    touch-action: pan-y;
 }
 
 html, body {
     overflow-x: hidden;
     position: relative;
     width: 100%;
+    height: auto;
     -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    font-size: 16px; /* Минимальный рекомендуемый размер для мобильных */
 }
 
 /* Исправления для активных элементов */
