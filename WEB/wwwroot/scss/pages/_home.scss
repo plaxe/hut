@@ -536,6 +536,7 @@
   cursor: pointer;
   width: 100%;
   height: 300px;
+  -webkit-tap-highlight-color: transparent;
   
   @include respond-to(lg) {
     height: 280px;
@@ -555,12 +556,14 @@
   width: 100%;
   height: 100%;
   text-align: center;
-  transition: transform 0.8s;
+  transition: transform 0.6s;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
-.product-card:hover .product-card-inner {
+.product-card.flipped .product-card-inner {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .product-card-front,
@@ -568,6 +571,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   border-radius: $border-radius-md;
   overflow: hidden;
@@ -587,7 +591,11 @@
   background-color: $color-primary;
   color: $color-white;
   transform: rotateY(180deg);
-  @include flex(column, center, center);
+  -webkit-transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 1.5rem;
   
   h3 {
