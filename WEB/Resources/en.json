@@ -62,7 +62,7 @@
     "description": "Was founded in Kyiv in 2024, with production in Talne, which is located in the heart of Ukraine, to create quality, healthy and affordable food for everyone, by people who care about a healthy and happy nation."
   },
   "worldMap": {
-    "title": "Amaranth Distribution Worldwide",
+    "title": "The Spread of Amaranth Worldwide",
     "stats": {
       "northAmerica": "North America: USA, dominant market, more than 30% of total volume. Canada less than 15%, but significant growth expected.",
       "europe": "Europe: UK: largest market in Europe about 5%. Netherlands about 4%. France about 3%. Italy about 2%. Other European countries: about 9%",
@@ -93,6 +93,8 @@
   "products": {
     "title": "Our Products",
     "description": "We offer a wide range of amaranth-based products",
+    "products_title": "UA.Khutir Products:",
+    "products_description": "balls, crackers, cookies, marzipan, and flour",
     "categories": {
       "flour": {
         "title": "Flour",

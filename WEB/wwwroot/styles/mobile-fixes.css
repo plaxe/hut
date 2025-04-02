@@ -15,6 +15,8 @@
     .language-switch {
         margin-top: 5rem;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-left: 0 !important;
+        margin-right: auto !important;
     }
     
     .language-switch .nav-link {
@@ -417,6 +419,7 @@ input[type="button"] {
     .language-switch {
         margin-top: 3rem;
         margin-left: 0 !important;
+        margin-right: auto !important;
         width: 100%;
         padding-top: 15px;       
     }

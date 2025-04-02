@@ -444,32 +444,44 @@
 
 .products-title {
   text-align: center;
-  margin-bottom: $spacing-md;
+  margin-bottom: $spacing-xl;
   
   h2 {
     font-size: $font-size-title;
     font-weight: $font-weight-semibold;
     color: $color-text-primary;
     letter-spacing: -0.1rem;
+    margin-bottom: $spacing-xs;
   }
   
   p {
-    font-size: $font-size-title;
-    font-weight: $font-weight-semibold;
-    color: rgba($color-text-primary, 0.3);
-    line-height: 0.9;
-    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: rgba($color-text-primary, 0.6);
+    line-height: 1.2;
+    margin: 0 auto;
+    max-width: 600px;
   }
   
   @include respond-to(lg) {
-    h2, p {
+    h2 {
       font-size: $font-size-xxl;
+    }
+    
+    p {
+      font-size: $font-size-md;
+      max-width: 500px;
     }
   }
   
   @include respond-to(sm) {
-    h2, p {
+    h2 {
       font-size: 1.5rem;
+    }
+    
+    p {
+      font-size: $font-size-base;
+      max-width: 90%;
     }
   }
 }

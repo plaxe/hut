@@ -32,7 +32,6 @@
   font-size: $font-size-base;
   line-height: $font-size-base;
   letter-spacing: 0.01em;
-  padding: $spacing-xs $spacing-sm !important;
   transition: $transition-base;
   text-shadow: $shadow-base;
   text-decoration: none;
@@ -49,8 +48,12 @@
   margin-left: auto;
   
   .nav-link {
-    padding: $spacing-xs $spacing-sm !important;
     @include flex(row, center, center, 0.5rem);
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    margin-left: 0;
+    margin-right: auto;
   }
 }
 
@@ -61,7 +64,6 @@
   .navbar-nav {
     display: flex;
     margin-left: initial;
-    margin-right: 2rem;
     
     &.navbar-nav-mobile {
       @media (min-width: ($breakpoint-lg + 1px)) {
@@ -288,7 +290,7 @@
   color: $color-light;
   border: 1px solid rgba($color-light, 0.3);
   border-radius: $border-radius-lg;
-  padding: 0.8rem;
+  padding: 1.2rem;
   width: 48%;
   transition: $transition-base;
   
