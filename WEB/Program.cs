@@ -7,6 +7,7 @@ using WEB.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using WEB.Services;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WEB;
 
@@ -63,24 +64,54 @@ public class Program
             options.KnownProxies.Clear();
         });
 
+        // Добавляем аутентификацию для админки
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/admin/login";
+            options.LogoutPath = "/admin/logout";
+            options.AccessDeniedPath = "/admin/login";
+            options.Cookie.Name = "AdminAuth";
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromHours(3);
+            options.SlidingExpiration = true;
+        });
+        
+        // Добавляем сервис авторизации админки
+        builder.Services.AddScoped<AdminAuthService>();
+
         // Настройка локализации
         builder.Services.Configure<RequestLocalizationOptions>(
             options =>
             {
                 var supportedCultures = new[] 
                 { 
-                    new CultureInfo("uk-UA"),
-                    new CultureInfo("en-US"),
-                    new CultureInfo("ru-RU")
+                    new CultureInfo("ua"),
+                    new CultureInfo("en"),
+                    new CultureInfo("ru")
                 };
-                options.DefaultRequestCulture = new RequestCulture("uk-UA");
+                options.DefaultRequestCulture = new RequestCulture("ua");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.SetDefaultCulture("uk-UA");
+                options.SetDefaultCulture("ua");
             });
 
         // Регистрируем сервис компиляции SCSS
         builder.Services.AddScoped<ScssCompilerService>();
+        
+        // Регистрируем сервис предварительной загрузки локализации
+        builder.Services.AddScoped<LocalizationPreloadService>();
+
+        // Добавляем сервис продуктов
+        builder.Services.AddScoped<ProductService>();
+
+        // Добавляем сервис редактирования локализации
+        builder.Services.AddScoped<LocalizationEditorService>();
 
         var app = builder.Build();
 
@@ -97,6 +128,10 @@ public class Program
         {
             var scssCompiler = scope.ServiceProvider.GetRequiredService<ScssCompilerService>();
             scssCompiler.CompileScss();
+            
+            // Предварительно загружаем локализацию в кеш
+            var localizationPreloader = scope.ServiceProvider.GetRequiredService<LocalizationPreloadService>();
+            localizationPreloader.PreloadResources();
         }
 
         // Подключаем forwarded headers
@@ -111,12 +146,22 @@ public class Program
         // Настройка локализации
         app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-        app.UseOutputCache();
+        // Добавляем аутентификацию и авторизацию после локализации
+        app.UseAuthentication();
         app.UseAuthorization();
+        
+        app.UseOutputCache();
 
+        // Маршрут по умолчанию (с культурой)
         app.MapControllerRoute(
             name: "default",
-            pattern: "{culture=uk-UA}/{controller=Home}/{action=Index}/{id?}");
+            pattern: "{culture=ua}/{controller=Home}/{action=Index}/{id?}");
+            
+        // Маршрут для админки (без культуры)
+        app.MapControllerRoute(
+            name: "admin",
+            pattern: "admin/{action=Dashboard}/{id?}",
+            defaults: new { controller = "Admin" });
 
         app.Run();
     }

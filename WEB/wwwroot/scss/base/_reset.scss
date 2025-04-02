@@ -1,10 +1,119 @@
 // Базовый сброс стилей
-*, 
-*::before, 
-*::after {
-  box-sizing: border-box;
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: "Manrope", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+// Убираем синее подсвечивание элементов на мобильных
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Сбрасываем стили для списков
+ul, ol {
+  list-style: none;
+}
+
+// Сбрасываем стили для ссылок
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// Сбрасываем стили для изображений
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Сбрасываем стили для формы
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+  border: none;
+  background: none;
+}
+
+// Устанавливаем базовые стили для body
+body {
+  line-height: 1.5;
+  font-family: "Manrope", sans-serif;
+  color: #303030;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
+// Устанавливаем стили для заголовков
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+// Устанавливаем стили для текста
+p {
+  margin-bottom: 1rem;
+}
+
+// Сбрасываем стили для контейнера
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+// Добавляем основные вспомогательные классы
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.m-auto {
+  margin: auto;
+}
+
+// Пользовательский выбор
+::selection {
+  background-color: $color-primary;
+  color: $color-white;
 }
 
 html {
@@ -12,49 +121,6 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
-  font-family: $font-family-body;
-  color: $color-white;
-  background-color: $color-black;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-ul, ol {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: $transition-base;
-}
-
-img, 
-svg {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: inherit;
 }
 
 button {

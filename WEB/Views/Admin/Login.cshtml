@@ -1,0 +1,44 @@
+@model WEB.Models.AdminLoginModel
+@{
+    ViewData["Title"] = "Вход в админ-панель";
+    Layout = "_AdminLayout";
+}
+
+<div class="login-container rounded p-4 bg-dark-subtle">
+    <h2 class="text-center mb-4">Вход в админ-панель</h2>
+    
+    <form asp-action="Login" asp-controller="Admin" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">Логин</label>
+            <input asp-for="Username" class="form-control" autocomplete="username" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Пароль</label>
+            <input asp-for="Password" class="form-control" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        
+        <div class="mb-3 form-check">
+            <input asp-for="RememberMe" class="form-check-input" />
+            <label asp-for="RememberMe" class="form-check-label">Запомнить меня</label>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <a href="/" class="btn btn-outline-secondary">Вернуться на сайт</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Фокус на первое поле формы
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('#Username').focus();
+        });
+    </script>
+} 

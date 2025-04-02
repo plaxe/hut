@@ -11,6 +11,10 @@
     <meta name="theme-color" content="#3E5F8A">
     <title>@Localizer["site.title"]</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link href="~/css/site.css" rel="stylesheet" asp-append-version="true">
@@ -47,11 +51,11 @@
                 </ul>
                 <ul class="navbar-nav language-switch">
                     @{
-                        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-                        if (currentCulture == "uk-UA")
+                        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name.ToLower();
+                        if (currentCulture.StartsWith("ua") || currentCulture.StartsWith("uk"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="en-US">Мова: &nbsp; 
+                                <a class="nav-link" href="/set-culture/en?returnUrl=@Context.Request.Path">Мова: &nbsp; 
                                 <img src="~/images/icons/language-switch.svg" alt="Language icon" asp-append-version="true">
                                 EN</a>
                             </li>
@@ -59,7 +63,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="uk-UA">Language: &nbsp; 
+                                <a class="nav-link" href="/set-culture/ua?returnUrl=@Context.Request.Path">Language: &nbsp; 
                                 <img src="~/images/icons/language-switch.svg" alt="Language icon" asp-append-version="true">
                                 UA</a>
                             </li>
@@ -231,66 +235,35 @@
                 <p>@Localizer["products.products_description"]</p>
             </div>
 
-            <div class="products-grid">
-                <div class="products-row-top">
-                    <div class="product-card">
-                        <div class="product-card-inner">
-                            <div class="product-card-front">
-                                <img src="images/products/product1.png" alt="Кульки">
+            <div class="product-cards-container">
+                @{
+                    if (ViewData["Products"] is List<ProductModel> products && products.Any())
+                    {
+                        var isEnglish = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en");
+                        
+                        foreach (var product in products)
+                        {
+                            <div class="product-card">
+                                <div class="product-card-inner">
+                                    <div class="product-card-front">
+                                        @if (!string.IsNullOrEmpty(product.ImagePath))
+                                        {
+                                            <img src="@product.ImagePath" alt="@(isEnglish ? product.NameEn : product.Name)">
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/icons/image-placeholder.svg" alt="@(isEnglish ? product.NameEn : product.Name)">
+                                        }
+                                    </div>
+                                    <div class="product-card-back">
+                                        <h3>@(isEnglish ? product.NameEn : product.Name)</h3>
+                                        <p>@(isEnglish ? product.DescriptionEn : product.Description)</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="product-card-back">
-                                <h3>@Localizer["products.categories.snacks.title"]</h3>
-                                <p>@Localizer["products.categories.snacks.description"]</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-card-inner">
-                            <div class="product-card-front">
-                                <img src="images/products/product2.png" alt="Крекери">
-                            </div>
-                            <div class="product-card-back">
-                                <h3>@Localizer["products.categories.flour.title"]</h3>
-                                <p>@Localizer["products.categories.flour.description"]</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-card-inner">
-                            <div class="product-card-front">
-                                <img src="images/products/product3.png" alt="Печиво">
-                            </div>
-                            <div class="product-card-back">
-                                <h3>@Localizer["products.categories.oil.title"]</h3>
-                                <p>@Localizer["products.categories.oil.description"]</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="products-row-bottom">
-                    <div class="product-card">
-                        <div class="product-card-inner">
-                            <div class="product-card-front">
-                                <img src="images/products/product4.png" alt="Марципан">
-                            </div>
-                            <div class="product-card-back">
-                                <h3>@Localizer["products.categories.snacks.title"]</h3>
-                                <p>@Localizer["products.categories.snacks.description"]</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-card-inner">
-                            <div class="product-card-front">
-                                <img src="images/products/product5.png" alt="Борошно">
-                            </div>
-                            <div class="product-card-back">
-                                <h3>@Localizer["products.categories.flour.title"]</h3>
-                                <p>@Localizer["products.categories.flour.description"]</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        }
+                    }
+                }
             </div>
         </div>
     </section>

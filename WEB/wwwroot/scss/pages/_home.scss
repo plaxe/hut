@@ -447,7 +447,7 @@
   margin-bottom: $spacing-xl;
   
   h2 {
-    font-size: $font-size-title;
+    font-size: $font-size-hero;
     font-weight: $font-weight-semibold;
     color: $color-text-primary;
     letter-spacing: -0.1rem;
@@ -455,110 +455,81 @@
   }
   
   p {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-medium;
-    color: rgba($color-text-primary, 0.6);
-    line-height: 1.2;
+    font-size: $font-size-hero;
+    font-weight: $font-weight-semibold;
+    color: $color-test-product-title-descr;
+    line-height: 1;
     margin: 0 auto;
     max-width: 600px;
   }
   
   @include respond-to(lg) {
     h2 {
-      font-size: $font-size-xxl;
+      font-size: $font-size-hero;
     }
     
     p {
-      font-size: $font-size-md;
+      font-size: $font-size-hero;
       max-width: 500px;
     }
   }
   
   @include respond-to(sm) {
     h2 {
-      font-size: 1.5rem;
+      font-size: $font-size-hero;
     }
     
     p {
-      font-size: $font-size-base;
+      font-size: $font-size-hero;
       max-width: 90%;
     }
   }
 }
 
-.products-grid {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: $spacing-md;
-  width: 100%;
-  max-width: 1200px;
+.product-cards-container {
+  max-width: 1000px;
   margin: 0 auto;
-  
-  @include respond-to(lg) {
-    max-width: 100%;
-    padding: 0 $spacing-sm;
-  }
-}
-
-.products-row-top {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-md;
-  width: 100%;
-  
-  @include respond-to(lg) {
-    gap: $spacing-sm;
-  }
-  
-  @include respond-to(md) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  @include respond-to(sm) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.products-row-bottom {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-md;
-  width: 66%;
-  margin: 0 auto;
+  display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
   
   @include respond-to(lg) {
-    width: 70%;
-    gap: $spacing-sm;
+    gap: 20px;
   }
   
   @include respond-to(md) {
-    width: 80%;
+    gap: 15px;
   }
   
   @include respond-to(sm) {
-    width: 90%;
-    grid-template-columns: 1fr;
+    gap: 15px;
   }
 }
 
 .product-card {
-  perspective: 1000px;
-  aspect-ratio: 1;
-  cursor: pointer;
-  width: 100%;
+  flex: 0 0 300px;
+  width: 300px;
   height: 300px;
+  perspective: 1000px;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   
   @include respond-to(lg) {
+    flex: 0 0 280px;
+    width: 280px;
     height: 280px;
   }
   
   @include respond-to(md) {
+    flex: 0 0 260px;
+    width: 260px;
     height: 260px;
   }
   
   @include respond-to(sm) {
+    flex: 0 0 250px;
+    width: 250px;
     height: 250px;
   }
 }

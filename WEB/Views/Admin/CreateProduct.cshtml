@@ -1,0 +1,188 @@
+@model WEB.Models.ProductModel
+@using System.IO
+@{
+    ViewData["Title"] = "Добавление продукта";
+    Layout = "_AdminLayout";
+    var existingImages = ViewData["ExistingImages"] as List<string> ?? new List<string>();
+    
+    string GetFileName(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return string.Empty;
+        return path.Split('/').Last();
+    }
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Добавление продукта</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="/admin/products" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Вернуться к списку
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="card bg-dark-subtle">
+            <div class="card-body">
+                <form asp-action="CreateProduct" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="NameEn" class="form-label"></label>
+                        <input asp-for="NameEn" class="form-control" />
+                        <span asp-validation-for="NameEn" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Category" class="form-label"></label>
+                        <select asp-for="Category" class="form-select">
+                            <option value="">Выберите категорию</option>
+                            <option value="Снеки">Снеки</option>
+                            <option value="Мука">Мука</option>
+                            <option value="Масло">Масло</option>
+                        </select>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="DescriptionEn" class="form-label"></label>
+                        <textarea asp-for="DescriptionEn" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="DescriptionEn" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="imageFile" class="form-label">Загрузить новое изображение</label>
+                        <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" />
+                        <div class="form-text">Рекомендуемый размер: 600x600 пикселей</div>
+                    </div>
+
+                    @if (existingImages.Any())
+                    {
+                        <div class="mb-3">
+                            <label for="existingImage" class="form-label">Или выбрать существующее изображение</label>
+                            <select class="form-select" id="existingImage" name="existingImage">
+                                <option value="">Не выбрано</option>
+                                @foreach (var image in existingImages)
+                                {
+                                    <option value="@image">@GetFileName(image)</option>
+                                }
+                            </select>
+                            <div class="form-text">Выбор существующего изображения игнорируется, если загружено новое</div>
+                        </div>
+                    }
+                    
+                    <div class="mb-3">
+                        <label asp-for="SortOrder" class="form-label"></label>
+                        <input asp-for="SortOrder" class="form-control" type="number" min="0" step="1" />
+                        <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        <div class="form-text">Чем меньше число, тем выше товар в списке</div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Создать продукт</button>
+                        <a href="/admin/products" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 col-lg-6">
+        <div class="card bg-dark-subtle">
+            <div class="card-body">
+                <h4 class="card-title mb-3">Предпросмотр изображения</h4>
+                <div class="text-center p-3 bg-dark rounded">
+                    <img id="previewImage" src="/images/icons/image-placeholder.svg" alt="Предпросмотр" class="img-fluid" style="max-height: 300px; max-width: 100%;" />
+                </div>
+
+                @if (existingImages.Any())
+                {
+                    <div class="mt-4">
+                        <h5>Галерея существующих изображений</h5>
+                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mt-2">
+                            @foreach (var image in existingImages)
+                            {
+                                <div class="col">
+                                    <div class="card h-100 bg-dark existing-image-card" 
+                                         data-image-path="@image"
+                                         style="cursor: pointer;">
+                                        <img src="@image" class="card-img-top" alt="@GetFileName(image)" style="height: 80px; object-fit: contain;">
+                                        <div class="card-body p-1">
+                                            <p class="card-text small text-truncate">@GetFileName(image)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Функция предпросмотра для загрузки нового изображения
+        document.getElementById('imageFile').addEventListener('change', function(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('previewImage');
+                preview.src = reader.result;
+                // Сбрасываем выбор существующего изображения
+                if (document.getElementById('existingImage')) {
+                    document.getElementById('existingImage').value = '';
+                }
+            }
+            
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+        
+        // Обработка выбора существующего изображения из выпадающего списка
+        if (document.getElementById('existingImage')) {
+            document.getElementById('existingImage').addEventListener('change', function() {
+                const preview = document.getElementById('previewImage');
+                if (this.value) {
+                    preview.src = this.value;
+                    // Сбрасываем загрузку нового изображения
+                    document.getElementById('imageFile').value = '';
+                } else {
+                    preview.src = '/images/icons/image-placeholder.svg';
+                }
+            });
+        }
+        
+        // Обработка клика по миниатюрам существующих изображений в галерее
+        document.querySelectorAll('.existing-image-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const imagePath = this.getAttribute('data-image-path');
+                // Устанавливаем значение в выпадающем списке
+                if (document.getElementById('existingImage')) {
+                    document.getElementById('existingImage').value = imagePath;
+                    // Запускаем событие change чтобы обновился предпросмотр
+                    document.getElementById('existingImage').dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    </script>
+} 
