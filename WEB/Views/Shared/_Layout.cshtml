@@ -1,5 +1,10 @@
 ﻿@using Microsoft.Extensions.Localization
+@using WEB.Models
 @inject IStringLocalizer<SharedResource> Localizer
+
+@{
+    var contacts = ViewData["Contacts"] as ContactsModel ?? new ContactsModel();
+}
 
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
@@ -55,7 +60,7 @@
                         if (currentCulture.StartsWith("ua") || currentCulture.StartsWith("uk"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="/set-culture/en?returnUrl=@Context.Request.Path">Мова: &nbsp; 
+                                <a class="nav-link language-link" data-language="en" href="javascript:void(0)">Мова: &nbsp; 
                                 <img src="~/images/icons/language-switch.svg" alt="Language icon" asp-append-version="true">
                                 EN</a>
                             </li>
@@ -63,7 +68,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="/set-culture/ua?returnUrl=@Context.Request.Path">Language: &nbsp; 
+                                <a class="nav-link language-link" data-language="ua" href="javascript:void(0)">Language: &nbsp; 
                                 <img src="~/images/icons/language-switch.svg" alt="Language icon" asp-append-version="true">
                                 UA</a>
                             </li>
@@ -72,11 +77,11 @@
                 </ul>
                 <div class="contact-mobile d-lg-none">        
                     <div class="contact-mobile-value">
-                        <a href="mailto:info@ua-hutir.com">uakhutir@gmail.com</a>
+                        <a href="mailto:@contacts.Email" id="mobileEmailLink">@contacts.Email</a>
                     </div>
 
                     <div class="contact-mobile-value">
-                        <a href="tel:+380123456789">0974018815</a>
+                        <a href="tel:@contacts.Phone" id="mobilePhoneLink">@contacts.Phone</a>
                     </div>                              
                 </div>
             </div>
@@ -326,16 +331,13 @@
                     <div class="footer-row">
                         <h3 class="social-title">@Localizer["footer.social"]</h3>
                         <div class="social-links">
-                            @* <a href="#" class="social-link"> *@
-                            @*     <img src="~/images/icons/linkedin.svg" alt="@Localizer["footer.social_links.linkedin"]" asp-append-version="true"> *@
-                            @* </a> *@
-                            <a href="#" class="social-link">
+                            <a href="@contacts.InstagramUrl" class="social-link" id="instagramLink" style="@(string.IsNullOrEmpty(contacts.InstagramUrl) || contacts.InstagramUrl == "#" ? "display:none" : "")">
                                 <img src="~/images/icons/insta.svg" alt="@Localizer["footer.social_links.instagram"]" asp-append-version="true">
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="@contacts.FacebookUrl" class="social-link" id="facebookLink" style="@(string.IsNullOrEmpty(contacts.FacebookUrl) || contacts.FacebookUrl == "#" ? "display:none" : "")">
                                 <img src="~/images/icons/facebook.svg" alt="@Localizer["footer.social_links.facebook"]" asp-append-version="true">
                             </a>
-                            <a href="#" class="social-link">
+                            <a href="@contacts.WhatsAppUrl" class="social-link" id="whatsappLink" style="@(string.IsNullOrEmpty(contacts.WhatsAppUrl) || contacts.WhatsAppUrl == "#" ? "display:none" : "")">
                                 <img src="~/images/icons/whatsup.svg" alt="@Localizer["footer.social_links.whatsapp"]" asp-append-version="true">
                             </a>
                         </div>
@@ -345,11 +347,11 @@
                         <div class="contact-info">
                             <div class="contact-item">
                                 <span class="contact-label">@Localizer["footer.email"]</span>
-                                <a href="mailto:info@ua-hutir.com" class="contact-value">uakhutir@gmail.com</a>
+                                <a href="mailto:@contacts.Email" class="contact-value" id="footerEmailLink">@contacts.Email</a>
                             </div>
                             <div class="contact-item contact-item-secondary">
                                 <span class="contact-label">@Localizer["footer.phone"]</span>
-                                <a href="tel:+380123456789" class="contact-value">0974018815</a>
+                                <a href="tel:@contacts.Phone" class="contact-value" id="footerPhoneLink">@contacts.Phone</a>
                             </div>
                         </div>
                         <div class="footer-logos">
@@ -380,8 +382,54 @@
                     this.classList.toggle('flipped');
                 }, { passive: false });
             });
+            
+            // Обработчик для переключения языка
+            const languageLinks = document.querySelectorAll('.language-link');
+            languageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const language = this.getAttribute('data-language');
+                    switchLanguage(language);
+                });
+            });
+            
+            // Функция для переключения языка через AJAX
+            function switchLanguage(language) {
+                fetch('/api/set-language', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ culture: language })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        console.log('Language switched successfully to:', data.language);
+                        // Перезагружаем страницу для применения изменений
+                        window.location.reload();
+                    } else {
+                        console.error('Error in response:', data.error);
+                        // Fallback
+                        window.location.href = `/set-culture/${language}?returnUrl=${window.location.pathname}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error switching language:', error);
+                    // Если AJAX не сработал, используем обычный переход
+                    window.location.href = `/set-culture/${language}?returnUrl=${window.location.pathname}`;
+                });
+            }
         });
     </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html> 
 

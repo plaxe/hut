@@ -1,15 +1,15 @@
 [
   {
     "Id": "1ff1d38e-19b3-45ce-b2d8-e3d5b0cb3d2a",
-    "Name": "\u0421\u0415\u041A\u0421",
-    "NameEn": "SEX",
+    "Name": "\u0421\u0415\u041A\u0421aaaaa",
+    "NameEn": "SEXaaaa",
     "Category": "\u0421\u043D\u0435\u043A\u0438",
     "Description": "\u041F\u0420\u0418\u0412\u0415\u0422",
     "DescriptionEn": "AAA SEX",
-    "ImagePath": "/images/products/product1.png",
+    "ImagePath": "/images/products/product2.png",
     "IsActive": true,
     "SortOrder": 0,
     "CreatedAt": "2025-04-03T09:58:39.7317024+03:00",
-    "UpdatedAt": "2025-04-03T11:39:20.8428877+03:00"
+    "UpdatedAt": "2025-04-03T16:29:02.9306428+03:00"
   }
 ]

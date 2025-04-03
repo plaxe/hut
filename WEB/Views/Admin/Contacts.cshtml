@@ -1,0 +1,94 @@
+@model WEB.Models.ContactsModel
+@{
+    ViewData["Title"] = "Редагування контактів";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Редагування контактів</h1>
+</div>
+
+<div class="alert alert-info mb-4">
+    <i class="bi bi-info-circle me-2"></i>
+    Тут ви можете змінити контактну інформацію та посилання на соціальні мережі, які відображаються на сайті.
+</div>
+
+<form asp-action="Contacts" asp-controller="Admin" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Основна інформація</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" class="form-control" placeholder="example@domain.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input asp-for="Phone" class="form-control" placeholder="+38 (0XX) XXX-XX-XX" />
+                        </div>
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Соціальні мережі</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="FacebookUrl" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-facebook"></i></span>
+                            <input asp-for="FacebookUrl" class="form-control" placeholder="https://facebook.com/yourpage" />
+                        </div>
+                        <span asp-validation-for="FacebookUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="InstagramUrl" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-instagram"></i></span>
+                            <input asp-for="InstagramUrl" class="form-control" placeholder="https://instagram.com/yourpage" />
+                        </div>
+                        <span asp-validation-for="InstagramUrl" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="WhatsAppUrl" class="form-label"></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
+                            <input asp-for="WhatsAppUrl" class="form-control" placeholder="https://wa.me/380XXXXXXXXX" />
+                        </div>
+                        <span asp-validation-for="WhatsAppUrl" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i>Зберегти зміни
+        </button>
+    </div>
+</form> 

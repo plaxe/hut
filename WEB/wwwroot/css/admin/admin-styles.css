@@ -1,0 +1,289 @@
+:root {
+    --admin-primary: #0d6efd;
+    --admin-sidebar-width: 280px;
+    --admin-sidebar-collapsed-width: 70px;
+    --admin-topbar-height: 60px;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background-color: var(--bs-dark-bg-subtle);
+}
+
+/* Header styles */
+.admin-header {
+    height: var(--admin-topbar-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background-color: var(--bs-dark);
+    border-bottom: 1px solid var(--bs-dark-border-subtle);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Sidebar styles */
+.admin-sidebar {
+    position: fixed;
+    top: var(--admin-topbar-height);
+    bottom: 0;
+    left: 0;
+    width: var(--admin-sidebar-width);
+    z-index: 100;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--bs-dark);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-sidebar.collapsed {
+    width: var(--admin-sidebar-collapsed-width);
+}
+
+.admin-sidebar .nav-item {
+    width: 100%;
+}
+
+.admin-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1.25rem;
+    color: var(--bs-light);
+    overflow: hidden;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-sidebar .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    transform: translateX(3px);
+}
+
+.admin-sidebar .nav-link.active {
+    background-color: rgba(var(--bs-primary-rgb), 0.15);
+    color: var(--admin-primary);
+    border-left-color: var(--admin-primary);
+}
+
+.admin-sidebar .nav-link i {
+    font-size: 1.25rem;
+    margin-right: 1rem;
+    min-width: 1.25rem;
+    text-align: center;
+    transition: margin 0.3s ease;
+}
+
+.admin-sidebar .nav-link span {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    width: auto;
+}
+
+.admin-sidebar.collapsed .nav-link span {
+    opacity: 0;
+    width: 0;
+    display: none;
+}
+
+.admin-sidebar.collapsed .nav-link i {
+    margin-right: 0;
+}
+
+/* Main content */
+.admin-content {
+    margin-top: var(--admin-topbar-height);
+    margin-left: var(--admin-sidebar-width);
+    padding: 1.5rem;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.admin-content.expanded {
+    margin-left: var(--admin-sidebar-collapsed-width);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        width: var(--admin-sidebar-width);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .admin-sidebar.mobile-show {
+        transform: translateX(0);
+    }
+    
+    .admin-content {
+        margin-left: 0;
+    }
+    
+    .admin-content.expanded {
+        margin-left: 0;
+    }
+}
+
+/* Cards and tables */
+.admin-card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    background-color: var(--bs-dark);
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.admin-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.admin-card .card-header {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 1rem 1.25rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.admin-table {
+    font-size: 0.9rem;
+}
+
+.admin-table th {
+    font-weight: 600;
+    border-top: none;
+}
+
+.admin-table td {
+    vertical-align: middle;
+}
+
+/* Улучшения для форм */
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    border-color: var(--admin-primary);
+}
+
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background-color: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+/* Utilities */
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bg-hover-light:hover {
+    background-color: rgba(var(--bs-light-rgb), 0.075) !important;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+}
+
+.nav-tabs .nav-link {
+    color: var(--bs-body-color);
+    transition: color 0.2s ease;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--admin-primary);
+    font-weight: 500;
+}
+
+/* Action tooltips */
+.action-tooltip {
+    position: relative;
+}
+
+.action-tooltip:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Loading indicator */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--bs-primary), var(--bs-info));
+    animation: loading 2s infinite;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.loading-indicator.active {
+    opacity: 1;
+}
+
+@keyframes loading {
+    0% { width: 0%; left: 0; }
+    50% { width: 50%; left: 25%; }
+    100% { width: 0%; left: 100%; }
+}
+
+/* Алерты */
+.alert {
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Модальные окна */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.modal-footer {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+} 

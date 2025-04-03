@@ -1,15 +1,14 @@
 @model WEB.Models.LocalizationViewModel
 @{
-    ViewData["Title"] = "Управление локализацией";
+    ViewData["Title"] = "Керування локалізацією";
     Layout = "_AdminLayout";
     
     string GetLanguageName(string code)
     {
         return code.ToLower() switch
         {
-            "ua" => "Украинский",
-            "en" => "Английский",
-            "ru" => "Русский",
+            "ua" => "Українська",
+            "en" => "Англійська",
             _ => code
         };
     }
@@ -20,175 +19,192 @@
         {
             "ua" => "🇺🇦",
             "en" => "🇬🇧",
-            "ru" => "🇷🇺",
             _ => "🌐"
         };
     }
 }
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Управление локализацией</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Керування локалізацією</h1>
 </div>
 
-<div class="mb-4">
-    <div class="btn-group" role="group" aria-label="Языки">
-        @foreach(var language in Model.AvailableLanguages)
-        {
-            <a href="@Url.Action("Localization", "Admin", new { language })" 
-               class="btn @(Model.CurrentLanguage == language ? "btn-primary" : "btn-outline-primary")">
-                @GetLanguageFlag(language) @GetLanguageName(language)
-            </a>
-        }
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card bg-dark-subtle mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">
-                        Редактирование локализации - @GetLanguageName(Model.CurrentLanguage) @GetLanguageFlag(Model.CurrentLanguage)
-                    </h5>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="viewToggle">
-                        <label class="form-check-label" for="viewToggle">Древовидный вид</label>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <p class="card-text">
-                    Здесь вы можете редактировать тексты сайта на разных языках. Выберите язык из списка выше, а затем отредактируйте нужные тексты.
-                </p>
-                <p class="card-text text-warning">
-                    <i class="bi bi-exclamation-triangle me-1"></i>
-                    <strong>Важно:</strong> Изменения вступают в силу немедленно, будьте внимательны при редактировании.
-                </p>
-            </div>
-        </div>
-        
-        <div class="mb-3">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" id="searchInput" class="form-control" placeholder="Поиск по ключу или значению...">
-            </div>
-        </div>
-        
-        <div id="tableView">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="localizationTable">
-                            <thead>
-                                <tr>
-                                    <th>Ключ</th>
-                                    <th>Значение</th>
-                                    <th width="120">Действия</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    void RenderResources(List<WEB.Models.LocalizationCategoryModel> categories, string path = "")
-                                    {
-                                        foreach (var category in categories)
-                                        {
-                                            var currentPath = string.IsNullOrEmpty(path) ? category.Key : $"{path}.{category.Key}";
-                                            
-                                            foreach (var resource in category.Resources)
-                                            {
-                                                <tr data-key="@resource.FullKey" data-value="@resource.Value">
-                                                    <td><code>@resource.FullKey</code></td>
-                                                    <td>@resource.Value</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-outline-primary edit-resource"
-                                                                data-key="@resource.FullKey" data-value="@resource.Value">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            }
-                                            
-                                            if (category.Categories.Any())
-                                            {
-                                                RenderResources(category.Categories, currentPath);
-                                            }
-                                        }
-                                    }
-                                    
-                                    RenderResources(Model.Categories);
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="treeView" style="display: none;">
-            <div class="card">
-                <div class="card-body">
-                    <div id="localizationTree">
-                        @{
-                            void RenderCategoryTree(List<WEB.Models.LocalizationCategoryModel> categories, int level = 0)
-                            {
-                                <ul class="list-group @(level > 0 ? "ms-4 mt-2" : "")">
-                                    @foreach (var category in categories)
-                                    {
-                                        <li class="list-group-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <strong>@category.Key</strong>
-                                                @if (category.Categories.Any() || category.Resources.Any())
-                                                {
-                                                    <button class="btn btn-sm btn-outline-secondary toggle-category">
-                                                        <i class="bi bi-chevron-down"></i>
-                                                    </button>
-                                                }
-                                            </div>
-                                            
-                                            <div class="category-content mt-2">
-                                                @if (category.Resources.Any())
-                                                {
-                                                    <table class="table table-sm">
-                                                        <tbody>
-                                                            @foreach (var resource in category.Resources)
-                                                            {
-                                                                <tr data-key="@resource.FullKey" data-value="@resource.Value">
-                                                                    <td width="30%"><code>@resource.Key</code></td>
-                                                                    <td>@resource.Value</td>
-                                                                    <td width="70px">
-                                                                        <button type="button" class="btn btn-sm btn-outline-primary edit-resource"
-                                                                                data-key="@resource.FullKey" data-value="@resource.Value">
-                                                                            <i class="bi bi-pencil"></i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                }
-                                                
-                                                @if (category.Categories.Any())
-                                                {
-                                                    RenderCategoryTree(category.Categories, level + 1);
-                                                }
-                                            </div>
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                            
-                            RenderCategoryTree(Model.Categories);
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card admin-card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-0">Оберіть мову</h5>
+                <div class="mt-2 mt-md-0">
+                    <div class="btn-group" role="group" aria-label="Мови">
+                        @foreach(var language in Model.AvailableLanguages)
+                        {
+                            <a href="@Url.Action("Localization", "Admin", new { language })" 
+                               class="btn @(Model.CurrentLanguage == language ? "btn-primary" : "btn-outline-primary")">
+                                @GetLanguageFlag(language) @GetLanguageName(language)
+                            </a>
                         }
                     </div>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="alert alert-info d-flex align-items-start" role="alert">
+                    <i class="bi bi-info-circle-fill me-2 fs-5 mt-1"></i>
+                    <div>
+                        <strong>Редагування локалізації - @GetLanguageName(Model.CurrentLanguage) @GetLanguageFlag(Model.CurrentLanguage)</strong>
+                        <p class="mb-0 mt-1">
+                            Тут ви можете редагувати тексти сайту різними мовами. Оберіть мову зі списку вище, а потім відредагуйте потрібні тексти. 
+                            <strong>Важливо:</strong> Зміни набувають чинності негайно.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="viewToggle">
+                    <label class="form-check-label" for="viewToggle">Показати у вигляді дерева</label>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Пошук за ключем або значенням...">
+                    </div>
+                    <div class="form-text">Введіть текст для пошуку за ключами та значеннями</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!-- Табличный вид -->
+        <div id="tableView" class="card admin-card">
+            <div class="card-header">
+                <h5 class="mb-0">Таблиця локалізації</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table admin-table table-hover mb-0" id="localizationTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%">Ключ</th>
+                                <th>Значення</th>
+                                <th style="width: 80px">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                void RenderResources(List<WEB.Models.LocalizationCategoryModel> categories, string path = "")
+                                {
+                                    foreach (var category in categories)
+                                    {
+                                        var currentPath = string.IsNullOrEmpty(path) ? category.Key : $"{path}.{category.Key}";
+                                        
+                                        foreach (var resource in category.Resources)
+                                        {
+                                            <tr data-key="@resource.FullKey" data-value="@resource.Value">
+                                                <td>
+                                                    <code class="text-truncate d-inline-block" style="max-width: 100%;">@resource.FullKey</code>
+                                                </td>
+                                                <td class="text-break">@resource.Value</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary edit-resource"
+                                                            data-key="@resource.FullKey" data-value="@resource.Value">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                        
+                                        if (category.Categories.Any())
+                                        {
+                                            RenderResources(category.Categories, currentPath);
+                                        }
+                                    }
+                                }
+                                
+                                RenderResources(Model.Categories);
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Древовидный вид -->
+        <div id="treeView" style="display: none;">
+            @{
+                void RenderCategoryTree(List<WEB.Models.LocalizationCategoryModel> categories, int level = 0)
+                {
+                    <div class="card admin-card mb-3">
+                        <div class="list-group list-group-flush">
+                            @foreach (var category in categories)
+                            {
+                                <div class="list-group-item p-0">
+                                    <div class="p-3 d-flex justify-content-between align-items-center bg-hover-light">
+                                        <div class="d-flex align-items-center">
+                                            @if (category.Categories.Any() || category.Resources.Any())
+                                            {
+                                                <button class="btn btn-sm btn-link text-decoration-none p-0 me-2 toggle-category">
+                                                    <i class="bi bi-chevron-down"></i>
+                                                </button>
+                                            }
+                                            <strong class="text-primary">@category.Key</strong>
+                                        </div>
+                                        <span class="badge bg-secondary rounded-pill">
+                                            @(category.Resources.Count + category.Categories.Sum(c => c.Resources.Count)) элем.
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="category-content px-2">
+                                        @if (category.Resources.Any())
+                                        {
+                                            <div class="list-group list-group-flush">
+                                                @foreach (var resource in category.Resources)
+                                                {
+                                                    <div class="list-group-item d-flex flex-column flex-md-row justify-content-between p-3 localization-item" data-key="@resource.FullKey" data-value="@resource.Value">
+                                                        <div class="mb-2 mb-md-0 me-md-3">
+                                                            <div class="text-muted small mb-1">Ключ:</div>
+                                                            <code class="d-block text-truncate">@resource.Key</code>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="text-muted small mb-1">Значение:</div>
+                                                            <div class="text-break mb-2">@resource.Value</div>
+                                                        </div>
+                                                        <div class="ms-auto d-flex align-items-start">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary edit-resource"
+                                                                    data-key="@resource.FullKey" data-value="@resource.Value">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        
+                                        @if (category.Categories.Any())
+                                        {
+                                            <div class="mt-2 ms-3 mb-3">
+                                                @{RenderCategoryTree(category.Categories, level + 1);}
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                
+                RenderCategoryTree(Model.Categories);
+            }
         </div>
     </div>
 </div>
 
 <!-- Модальное окно редактирования -->
 <div class="modal fade" id="editResourceModal" tabindex="-1" aria-labelledby="editResourceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <form id="editResourceForm" action="@Url.Action("UpdateLocalization", "Admin")" method="post">
                 @Html.AntiForgeryToken()
@@ -196,7 +212,7 @@
                 <input type="hidden" name="Key" id="editKey">
                 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editResourceModalLabel">Редактирование текста</h5>
+                    <h5 class="modal-title" id="editResourceModalLabel">Редагування тексту</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -205,13 +221,15 @@
                         <input type="text" class="form-control" id="editKeyDisplay" disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="editValue" class="form-label">Значение:</label>
+                        <label for="editValue" class="form-label">Значення:</label>
                         <textarea class="form-control" name="Value" id="editValue" rows="5" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>Зберегти
+                    </button>
                 </div>
             </form>
         </div>
@@ -243,13 +261,23 @@
             const tableView = document.getElementById('tableView');
             const treeView = document.getElementById('treeView');
             
+            // Восстанавливаем состояние отображения из localStorage
+            const viewMode = localStorage.getItem('localizationViewMode');
+            if (viewMode === 'tree') {
+                tableView.style.display = 'none';
+                treeView.style.display = 'block';
+                viewToggle.checked = true;
+            }
+            
             viewToggle.addEventListener('change', function() {
                 if (this.checked) {
                     tableView.style.display = 'none';
                     treeView.style.display = 'block';
+                    localStorage.setItem('localizationViewMode', 'tree');
                 } else {
                     tableView.style.display = 'block';
                     treeView.style.display = 'none';
+                    localStorage.setItem('localizationViewMode', 'table');
                 }
             });
             
@@ -257,10 +285,10 @@
             const searchInput = document.getElementById('searchInput');
             searchInput.addEventListener('input', function() {
                 const searchText = this.value.toLowerCase();
-                const tableRows = document.querySelectorAll('#localizationTable tbody tr');
-                const treeRows = document.querySelectorAll('#localizationTree tr[data-key]');
                 
                 // Фильтрация табличного вида
+                const tableRows = document.querySelectorAll('#localizationTable tbody tr');
+                
                 tableRows.forEach(row => {
                     const key = row.getAttribute('data-key').toLowerCase();
                     const value = row.getAttribute('data-value').toLowerCase();
@@ -273,36 +301,70 @@
                 });
                 
                 // Фильтрация древовидного вида
-                treeRows.forEach(row => {
-                    const key = row.getAttribute('data-key').toLowerCase();
-                    const value = row.getAttribute('data-value').toLowerCase();
+                const treeItems = document.querySelectorAll('.localization-item');
+                
+                treeItems.forEach(item => {
+                    const key = item.getAttribute('data-key').toLowerCase();
+                    const value = item.getAttribute('data-value').toLowerCase();
                     
                     if (key.includes(searchText) || value.includes(searchText)) {
-                        row.style.display = '';
+                        item.style.display = '';
+                        
                         // Показываем родительские категории
-                        let parent = row.closest('.category-content');
+                        let parent = item.closest('.category-content');
                         while (parent) {
                             parent.style.display = '';
+                            let parentHeader = parent.previousElementSibling;
+                            if (parentHeader && parentHeader.querySelector('.toggle-category i')) {
+                                parentHeader.querySelector('.toggle-category i').classList.replace('bi-chevron-right', 'bi-chevron-down');
+                            }
                             parent = parent.parentElement.closest('.category-content');
                         }
                     } else {
-                        row.style.display = 'none';
+                        item.style.display = 'none';
                     }
                 });
             });
             
-            // Сворачивание/разворачивание категорий в древовидном представлении
+            // Сворачивание/разворачивание категорий в древовидном представлении с анимацией
             const toggleButtons = document.querySelectorAll('.toggle-category');
+            const categoryContents = document.querySelectorAll('.category-content');
+            
+            // Добавляем стили для анимации
+            const styleElement = document.createElement('style');
+            styleElement.textContent = `
+                .category-content {
+                    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+                    overflow: hidden;
+                    max-height: 2000px; /* Начальное большое значение */
+                    opacity: 1;
+                }
+                .category-content.collapsed {
+                    max-height: 0;
+                    opacity: 0;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                }
+            `;
+            document.head.appendChild(styleElement);
+            
+            // Устанавливаем начальное состояние для категорий
+            categoryContents.forEach(content => {
+                // Инициализация с раскрытыми категориями
+                content.classList.remove('collapsed');
+            });
+            
             toggleButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const contentElement = this.closest('li').querySelector('.category-content');
+                    const categoryItem = this.closest('.list-group-item');
+                    const contentElement = categoryItem.querySelector('.category-content');
                     const icon = this.querySelector('i');
                     
-                    if (contentElement.style.display === 'none') {
-                        contentElement.style.display = '';
+                    if (contentElement.classList.contains('collapsed')) {
+                        contentElement.classList.remove('collapsed');
                         icon.classList.replace('bi-chevron-right', 'bi-chevron-down');
                     } else {
-                        contentElement.style.display = 'none';
+                        contentElement.classList.add('collapsed');
                         icon.classList.replace('bi-chevron-down', 'bi-chevron-right');
                     }
                 });

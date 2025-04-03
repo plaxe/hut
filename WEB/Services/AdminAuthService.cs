@@ -33,11 +33,11 @@ public class AdminAuthService
         if (isValid)
         {
             await SignInAsync(model);
-            _logger.LogInformation("Успешный вход администратора: {Username}", model.Username);
+            _logger.LogInformation("Успішний вхід адміністратора: {Username}", model.Username);
             return true;
         }
         
-        _logger.LogWarning("Неудачная попытка входа для: {Username}", model.Username);
+        _logger.LogWarning("Невдала спроба входу для: {Username}", model.Username);
         return false;
     }
     

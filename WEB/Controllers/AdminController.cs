@@ -15,17 +15,20 @@ public class AdminController : Controller
     private readonly ILogger<AdminController> _logger;
     private readonly ProductService _productService;
     private readonly LocalizationEditorService _localizationEditorService;
+    private readonly ContactsService _contactsService;
 
     public AdminController(
         AdminAuthService authService,
         ILogger<AdminController> logger,
         ProductService productService,
-        LocalizationEditorService localizationEditorService)
+        LocalizationEditorService localizationEditorService,
+        ContactsService contactsService)
     {
         _authService = authService;
         _logger = logger;
         _productService = productService;
         _localizationEditorService = localizationEditorService;
+        _contactsService = contactsService;
     }
 
     [HttpGet("login")]
@@ -51,11 +54,11 @@ public class AdminController : Controller
 
         if (await _authService.ValidateLoginAsync(model))
         {
-            _logger.LogInformation("Администратор успешно вошел в систему");
+            _logger.LogInformation("Адміністратор успішно увійшов до системи");
             return RedirectToAction(nameof(Products));
         }
 
-        ModelState.AddModelError(string.Empty, "Неверное имя пользователя или пароль");
+        ModelState.AddModelError(string.Empty, "Невірне ім'я користувача або пароль");
         return View(model);
     }
 
@@ -134,7 +137,7 @@ public class AdminController : Controller
         
         await _productService.AddProductAsync(model);
         
-        TempData["SuccessMessage"] = "Продукт успешно создан";
+        TempData["SuccessMessage"] = "Продукт успішно створено";
         return RedirectToAction(nameof(Products));
     }
     
@@ -201,7 +204,7 @@ public class AdminController : Controller
         
         await _productService.UpdateProductAsync(model);
         
-        TempData["SuccessMessage"] = "Продукт успешно обновлен";
+        TempData["SuccessMessage"] = "Продукт успішно оновлено";
         return RedirectToAction(nameof(Products));
     }
     
@@ -221,7 +224,7 @@ public class AdminController : Controller
         
         await _productService.DeleteProductAsync(id);
         
-        TempData["SuccessMessage"] = "Продукт успешно удален";
+        TempData["SuccessMessage"] = "Продукт успішно видалено";
         return RedirectToAction(nameof(Products));
     }
     
@@ -243,8 +246,8 @@ public class AdminController : Controller
         await _productService.UpdateProductAsync(product);
         
         TempData["SuccessMessage"] = product.IsActive 
-            ? "Продукт успешно активирован" 
-            : "Продукт успешно деактивирован";
+            ? "Продукт успішно активовано" 
+            : "Продукт успішно деактивовано";
             
         return RedirectToAction(nameof(Products));
     }
@@ -316,11 +319,44 @@ public class AdminController : Controller
         
         if (success)
         {
-            TempData["SuccessMessage"] = "Текст успешно обновлен";
+            TempData["SuccessMessage"] = "Текст успішно оновлено";
             return RedirectToAction(nameof(Localization), new { language = model.Language });
         }
         
-        TempData["ErrorMessage"] = "Ошибка при обновлении текста";
+        TempData["ErrorMessage"] = "Помилка при оновленні тексту";
         return RedirectToAction(nameof(Localization), new { language = model.Language });
+    }
+
+    // Contacts Management
+    [HttpGet("contacts")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> Contacts()
+    {
+        var contacts = await _contactsService.GetContactsAsync();
+        return View(contacts);
+    }
+    
+    [HttpPost("contacts")]
+    [Authorize(Roles = "Administrator")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Contacts(ContactsModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
+        var success = await _contactsService.UpdateContactsAsync(model);
+        
+        if (success)
+        {
+            TempData["SuccessMessage"] = "Контактну інформацію успішно оновлено";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Помилка при оновленні контактної інформації";
+        }
+        
+        return RedirectToAction(nameof(Contacts));
     }
 } 

@@ -92,13 +92,24 @@ public class Program
                 var supportedCultures = new[] 
                 { 
                     new CultureInfo("ua"),
-                    new CultureInfo("en"),
-                    new CultureInfo("ru")
+                    new CultureInfo("en")
                 };
+                
                 options.DefaultRequestCulture = new RequestCulture("ua");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.SetDefaultCulture("ua");
+                
+                // Устанавливаем провайдеры локализации и их порядок
+                options.RequestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    // Сначала проверяем cookie
+                    new CookieRequestCultureProvider
+                    {
+                        CookieName = CookieRequestCultureProvider.DefaultCookieName
+                    },
+                    // Затем по Accept-Language хедеру
+                    new AcceptLanguageHeaderRequestCultureProvider()
+                };
             });
 
         // Регистрируем сервис компиляции SCSS
@@ -112,6 +123,12 @@ public class Program
 
         // Добавляем сервис редактирования локализации
         builder.Services.AddScoped<LocalizationEditorService>();
+
+        // Добавляем сервис управления языками
+        builder.Services.AddScoped<LanguageService>();
+
+        // Добавляем сервис управления контактами
+        builder.Services.AddScoped<ContactsService>();
 
         var app = builder.Build();
 
@@ -152,12 +169,12 @@ public class Program
         
         app.UseOutputCache();
 
-        // Маршрут по умолчанию (с культурой)
+        // Маршрут по умолчанию (без культуры)
         app.MapControllerRoute(
             name: "default",
-            pattern: "{culture=ua}/{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Home}/{action=Index}/{id?}");
             
-        // Маршрут для админки (без культуры)
+        // Маршрут для админки
         app.MapControllerRoute(
             name: "admin",
             pattern: "admin/{action=Dashboard}/{id?}",

@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Caching.Memory;
+using WEB.Localization;
 using WEB.Models;
 
 namespace WEB.Services;
@@ -8,12 +10,18 @@ public class LocalizationEditorService
 {
     private readonly string _resourcesPath;
     private readonly ILogger<LocalizationEditorService> _logger;
-    private readonly string[] _supportedLanguages = { "ua", "en", "ru" };
+    private readonly string[] _supportedLanguages = { "ua", "en" };
+    private readonly IMemoryCache _memoryCache;
+    private const string CacheKeyPrefix = "Localization_";
 
-    public LocalizationEditorService(IWebHostEnvironment env, ILogger<LocalizationEditorService> logger)
+    public LocalizationEditorService(
+        IWebHostEnvironment env, 
+        ILogger<LocalizationEditorService> logger,
+        IMemoryCache memoryCache)
     {
         _resourcesPath = Path.Combine(env.ContentRootPath, "Resources");
         _logger = logger;
+        _memoryCache = memoryCache;
     }
     
     public async Task<LocalizationViewModel> GetLocalizationResourcesAsync(string language)
@@ -96,6 +104,9 @@ public class LocalizationEditorService
             
             await File.WriteAllTextAsync(filePath, updatedJson);
             
+            // Очищаем кеш для обновленного значения
+            ClearCacheForLanguage(language);
+            
             return true;
         }
         catch (Exception ex)
@@ -119,6 +130,40 @@ public class LocalizationEditorService
         }
         
         return languages;
+    }
+    
+    private void ClearCacheForLanguage(string language)
+    {
+        _logger.LogInformation($"Clearing localization cache for language: {language}");
+        
+        try
+        {
+            // Создаем новый ключ кеша с временной меткой для обеспечения уникальности
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            var cachePrefix = $"{CacheKeyPrefix}{language.ToLower()}_{timestamp}";
+            
+            // Сохраняем новый ключ кеша в специальном ключе для отслеживания
+            _memoryCache.Set($"LastCacheKey_{language.ToLower()}", cachePrefix, 
+                new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromDays(1) });
+            
+            // Удаляем старый кеш для всех строк
+            _memoryCache.Remove($"{CacheKeyPrefix}{language.ToLower()}_AllStrings");
+            
+            // Также очищаем кеш для других языков, чтобы избежать потенциальных конфликтов
+            foreach (var otherLang in _supportedLanguages)
+            {
+                if (otherLang != language)
+                {
+                    _memoryCache.Remove($"{CacheKeyPrefix}{otherLang.ToLower()}_AllStrings");
+                }
+            }
+            
+            _logger.LogInformation($"Localization cache for language {language} cleared successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error clearing localization cache for language {language}");
+        }
     }
     
     private List<LocalizationCategoryModel> ProcessJsonElement(JsonElement element, string parentPath)
