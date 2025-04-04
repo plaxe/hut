@@ -1,6 +1,7 @@
-using System.Globalization;
 using Microsoft.Extensions.Localization;
 using WEB.Models;
+using WEB.Localization;
+using Microsoft.AspNetCore.Http;
 
 namespace WEB.Services;
 
@@ -8,7 +9,8 @@ public class LocalizationPreloadService
 {
     private readonly IStringLocalizer<SharedResource> _localizer;
     private readonly ILogger<LocalizationPreloadService> _logger;
-    private readonly string[] _supportedCultures = { "ua", "en" };
+    private readonly string[] _supportedLanguages = { "ua", "en" };
+    private readonly JsonStringLocalizer<SharedResource> _jsonStringLocalizer;
 
     public LocalizationPreloadService(
         IStringLocalizer<SharedResource> localizer,
@@ -16,46 +18,60 @@ public class LocalizationPreloadService
     {
         _localizer = localizer;
         _logger = logger;
+        
+        // Проверяем, можем ли мы преобразовать localizer в JsonStringLocalizer
+        if (localizer is JsonStringLocalizer<SharedResource> jsonLocalizer)
+        {
+            _jsonStringLocalizer = jsonLocalizer;
+        }
     }
 
     public void PreloadResources()
     {
-        _logger.LogInformation("Starting preloading localization resources...");
-        
-        var originalCulture = CultureInfo.CurrentUICulture;
+        _logger.LogInformation("Начинаем предзагрузку ресурсов локализации...");
         
         try
         {
-            foreach (var culture in _supportedCultures)
+            // Для каждого поддерживаемого языка
+            foreach (var language in _supportedLanguages)
             {
-                _logger.LogInformation($"Preloading resources for culture: {culture}");
+                _logger.LogInformation($"Предзагрузка ресурсов для языка: {language}");
                 
-                // Устанавливаем текущую культуру для загрузки ресурсов
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-                
-                // Получаем все строки для текущей культуры
-                var allStrings = _localizer.GetAllStrings(includeParentCultures: true);
-                
-                foreach (var localizedString in allStrings)
+                // Метод 1: Используем общий StringLocalizer (предпочтительно - пробует читать из файла)
+                try
                 {
-                    // Загружаем каждую строку
-                    var value = _localizer[localizedString.Name];
-                    _logger.LogDebug($"Preloaded: {localizedString.Name} = {value}");
+                    // Явно запрашиваем файл ресурсов для каждого языка
+                    var resourcePath = System.IO.Path.Combine("Persistent", "Resources", $"{language}.json");
+                    if (System.IO.File.Exists(resourcePath))
+                    {
+                        var jsonContent = System.IO.File.ReadAllText(resourcePath);
+                        _logger.LogInformation($"Загружен файл ресурсов для языка {language}, размер: {jsonContent.Length} байт");
+                        
+                        // Принудительно добавляем содержимое в кеш, если есть доступ к JsonStringLocalizer
+                        if (_jsonStringLocalizer != null)
+                        {
+                            _logger.LogInformation($"Кеширование ресурсов для языка {language}");
+                            // Вызов метода GetAllStrings заставит кешировать все строки
+                            var allStrings = _jsonStringLocalizer.GetAllStrings(includeParentCultures: false);
+                            _logger.LogInformation($"Закешировано {allStrings.Count()} строк для языка {language}");
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Файл ресурсов не найден для языка: {language}");
+                    }
                 }
-                
-                _logger.LogInformation($"Completed preloading resources for culture: {culture}");
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Ошибка при предзагрузке ресурсов для языка {language}");
+                }
             }
             
-            _logger.LogInformation("Localization resources preloaded successfully");
+            _logger.LogInformation("Ресурсы локализации успешно предзагружены");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while preloading localization resources");
-        }
-        finally
-        {
-            // Восстанавливаем исходную культуру
-            Thread.CurrentThread.CurrentUICulture = originalCulture;
+            _logger.LogError(ex, "Ошибка при предзагрузке ресурсов локализации");
         }
     }
 } 

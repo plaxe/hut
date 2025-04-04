@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Http;
 
 namespace WEB.Localization;
 
@@ -10,6 +11,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
     private readonly string _resourceName;
     private readonly ILogger<JsonStringLocalizer<T>> _logger;
     private readonly IMemoryCache _cache;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     
     private const string RESOURCES_CACHE_KEY_PREFIX = "JsonStringLocalizer_";
     private const string JSON_CONTENT_CACHE_KEY_PREFIX = "JsonContent_";
@@ -19,12 +21,14 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         string resourcesPath, 
         string resourceName, 
         ILogger<JsonStringLocalizer<T>> logger,
-        IMemoryCache cache = null)
+        IMemoryCache cache = null,
+        IHttpContextAccessor httpContextAccessor = null)
     {
         _resourcesPath = resourcesPath;
         _resourceName = resourceName;
         _logger = logger;
         _cache = cache;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public LocalizedString this[string name]
@@ -48,7 +52,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
 
     public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
     {
-        var culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
+        // Получаем язык из куки через GetCurrentLanguage
+        var culture = GetCurrentLanguage();
         var cacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
         
         // Проверка кеша
@@ -90,8 +95,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         }
         catch (Exception ex)
         {
-            var currentCulture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
-            _logger.LogError(ex, $"Error getting all localized strings for culture {currentCulture}");
+            _logger.LogError(ex, $"Error getting all localized strings for culture {culture}");
             return Enumerable.Empty<LocalizedString>();
         }
     }
@@ -120,7 +124,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
 
     private string GetString(string name)
     {
-        var culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
+        // Получаем язык из куки через GetCurrentLanguage
+        var culture = GetCurrentLanguage();
         var cacheKey = $"{STRING_CACHE_KEY_PREFIX}{culture}_{name}";
         
         // Проверка кеша
@@ -218,20 +223,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
 
     private string GetJsonPath()
     {
-        var culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
-        
-        // Если культура содержит "-", берем только первую часть
-        if (culture.Contains("-"))
-        {
-            culture = culture.Split('-')[0];
-        }
-        
-        // Специальная обработка для украинской локализации
-        if (culture == "uk")
-        {
-            culture = "ua";
-        }
-        
+        var culture = GetCurrentLanguage();
         var culturePath = Path.Combine(_resourcesPath, $"{culture}.json");
         
         if (File.Exists(culturePath))
@@ -247,7 +239,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
     {
         if (_cache == null) return;
         
-        var culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
+        var culture = GetCurrentLanguage();
         
         // Очищаем основной кеш для текущей культуры
         var resourcesCacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
@@ -284,5 +276,53 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             
             _logger.LogInformation($"Очищен кеш локализации для культуры {culture}");
         }
+    }
+
+    // Метод для получения текущего языка из куки
+    private string GetCurrentLanguage()
+    {
+        var culture = "ua"; // Язык по умолчанию
+        
+        // Получаем HttpContext через IHttpContextAccessor
+        var httpContext = _httpContextAccessor?.HttpContext;
+        
+        if (httpContext != null)
+        {
+            // Константа для имени куки
+            const string LANGUAGE_COOKIE_NAME = "Language";
+            
+            // Проверяем наличие куки языка
+            if (httpContext.Request.Cookies.TryGetValue(LANGUAGE_COOKIE_NAME, out string languageCookie))
+            {
+                // Поддерживаемые языки
+                var supportedLanguages = new[] { "ua", "en" };
+                
+                // Проверяем, поддерживается ли язык
+                if (supportedLanguages.Contains(languageCookie.ToLower()))
+                {
+                    culture = languageCookie.ToLower();
+                    _logger.LogDebug($"Язык из куки: {culture}");
+                }
+            }
+        }
+        else
+        {
+            // Для совместимости, если HttpContext недоступен
+            culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
+            
+            // Если культура содержит "-", берем только первую часть
+            if (culture.Contains("-"))
+            {
+                culture = culture.Split('-')[0];
+            }
+            
+            // Специальная обработка для украинской локализации
+            if (culture == "uk")
+            {
+                culture = "ua";
+            }
+        }
+        
+        return culture;
     }
 } 

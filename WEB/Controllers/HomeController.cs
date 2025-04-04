@@ -1,12 +1,8 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Localization;
 using WEB.Models;
 using WEB.Services;
-using System.Globalization;
-using System.Threading;
 
 namespace WEB.Controllers;
 
@@ -16,6 +12,13 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly ProductService _productService;
     private readonly ContactsService _contactsService;
+    
+    // Константа для имени куки
+    private const string LANGUAGE_COOKIE_NAME = "Language";
+    // Поддерживаемые языки
+    private readonly string[] _supportedLanguages = { "ua", "en" };
+    // Язык по умолчанию
+    private const string DEFAULT_LANGUAGE = "ua";
 
     public HomeController(
         IStringLocalizer<SharedResource> localizer, 
@@ -32,42 +35,34 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        // Логируем текущую культуру для отладки
-        _logger.LogInformation($"Current culture in HomeController: {Thread.CurrentThread.CurrentCulture}");
-        _logger.LogInformation($"Current UI culture in HomeController: {Thread.CurrentThread.CurrentUICulture}");
+        // Получаем язык из куки
+        string currentLanguage = DEFAULT_LANGUAGE;
         
-        // Получаем текущую культуру из HttpContext
-        var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-        if (requestCultureFeature != null)
+        if (HttpContext.Request.Cookies.TryGetValue(LANGUAGE_COOKIE_NAME, out string languageCookie))
         {
-            _logger.LogInformation($"Request Culture: {requestCultureFeature.RequestCulture.Culture}");
-            _logger.LogInformation($"Request UI Culture: {requestCultureFeature.RequestCulture.UICulture}");
-        }
-        
-        // Проверяем куки
-        if (HttpContext.Request.Cookies.TryGetValue(CookieRequestCultureProvider.DefaultCookieName, out string cultureCookie))
-        {
-            _logger.LogInformation($"Culture cookie value: {cultureCookie}");
+            // Проверяем, что значение из куки - один из поддерживаемых языков
+            if (_supportedLanguages.Contains(languageCookie))
+            {
+                currentLanguage = languageCookie;
+                _logger.LogInformation($"Язык из куки: {currentLanguage}");
+            }
+            else
+            {
+                _logger.LogWarning($"Неподдерживаемый язык в куки: {languageCookie}");
+            }
         }
         else
         {
-            _logger.LogWarning("Culture cookie not found!");
-        }
-
-        // Логируем все куки для отладки на EC2
-        _logger.LogInformation("All cookies:");
-        foreach (var cookie in HttpContext.Request.Cookies)
-        {
-            _logger.LogInformation($"Cookie: {cookie.Key} = {cookie.Value}");
-        }
-
-        // Логируем все заголовки для отладки
-        _logger.LogInformation("All headers:");
-        foreach (var header in HttpContext.Request.Headers)
-        {
-            _logger.LogInformation($"Header: {header.Key} = {header.Value}");
+            _logger.LogInformation("Куки языка не найдена, используем язык по умолчанию");
         }
         
+        // Логируем для отладки
+        _logger.LogInformation($"Используемый язык: {currentLanguage}");
+        
+        // Устанавливаем язык в ViewData для доступа в представлении
+        ViewData["CurrentLanguage"] = currentLanguage;
+        
+        // Устанавливаем заголовок страницы из ресурсов для выбранного языка
         ViewData["Title"] = _localizer["site.title"];
         
         // Получаем активные продукты для отображения на главной странице
@@ -77,9 +72,6 @@ public class HomeController : Controller
         // Получаем контактные данные
         var contacts = await _contactsService.GetContactsAsync();
         ViewData["Contacts"] = contacts;
-        
-        // Добавляем текущую культуру в ViewData для отображения на странице
-        ViewData["CurrentCulture"] = Thread.CurrentThread.CurrentUICulture.Name;
         
         return View();
     }

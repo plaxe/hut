@@ -1,11 +1,8 @@
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
 using WEB.Localization;
 using WEB.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using WEB.Services;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.OutputCaching;
@@ -49,15 +46,17 @@ public class Program
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
             var memoryCache = sp.GetRequiredService<IMemoryCache>();
-            return new JsonStringLocalizerFactory(resourcesPath, loggerFactory, memoryCache);
+            var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+            return new JsonStringLocalizerFactory(resourcesPath, loggerFactory, memoryCache, httpContextAccessor);
         });
         
         builder.Services.AddScoped<IStringLocalizer<SharedResource>>(sp => 
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
             var memoryCache = sp.GetRequiredService<IMemoryCache>();
+            var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
             return new JsonStringLocalizer<SharedResource>(resourcesPath, nameof(SharedResource), 
-                loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), memoryCache);
+                loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), memoryCache, httpContextAccessor);
         });
 
         builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Persistent/Resources"; });
@@ -93,33 +92,6 @@ public class Program
         
         // Добавляем сервис авторизации админки
         builder.Services.AddScoped<AdminAuthService>();
-
-        // Настройка локализации
-        builder.Services.Configure<RequestLocalizationOptions>(
-            options =>
-            {
-                var supportedCultures = new[] 
-                { 
-                    new CultureInfo("ua"),
-                    new CultureInfo("en")
-                };
-                
-                options.DefaultRequestCulture = new RequestCulture("ua");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-                
-                // Устанавливаем провайдеры локализации и их порядок
-                options.RequestCultureProviders = new List<IRequestCultureProvider>
-                {
-                    // Сначала проверяем cookie
-                    new CookieRequestCultureProvider
-                    {
-                        CookieName = CookieRequestCultureProvider.DefaultCookieName
-                    },
-                    // Затем по Accept-Language хедеру
-                    new AcceptLanguageHeaderRequestCultureProvider()
-                };
-            });
 
         // Регистрируем сервис компиляции SCSS
         builder.Services.AddScoped<ScssCompilerService>();
@@ -174,31 +146,7 @@ public class Program
         // Правильный порядок middleware
         app.UseRouting();
 
-        // Настройка локализации должна быть перед авторизацией и после UseRouting
-        app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-
-        // Добавляем middleware для обеспечения корректной работы локализации на EC2
-        app.Use(async (context, next) =>
-        {
-            // Получение провайдера культуры из запроса
-            var requestCultureFeature = context.Features.Get<IRequestCultureFeature>();
-            var requestCulture = requestCultureFeature?.RequestCulture;
-
-            if (requestCulture != null)
-            {
-                // Явно устанавливаем культуру для текущего потока
-                Thread.CurrentThread.CurrentCulture = requestCulture.Culture;
-                Thread.CurrentThread.CurrentUICulture = requestCulture.UICulture;
-                
-                // Логируем установленную культуру для отладки
-                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation($"Culture set to: {Thread.CurrentThread.CurrentUICulture.Name}");
-            }
-
-            await next();
-        });
-
-        // Добавляем аутентификацию и авторизацию после локализации
+        // Добавляем аутентификацию и авторизацию 
         app.UseAuthentication();
         app.UseAuthorization();
         
@@ -206,7 +154,7 @@ public class Program
         app.UseOutputCache();
 
         // Маршрут для смены языка (без кеширования)
-        app.MapGet("set-language/{culture}", async (string culture, string returnUrl, HttpContext context) =>
+        app.MapGet("set-language/{culture}", async (string culture, string returnUrl, HttpContext context, ILogger<Program> logger) =>
         {
             if (string.IsNullOrEmpty(returnUrl))
             {
@@ -218,38 +166,23 @@ public class Program
             {
                 culture = "ua";
             }
-
-            // Явно создаем новую культуру
-            var requestCulture = new RequestCulture(culture);
             
-            // Устанавливаем куки с большим сроком хранения и явным доменом
+            // Устанавливаем куки
             context.Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(requestCulture),
+                "Language",
+                culture.ToLower(),
                 new CookieOptions { 
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
                     IsEssential = true,
                     SameSite = SameSiteMode.Lax,
                     HttpOnly = false,
                     Path = "/",
-                    Domain = context.Request.Host.Host, // Явно указываем домен
                     Secure = context.Request.IsHttps
                 }
             );
             
-            // Явно устанавливаем культуру для текущего запроса
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-            
-            // Сохраняем выбранную культуру в provider
-            context.Features.Set<IRequestCultureFeature>(
-                new RequestCultureFeature(requestCulture, new CookieRequestCultureProvider())
-            );
-            
             // Логируем для отладки
-            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation($"Culture changed to {culture}. Setting cookie: {CookieRequestCultureProvider.MakeCookieValue(requestCulture)}");
-            logger.LogInformation($"Current host: {context.Request.Host.Host}, IsHttps: {context.Request.IsHttps}");
+            logger.LogInformation($"Язык изменен на {culture}");
             
             return Results.Redirect(returnUrl);
         }).CacheOutput(c => c.NoCache()).WithName("SetLanguage");

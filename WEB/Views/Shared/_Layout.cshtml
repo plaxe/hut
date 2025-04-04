@@ -7,14 +7,14 @@
 }
 
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="@(ViewData["CurrentLanguage"]?.ToString() ?? "ua")">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="theme-color" content="#3E5F8A">
-    <title>@Localizer["site.title"]</title>
+    <title>@ViewData["Title"]</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,10 +56,10 @@
                 </ul>
                 <ul class="navbar-nav language-switch">
                     @{
-                        var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name.ToLower();
+                        var currentLanguage = ViewData["CurrentLanguage"]?.ToString() ?? "ua";
                         var returnUrl = Context.Request.Path.Value + Context.Request.QueryString.Value;
                         
-                        if (currentCulture.StartsWith("ua") || currentCulture.StartsWith("uk"))
+                        if (currentLanguage == "ua")
                         {
                             <li class="nav-item">
                                 <a class="nav-link" href="@Url.RouteUrl("SetLanguage", new { culture = "en", returnUrl })">Мова: &nbsp; 
@@ -246,7 +246,7 @@
                 @{
                     if (ViewData["Products"] is List<ProductModel> products && products.Any())
                     {
-                        var isEnglish = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en");
+                        var isEnglish = ViewData["CurrentLanguage"]?.ToString() == "en";
                         
                         foreach (var product in products)
                         {
@@ -305,9 +305,9 @@
             </div>
             <div class="world-map-container">
                 @{
-                var mapImage = System.Globalization.CultureInfo.CurrentUICulture.Name == "en-US"
-                ? "images/icons/map_en.svg"
-                : "images/icons/map.svg";
+                var mapImage = ViewData["CurrentLanguage"]?.ToString() == "en"
+                    ? "images/icons/map_en.svg"
+                    : "images/icons/map.svg";
                 }
                 <img src="@mapImage" alt="@Localizer["worldMap.title"]" style="width: 100%; height: auto;">
             </div>

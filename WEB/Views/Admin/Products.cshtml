@@ -3,12 +3,6 @@
 @{
     ViewData["Title"] = "Керування продуктами";
     Layout = "_AdminLayout";
-    
-    string GetFileName(string path)
-    {
-        if (string.IsNullOrEmpty(path)) return string.Empty;
-        return path.Split('/').Last();
-    }
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
