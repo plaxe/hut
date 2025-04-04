@@ -59,10 +59,6 @@
                         var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name.ToLower();
                         var returnUrl = Context.Request.Path.Value + Context.Request.QueryString.Value;
                         
-                        <li class="nav-item d-none d-lg-block">
-                            <span class="nav-link text-muted">[@currentCulture]</span>
-                        </li>
-                        
                         if (currentCulture.StartsWith("ua") || currentCulture.StartsWith("uk"))
                         {
                             <li class="nav-item">

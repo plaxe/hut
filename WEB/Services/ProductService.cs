@@ -68,7 +68,8 @@ public class ProductService
             // Сохраняем в кеш на 30 минут
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(30))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+                .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+                .SetSize(1);
                 
             _cache.Set(PRODUCTS_CACHE_KEY, products, cacheOptions);
             
@@ -96,7 +97,8 @@ public class ProductService
         // Сохраняем в кеш на 30 минут
         var cacheOptions = new MemoryCacheEntryOptions()
             .SetAbsoluteExpiration(TimeSpan.FromMinutes(30))
-            .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10))
+            .SetSize(1);
             
         _cache.Set(ACTIVE_PRODUCTS_CACHE_KEY, activeProducts, cacheOptions);
         

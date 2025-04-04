@@ -76,7 +76,8 @@ public class ContactsService
             // Сохраняем в кеш
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromHours(24)) 
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                .SetSlidingExpiration(TimeSpan.FromMinutes(30))
+                .SetSize(1); // Устанавливаем размер элемента
                 
             _cache.Set(CONTACTS_CACHE_KEY, contacts, cacheOptions);
             

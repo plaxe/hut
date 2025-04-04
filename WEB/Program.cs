@@ -25,8 +25,7 @@ public class Program
         // Add Memory Cache
         builder.Services.AddMemoryCache(options => 
         {
-            // Настройка параметров кеша для длительного хранения редко изменяющихся данных
-            options.SizeLimit = 2048; // 2048 элементов максимум
+            // Настройка параметров кеша без ограничения размера
             options.ExpirationScanFrequency = TimeSpan.FromMinutes(30); // Проверка устаревших кешей каждые 30 минут
         });
         

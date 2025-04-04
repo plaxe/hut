@@ -79,7 +79,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromDays(1))
                     .SetSlidingExpiration(TimeSpan.FromHours(6))
-                    .SetPriority(CacheItemPriority.High);
+                    .SetPriority(CacheItemPriority.High)
+                    .SetSize(1);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
                 _logger.LogDebug($"Cached {result.Count} strings for culture {culture}");
@@ -170,7 +171,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromDays(1))
                     .SetSlidingExpiration(TimeSpan.FromHours(6))
-                    .SetPriority(CacheItemPriority.High);
+                    .SetPriority(CacheItemPriority.High)
+                    .SetSize(1);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
                 _logger.LogDebug($"Cached value for key {name} in culture {culture}");
@@ -204,7 +206,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromDays(1))
                 .SetSlidingExpiration(TimeSpan.FromHours(6))
-                .SetPriority(CacheItemPriority.High);
+                .SetPriority(CacheItemPriority.High)
+                .SetSize(1);
             
             _cache.Set(cacheKey, jsonString, cacheOptions);
             _logger.LogDebug($"Cached JSON content for {filePath}");

@@ -97,7 +97,8 @@ public class LocalizationEditorService
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromDays(1))
                 .SetSlidingExpiration(TimeSpan.FromHours(6))
-                .SetPriority(CacheItemPriority.High);
+                .SetPriority(CacheItemPriority.High)
+                .SetSize(1);
                 
             _cache.Set(cacheKey, viewModel, cacheOptions);
             
