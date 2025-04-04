@@ -213,21 +213,43 @@ public class Program
                 returnUrl = "/";
             }
 
-            // Устанавливаем куки с большим сроком хранения
+            // Конвертируем код языка, если необходимо
+            if (culture == "uk")
+            {
+                culture = "ua";
+            }
+
+            // Явно создаем новую культуру
+            var requestCulture = new RequestCulture(culture);
+            
+            // Устанавливаем куки с большим сроком хранения и явным доменом
             context.Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                CookieRequestCultureProvider.MakeCookieValue(requestCulture),
                 new CookieOptions { 
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
                     IsEssential = true,
                     SameSite = SameSiteMode.Lax,
-                    HttpOnly = false
+                    HttpOnly = false,
+                    Path = "/",
+                    Domain = context.Request.Host.Host, // Явно указываем домен
+                    Secure = context.Request.IsHttps
                 }
             );
             
-            // Устанавливаем культуру для текущего запроса
+            // Явно устанавливаем культуру для текущего запроса
             Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+            
+            // Сохраняем выбранную культуру в provider
+            context.Features.Set<IRequestCultureFeature>(
+                new RequestCultureFeature(requestCulture, new CookieRequestCultureProvider())
+            );
+            
+            // Логируем для отладки
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation($"Culture changed to {culture}. Setting cookie: {CookieRequestCultureProvider.MakeCookieValue(requestCulture)}");
+            logger.LogInformation($"Current host: {context.Request.Host.Host}, IsHttps: {context.Request.IsHttps}");
             
             return Results.Redirect(returnUrl);
         }).CacheOutput(c => c.NoCache()).WithName("SetLanguage");

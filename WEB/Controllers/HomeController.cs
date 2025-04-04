@@ -53,6 +53,20 @@ public class HomeController : Controller
         {
             _logger.LogWarning("Culture cookie not found!");
         }
+
+        // Логируем все куки для отладки на EC2
+        _logger.LogInformation("All cookies:");
+        foreach (var cookie in HttpContext.Request.Cookies)
+        {
+            _logger.LogInformation($"Cookie: {cookie.Key} = {cookie.Value}");
+        }
+
+        // Логируем все заголовки для отладки
+        _logger.LogInformation("All headers:");
+        foreach (var header in HttpContext.Request.Headers)
+        {
+            _logger.LogInformation($"Header: {header.Key} = {header.Value}");
+        }
         
         ViewData["Title"] = _localizer["site.title"];
         
