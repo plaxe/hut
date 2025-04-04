@@ -95,8 +95,9 @@ public class LocalizationEditorService
             
             // Сохраняем в кеш
             var cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromHours(6))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                .SetAbsoluteExpiration(TimeSpan.FromDays(1))
+                .SetSlidingExpiration(TimeSpan.FromHours(6))
+                .SetPriority(CacheItemPriority.High);
                 
             _cache.Set(cacheKey, viewModel, cacheOptions);
             
@@ -156,23 +157,15 @@ public class LocalizationEditorService
             
             await File.WriteAllTextAsync(filePath, updatedJson);
             
-            // Очищаем кеш для этого языка
-            _cache.Remove(GetCacheKey(language));
-            _logger.LogInformation($"Кеш локализации для языка {language} очищен после обновления");
+            // Очищаем кеш для всех языков, так как ресурсы были обновлены администратором
+            _logger.LogInformation($"Администратор обновил ресурс локализации: {language}.{key}");
             
-            // Перезагружаем локализацию для текущей культуры
-            var originalCulture = Thread.CurrentThread.CurrentUICulture;
-            
-            // Временно устанавливаем указанную культуру
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
-            
-            // Локализатор загрузит ресурсы для текущей культуры
+            // Создаем локализатор для очистки кеша
             var stringLocalizer = new JsonStringLocalizer<SharedResource>(_resourcesPath, nameof(SharedResource), 
                 _loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), _cache);
-            stringLocalizer.ClearCache();
             
-            // Восстанавливаем исходную культуру
-            Thread.CurrentThread.CurrentUICulture = originalCulture;
+            // Очищаем кеш для всех языков
+            stringLocalizer.ClearAllCaches();
             
             return true;
         }

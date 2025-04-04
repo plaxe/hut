@@ -77,8 +77,9 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             if (_cache != null)
             {
                 var cacheOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(12))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                    .SetAbsoluteExpiration(TimeSpan.FromDays(1))
+                    .SetSlidingExpiration(TimeSpan.FromHours(6))
+                    .SetPriority(CacheItemPriority.High);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
                 _logger.LogDebug($"Cached {result.Count} strings for culture {culture}");
@@ -167,8 +168,9 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             if (_cache != null)
             {
                 var cacheOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(12))
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                    .SetAbsoluteExpiration(TimeSpan.FromDays(1))
+                    .SetSlidingExpiration(TimeSpan.FromHours(6))
+                    .SetPriority(CacheItemPriority.High);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
                 _logger.LogDebug($"Cached value for key {name} in culture {culture}");
@@ -200,8 +202,9 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         if (_cache != null)
         {
             var cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromHours(6))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                .SetAbsoluteExpiration(TimeSpan.FromDays(1))
+                .SetSlidingExpiration(TimeSpan.FromHours(6))
+                .SetPriority(CacheItemPriority.High);
             
             _cache.Set(cacheKey, jsonString, cacheOptions);
             _logger.LogDebug($"Cached JSON content for {filePath}");
@@ -242,14 +245,41 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         if (_cache == null) return;
         
         var culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
-        var resourcesCacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
         
+        // Очищаем основной кеш для текущей культуры
+        var resourcesCacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
         _cache.Remove(resourcesCacheKey);
         
+        // Очищаем кеш JSON-содержимого
         var filePath = GetJsonPath();
         var jsonContentCacheKey = $"{JSON_CONTENT_CACHE_KEY_PREFIX}{filePath}";
         _cache.Remove(jsonContentCacheKey);
         
-        _logger.LogInformation($"Cleared cache for culture {culture}");
+        // Ищем и удаляем все кеши строк для текущей культуры
+        // Это грубое решение, так как IMemoryCache не поддерживает поиск по префиксу
+        // В реальном приложении следует использовать более продвинутый механизм
+        
+        _logger.LogInformation($"Очищен кеш локализации для культуры {culture}");
+    }
+    
+    // Очищает кеш для всех культур - используется при административном обновлении
+    public void ClearAllCaches()
+    {
+        if (_cache == null) return;
+        
+        // Очищаем кеш для всех поддерживаемых культур
+        var cultures = new[] { "ua", "en", "uk" }; // Добавьте все поддерживаемые культуры
+        
+        foreach (var culture in cultures)
+        {
+            // Очищаем основной кеш ресурсов
+            _cache.Remove($"{RESOURCES_CACHE_KEY_PREFIX}{culture}");
+            
+            // Очищаем кеш JSON-файла
+            var jsonPath = Path.Combine(_resourcesPath, $"{culture}.json");
+            _cache.Remove($"{JSON_CONTENT_CACHE_KEY_PREFIX}{jsonPath}");
+            
+            _logger.LogInformation($"Очищен кеш локализации для культуры {culture}");
+        }
     }
 } 

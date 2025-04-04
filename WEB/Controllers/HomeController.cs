@@ -6,6 +6,7 @@ using Microsoft.Extensions.Localization;
 using WEB.Models;
 using WEB.Services;
 using System.Globalization;
+using System.Threading;
 
 namespace WEB.Controllers;
 
@@ -31,6 +32,28 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        // Логируем текущую культуру для отладки
+        _logger.LogInformation($"Current culture in HomeController: {Thread.CurrentThread.CurrentCulture}");
+        _logger.LogInformation($"Current UI culture in HomeController: {Thread.CurrentThread.CurrentUICulture}");
+        
+        // Получаем текущую культуру из HttpContext
+        var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+        if (requestCultureFeature != null)
+        {
+            _logger.LogInformation($"Request Culture: {requestCultureFeature.RequestCulture.Culture}");
+            _logger.LogInformation($"Request UI Culture: {requestCultureFeature.RequestCulture.UICulture}");
+        }
+        
+        // Проверяем куки
+        if (HttpContext.Request.Cookies.TryGetValue(CookieRequestCultureProvider.DefaultCookieName, out string cultureCookie))
+        {
+            _logger.LogInformation($"Culture cookie value: {cultureCookie}");
+        }
+        else
+        {
+            _logger.LogWarning("Culture cookie not found!");
+        }
+        
         ViewData["Title"] = _localizer["site.title"];
         
         // Получаем активные продукты для отображения на главной странице
@@ -40,6 +63,9 @@ public class HomeController : Controller
         // Получаем контактные данные
         var contacts = await _contactsService.GetContactsAsync();
         ViewData["Contacts"] = contacts;
+        
+        // Добавляем текущую культуру в ViewData для отображения на странице
+        ViewData["CurrentCulture"] = Thread.CurrentThread.CurrentUICulture.Name;
         
         return View();
     }

@@ -23,7 +23,12 @@ public class Program
         builder.Services.AddControllersWithViews();
         
         // Add Memory Cache
-        builder.Services.AddMemoryCache();
+        builder.Services.AddMemoryCache(options => 
+        {
+            // Настройка параметров кеша для длительного хранения редко изменяющихся данных
+            options.SizeLimit = 2048; // 2048 элементов максимум
+            options.ExpirationScanFrequency = TimeSpan.FromMinutes(30); // Проверка устаревших кешей каждые 30 минут
+        });
         
         // Add Output Cache
         builder.Services.AddOutputCache(options =>
@@ -170,13 +175,35 @@ public class Program
         // Правильный порядок middleware
         app.UseRouting();
 
-        // Настройка локализации
+        // Настройка локализации должна быть перед авторизацией и после UseRouting
         app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
+        // Добавляем middleware для обеспечения корректной работы локализации на EC2
+        app.Use(async (context, next) =>
+        {
+            // Получение провайдера культуры из запроса
+            var requestCultureFeature = context.Features.Get<IRequestCultureFeature>();
+            var requestCulture = requestCultureFeature?.RequestCulture;
+
+            if (requestCulture != null)
+            {
+                // Явно устанавливаем культуру для текущего потока
+                Thread.CurrentThread.CurrentCulture = requestCulture.Culture;
+                Thread.CurrentThread.CurrentUICulture = requestCulture.UICulture;
+                
+                // Логируем установленную культуру для отладки
+                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation($"Culture set to: {Thread.CurrentThread.CurrentUICulture.Name}");
+            }
+
+            await next();
+        });
 
         // Добавляем аутентификацию и авторизацию после локализации
         app.UseAuthentication();
         app.UseAuthorization();
         
+        // OutputCache должен быть после локализации
         app.UseOutputCache();
 
         // Маршрут для смены языка (без кеширования)
@@ -187,15 +214,21 @@ public class Program
                 returnUrl = "/";
             }
 
+            // Устанавливаем куки с большим сроком хранения
             context.Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { 
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Lax
+                    SameSite = SameSiteMode.Lax,
+                    HttpOnly = false
                 }
             );
+            
+            // Устанавливаем культуру для текущего запроса
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
             
             return Results.Redirect(returnUrl);
         }).CacheOutput(c => c.NoCache()).WithName("SetLanguage");

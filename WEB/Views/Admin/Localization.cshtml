@@ -26,6 +26,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Керування локалізацією</h1>
+    <div>
+        <form asp-action="ClearLocalizationCache" asp-controller="Admin" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Ви впевнені, що хочете очистити кеш локалізації? Це може тимчасово сповільнити роботу сайту.');">
+                <i class="bi bi-trash me-1"></i> Очистити кеш
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="row mb-4">

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WEB.Models;
 using WEB.Services;
+using Microsoft.Extensions.Caching.Memory;
+using WEB.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace WEB.Controllers;
 
@@ -337,6 +340,39 @@ public class AdminController(AdminAuthService authService, ILogger<AdminControll
         
         TempData["ErrorMessage"] = "Помилка при оновленні тексту";
         return RedirectToAction(nameof(Localization), new { language = model.Language });
+    }
+
+    [HttpPost("localization/clear-cache")]
+    [Authorize(Roles = "Administrator")]
+    [ValidateAntiForgeryToken]
+    public IActionResult ClearLocalizationCache()
+    {
+        try
+        {
+            // Создаем локализатор для очистки всех кешей
+            var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Resources");
+            var loggerFactory = HttpContext.RequestServices.GetRequiredService<ILoggerFactory>();
+            var memoryCache = HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
+            
+            var stringLocalizer = new JsonStringLocalizer<SharedResource>(
+                resourcesPath, 
+                nameof(SharedResource),
+                loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), 
+                memoryCache);
+                
+            // Очищаем все кеши локализации
+            stringLocalizer.ClearAllCaches();
+            
+            TempData["SuccessMessage"] = "Кеш локализации успешно очищен";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Ошибка при очистке кеша: {ex.Message}";
+            logger.LogError(ex, "Ошибка при очистке кеша локализации");
+        }
+        
+        // Перенаправляем на страницу локализации
+        return RedirectToAction(nameof(Localization));
     }
 
     // Contacts Management
