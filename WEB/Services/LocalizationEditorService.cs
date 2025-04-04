@@ -3,6 +3,8 @@ using System.Text.Json.Nodes;
 using Microsoft.Extensions.Caching.Memory;
 using WEB.Localization;
 using WEB.Models;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace WEB.Services;
 
@@ -10,18 +12,21 @@ public class LocalizationEditorService
 {
     private readonly string _resourcesPath;
     private readonly ILogger<LocalizationEditorService> _logger;
+    private readonly IMemoryCache _cache;
     private readonly string[] _supportedLanguages = { "ua", "en" };
-    private readonly IMemoryCache _memoryCache;
-    private const string CacheKeyPrefix = "Localization_";
+    private const string LOCALIZATION_RESOURCES_CACHE_KEY_PREFIX = "LocalizationResources_";
+    private readonly ILoggerFactory _loggerFactory;
 
     public LocalizationEditorService(
         IWebHostEnvironment env, 
         ILogger<LocalizationEditorService> logger,
-        IMemoryCache memoryCache)
+        IMemoryCache cache,
+        ILoggerFactory loggerFactory)
     {
         _resourcesPath = Path.Combine(env.ContentRootPath, "Persistent", "Resources");
         _logger = logger;
-        _memoryCache = memoryCache;
+        _cache = cache;
+        _loggerFactory = loggerFactory;
         
         // Создаем директорию Persistent/Resources, если она не существует
         if (!Directory.Exists(_resourcesPath))
@@ -34,28 +39,38 @@ public class LocalizationEditorService
             {
                 try
                 {
-                    foreach (var language in _supportedLanguages)
+                    foreach (var file in Directory.GetFiles(oldResourcesPath, "*.json"))
                     {
-                        var oldFilePath = Path.Combine(oldResourcesPath, $"{language}.json");
-                        var newFilePath = Path.Combine(_resourcesPath, $"{language}.json");
-                        
-                        if (File.Exists(oldFilePath) && !File.Exists(newFilePath))
-                        {
-                            File.Copy(oldFilePath, newFilePath);
-                            logger.LogInformation($"Файл локализации {language}.json успешно перенесен в новое расположение.");
-                        }
+                        var fileName = Path.GetFileName(file);
+                        var destPath = Path.Combine(_resourcesPath, fileName);
+                        File.Copy(file, destPath, overwrite: true);
                     }
+                    _logger.LogInformation("Ресурсы локализации успешно скопированы из старого расположения.");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "Ошибка при копировании файлов локализации из старого расположения");
+                    _logger.LogError(ex, "Ошибка при копировании файлов локализации из старого расположения");
                 }
             }
         }
     }
     
+    private string GetCacheKey(string language)
+    {
+        return $"{LOCALIZATION_RESOURCES_CACHE_KEY_PREFIX}{language}";
+    }
+    
     public async Task<LocalizationViewModel> GetLocalizationResourcesAsync(string language)
     {
+        var cacheKey = GetCacheKey(language);
+        
+        // Проверяем, есть ли данные в кеше
+        if (_cache.TryGetValue(cacheKey, out LocalizationViewModel? cachedViewModel) && cachedViewModel != null)
+        {
+            _logger.LogInformation($"Получаем ресурсы локализации для языка {language} из кеша");
+            return cachedViewModel;
+        }
+        
         var viewModel = new LocalizationViewModel
         {
             CurrentLanguage = language,
@@ -77,6 +92,13 @@ public class LocalizationEditorService
             
             var rootElement = document.RootElement;
             viewModel.Categories = ProcessJsonElement(rootElement, string.Empty);
+            
+            // Сохраняем в кеш
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(6))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                
+            _cache.Set(cacheKey, viewModel, cacheOptions);
             
             return viewModel;
         }
@@ -134,8 +156,23 @@ public class LocalizationEditorService
             
             await File.WriteAllTextAsync(filePath, updatedJson);
             
-            // Очищаем кеш для обновленного значения
-            ClearCacheForLanguage(language);
+            // Очищаем кеш для этого языка
+            _cache.Remove(GetCacheKey(language));
+            _logger.LogInformation($"Кеш локализации для языка {language} очищен после обновления");
+            
+            // Перезагружаем локализацию для текущей культуры
+            var originalCulture = Thread.CurrentThread.CurrentUICulture;
+            
+            // Временно устанавливаем указанную культуру
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+            
+            // Локализатор загрузит ресурсы для текущей культуры
+            var stringLocalizer = new JsonStringLocalizer<SharedResource>(_resourcesPath, nameof(SharedResource), 
+                _loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), _cache);
+            stringLocalizer.ClearCache();
+            
+            // Восстанавливаем исходную культуру
+            Thread.CurrentThread.CurrentUICulture = originalCulture;
             
             return true;
         }
@@ -160,40 +197,6 @@ public class LocalizationEditorService
         }
         
         return languages;
-    }
-    
-    private void ClearCacheForLanguage(string language)
-    {
-        _logger.LogInformation($"Clearing localization cache for language: {language}");
-        
-        try
-        {
-            // Создаем новый ключ кеша с временной меткой для обеспечения уникальности
-            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            var cachePrefix = $"{CacheKeyPrefix}{language.ToLower()}_{timestamp}";
-            
-            // Сохраняем новый ключ кеша в специальном ключе для отслеживания
-            _memoryCache.Set($"LastCacheKey_{language.ToLower()}", cachePrefix, 
-                new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromDays(1) });
-            
-            // Удаляем старый кеш для всех строк
-            _memoryCache.Remove($"{CacheKeyPrefix}{language.ToLower()}_AllStrings");
-            
-            // Также очищаем кеш для других языков, чтобы избежать потенциальных конфликтов
-            foreach (var otherLang in _supportedLanguages)
-            {
-                if (otherLang != language)
-                {
-                    _memoryCache.Remove($"{CacheKeyPrefix}{otherLang.ToLower()}_AllStrings");
-                }
-            }
-            
-            _logger.LogInformation($"Localization cache for language {language} cleared successfully");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error clearing localization cache for language {language}");
-        }
     }
     
     private List<LocalizationCategoryModel> ProcessJsonElement(JsonElement element, string parentPath)

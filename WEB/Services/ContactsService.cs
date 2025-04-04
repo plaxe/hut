@@ -7,15 +7,18 @@ namespace WEB.Services;
 public class ContactsService
 {
     private readonly string _contactsFilePath;
-    private readonly IMemoryCache _memoryCache;
     private readonly ILogger<ContactsService> _logger;
-    private const string ContactsCacheKey = "ContactsData";
+    private readonly IMemoryCache _cache;
+    private const string CONTACTS_CACHE_KEY = "Contacts";
     
-    public ContactsService(IWebHostEnvironment env, IMemoryCache memoryCache, ILogger<ContactsService> logger)
+    public ContactsService(
+        IWebHostEnvironment env, 
+        ILogger<ContactsService> logger,
+        IMemoryCache cache)
     {
         _contactsFilePath = Path.Combine(env.ContentRootPath, "Persistent", "Data", "contacts.json");
-        _memoryCache = memoryCache;
         _logger = logger;
+        _cache = cache;
         
         // Создаем директорию Persistent/Data, если она не существует
         var dataDirectory = Path.Combine(env.ContentRootPath, "Persistent", "Data");
@@ -57,23 +60,25 @@ public class ContactsService
     
     public async Task<ContactsModel> GetContactsAsync()
     {
-        // Проверяем кеш
-        if (_memoryCache.TryGetValue(ContactsCacheKey, out ContactsModel cachedContacts))
+        // Проверяем, есть ли контакты в кеше
+        if (_cache.TryGetValue(CONTACTS_CACHE_KEY, out ContactsModel? cachedContacts) && cachedContacts != null)
         {
+            _logger.LogInformation("Получаем контакты из кеша");
             return cachedContacts;
         }
         
         try
         {
-            // Если контактов нет в кеше, загружаем их из файла
+            // Загружаем данные из файла
             var json = await File.ReadAllTextAsync(_contactsFilePath);
             var contacts = JsonSerializer.Deserialize<ContactsModel>(json) ?? new ContactsModel();
             
-            // Кешируем результат
+            // Сохраняем в кеш
             var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(24)) 
                 .SetSlidingExpiration(TimeSpan.FromMinutes(30));
                 
-            _memoryCache.Set(ContactsCacheKey, contacts, cacheOptions);
+            _cache.Set(CONTACTS_CACHE_KEY, contacts, cacheOptions);
             
             return contacts;
         }
@@ -95,11 +100,9 @@ public class ContactsService
             
             await File.WriteAllTextAsync(_contactsFilePath, json);
             
-            // Обновляем кеш
-            var cacheOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30));
-                
-            _memoryCache.Set(ContactsCacheKey, contacts, cacheOptions);
+            // Очищаем кеш после обновления
+            _cache.Remove(CONTACTS_CACHE_KEY);
+            _logger.LogInformation("Кеш контактов очищен после обновления");
             
             return true;
         }

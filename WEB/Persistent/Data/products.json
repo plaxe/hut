@@ -1,7 +1,7 @@
 [
   {
     "Id": "1ff1d38e-19b3-45ce-b2d8-e3d5b0cb3d2a",
-    "Name": "\u0421\u0415\u041A\u0421aaaaa",
+    "Name": "\u0421\u0415\u041A\u0421aaaaa2",
     "NameEn": "SEXaaaa",
     "Category": "\u0421\u043D\u0435\u043A\u0438",
     "Description": "\u041F\u0420\u0418\u0412\u0415\u0422",
@@ -10,6 +10,6 @@
     "IsActive": true,
     "SortOrder": 0,
     "CreatedAt": "2025-04-03T09:58:39.7317024+03:00",
-    "UpdatedAt": "2025-04-04T16:31:44.7670545+03:00"
+    "UpdatedAt": "2025-04-04T19:03:58.8732458+03:00"
   }
 ]

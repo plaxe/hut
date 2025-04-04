@@ -1,6 +1,5 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using WEB.Localization;
 using WEB.Models;
@@ -9,6 +8,8 @@ using WEB.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace WEB;
 
@@ -32,6 +33,9 @@ public class Program
                       .SetVaryByHeader("Accept-Language")
                       .SetVaryByRouteValue("culture")
                       .Expire(TimeSpan.FromMinutes(10)));
+                      
+            // Правило, исключающее кеширование для маршрута set-language
+            options.AddPolicy("NoCache", builder => builder.NoCache());
         });
 
         // Configure JSON localization
@@ -125,9 +129,6 @@ public class Program
         // Добавляем сервис редактирования локализации
         builder.Services.AddScoped<LocalizationEditorService>();
 
-        // Добавляем сервис управления языками
-        builder.Services.AddScoped<LanguageService>();
-
         // Добавляем сервис управления контактами
         builder.Services.AddScoped<ContactsService>();
 
@@ -177,6 +178,27 @@ public class Program
         app.UseAuthorization();
         
         app.UseOutputCache();
+
+        // Маршрут для смены языка (без кеширования)
+        app.MapGet("set-language/{culture}", async (string culture, string returnUrl, HttpContext context) =>
+        {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                returnUrl = "/";
+            }
+
+            context.Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { 
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    IsEssential = true,
+                    SameSite = SameSiteMode.Lax
+                }
+            );
+            
+            return Results.Redirect(returnUrl);
+        }).CacheOutput(c => c.NoCache()).WithName("SetLanguage");
 
         // Маршрут по умолчанию (без культуры)
         app.MapControllerRoute(

@@ -1,5 +1,4 @@
 using System.Globalization;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
 using WEB.Models;
 
@@ -8,17 +7,14 @@ namespace WEB.Services;
 public class LocalizationPreloadService
 {
     private readonly IStringLocalizer<SharedResource> _localizer;
-    private readonly IMemoryCache _memoryCache;
     private readonly ILogger<LocalizationPreloadService> _logger;
-    private readonly string[] _supportedCultures = { "ua", "en", "ru" };
+    private readonly string[] _supportedCultures = { "ua", "en" };
 
     public LocalizationPreloadService(
         IStringLocalizer<SharedResource> localizer,
-        IMemoryCache memoryCache,
         ILogger<LocalizationPreloadService> logger)
     {
         _localizer = localizer;
-        _memoryCache = memoryCache;
         _logger = logger;
     }
 
@@ -42,9 +38,9 @@ public class LocalizationPreloadService
                 
                 foreach (var localizedString in allStrings)
                 {
-                    // При получении строки она уже кешируется в JsonStringLocalizer
+                    // Загружаем каждую строку
                     var value = _localizer[localizedString.Name];
-                    _logger.LogDebug($"Cached: {localizedString.Name} = {value}");
+                    _logger.LogDebug($"Preloaded: {localizedString.Name} = {value}");
                 }
                 
                 _logger.LogInformation($"Completed preloading resources for culture: {culture}");

@@ -9,28 +9,8 @@ using WEB.Services;
 namespace WEB.Controllers;
 
 [Route("admin")]
-public class AdminController : Controller
+public class AdminController(AdminAuthService authService, ILogger<AdminController> logger, ProductService productService, LocalizationEditorService localizationEditorService, ContactsService contactsService) : Controller
 {
-    private readonly AdminAuthService _authService;
-    private readonly ILogger<AdminController> _logger;
-    private readonly ProductService _productService;
-    private readonly LocalizationEditorService _localizationEditorService;
-    private readonly ContactsService _contactsService;
-
-    public AdminController(
-        AdminAuthService authService,
-        ILogger<AdminController> logger,
-        ProductService productService,
-        LocalizationEditorService localizationEditorService,
-        ContactsService contactsService)
-    {
-        _authService = authService;
-        _logger = logger;
-        _productService = productService;
-        _localizationEditorService = localizationEditorService;
-        _contactsService = contactsService;
-    }
-
     [HttpGet("login")]
     public IActionResult Login(string returnUrl = null)
     {
@@ -52,9 +32,9 @@ public class AdminController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        if (await _authService.ValidateLoginAsync(model))
+        if (await authService.ValidateLoginAsync(model))
         {
-            _logger.LogInformation("Адміністратор успішно увійшов до системи");
+            logger.LogInformation("Адміністратор успішно увійшов до системи");
             return RedirectToAction(nameof(Products));
         }
 
@@ -65,7 +45,7 @@ public class AdminController : Controller
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {
-        await _authService.SignOutAsync();
+        await authService.SignOutAsync();
         return RedirectToAction(nameof(Login));
     }
 
@@ -90,7 +70,7 @@ public class AdminController : Controller
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Products()
     {
-        var products = await _productService.GetAllProductsAsync();
+        var products = await productService.GetAllProductsAsync();
         return View(products);
     }
     
@@ -143,7 +123,7 @@ public class AdminController : Controller
         model.CreatedAt = DateTime.Now;
         model.UpdatedAt = DateTime.Now;
         
-        await _productService.AddProductAsync(model);
+        await productService.AddProductAsync(model);
         
         TempData["SuccessMessage"] = "Продукт успішно створено";
         return RedirectToAction(nameof(Products));
@@ -153,7 +133,7 @@ public class AdminController : Controller
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> EditProduct(string id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await productService.GetProductByIdAsync(id);
         
         if (product == null)
         {
@@ -175,7 +155,7 @@ public class AdminController : Controller
             return View(model);
         }
         
-        var existingProduct = await _productService.GetProductByIdAsync(model.Id);
+        var existingProduct = await productService.GetProductByIdAsync(model.Id);
         
         if (existingProduct == null)
         {
@@ -218,7 +198,7 @@ public class AdminController : Controller
         model.CreatedAt = existingProduct.CreatedAt;
         model.UpdatedAt = DateTime.Now;
         
-        await _productService.UpdateProductAsync(model);
+        await productService.UpdateProductAsync(model);
         
         TempData["SuccessMessage"] = "Продукт успішно оновлено";
         return RedirectToAction(nameof(Products));
@@ -229,7 +209,7 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteProduct(string id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await productService.GetProductByIdAsync(id);
         
         if (product == null)
         {
@@ -238,7 +218,7 @@ public class AdminController : Controller
         
         // Не удаляем изображения при удалении продукта
         
-        await _productService.DeleteProductAsync(id);
+        await productService.DeleteProductAsync(id);
         
         TempData["SuccessMessage"] = "Продукт успішно видалено";
         return RedirectToAction(nameof(Products));
@@ -249,7 +229,7 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleProductStatus(string id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await productService.GetProductByIdAsync(id);
         
         if (product == null)
         {
@@ -259,7 +239,7 @@ public class AdminController : Controller
         product.IsActive = !product.IsActive;
         product.UpdatedAt = DateTime.Now;
         
-        await _productService.UpdateProductAsync(product);
+        await productService.UpdateProductAsync(product);
         
         TempData["SuccessMessage"] = product.IsActive 
             ? "Продукт успішно активовано" 
@@ -327,13 +307,13 @@ public class AdminController : Controller
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Localization(string language = "ua")
     {
-        var availableLanguages = _localizationEditorService.GetAvailableLanguages();
+        var availableLanguages = localizationEditorService.GetAvailableLanguages();
         if (!availableLanguages.Contains(language))
         {
             language = availableLanguages.FirstOrDefault() ?? "ua";
         }
         
-        var viewModel = await _localizationEditorService.GetLocalizationResourcesAsync(language);
+        var viewModel = await localizationEditorService.GetLocalizationResourcesAsync(language);
         return View(viewModel);
     }
 
@@ -347,7 +327,7 @@ public class AdminController : Controller
             return BadRequest(ModelState);
         }
         
-        var success = await _localizationEditorService.UpdateResourceValueAsync(model.Language, model.Key, model.Value);
+        var success = await localizationEditorService.UpdateResourceValueAsync(model.Language, model.Key, model.Value);
         
         if (success)
         {
@@ -364,7 +344,7 @@ public class AdminController : Controller
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Contacts()
     {
-        var contacts = await _contactsService.GetContactsAsync();
+        var contacts = await contactsService.GetContactsAsync();
         return View(contacts);
     }
     
@@ -378,7 +358,7 @@ public class AdminController : Controller
             return View(model);
         }
         
-        var success = await _contactsService.UpdateContactsAsync(model);
+        var success = await contactsService.UpdateContactsAsync(model);
         
         if (success)
         {

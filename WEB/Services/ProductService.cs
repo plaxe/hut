@@ -7,15 +7,19 @@ namespace WEB.Services;
 public class ProductService
 {
     private readonly string _productsFilePath;
-    private readonly IMemoryCache _memoryCache;
     private readonly ILogger<ProductService> _logger;
-    private const string ProductsCacheKey = "ProductsList";
+    private readonly IMemoryCache _cache;
+    private const string PRODUCTS_CACHE_KEY = "AllProducts";
+    private const string ACTIVE_PRODUCTS_CACHE_KEY = "ActiveProducts";
     
-    public ProductService(IWebHostEnvironment env, IMemoryCache memoryCache, ILogger<ProductService> logger)
+    public ProductService(
+        IWebHostEnvironment env, 
+        ILogger<ProductService> logger,
+        IMemoryCache cache)
     {
         _productsFilePath = Path.Combine(env.ContentRootPath, "Persistent", "Data", "products.json");
-        _memoryCache = memoryCache;
         _logger = logger;
+        _cache = cache;
         
         // Создаем директорию Persistent/Data, если она не существует
         var dataDirectory = Path.Combine(env.ContentRootPath, "Persistent", "Data");
@@ -48,24 +52,25 @@ public class ProductService
     
     public async Task<List<ProductModel>> GetAllProductsAsync()
     {
-        // Проверяем кэш
-        if (_memoryCache.TryGetValue(ProductsCacheKey, out List<ProductModel> cachedProducts))
+        // Проверяем, есть ли продукты в кеше
+        if (_cache.TryGetValue(PRODUCTS_CACHE_KEY, out List<ProductModel>? cachedProducts) && cachedProducts != null)
         {
+            _logger.LogInformation("Получаем продукты из кеша");
             return cachedProducts;
         }
         
         try
         {
-            // Если продуктов нет в кэше, загружаем их из файла
+            // Загружаем продукты из файла
             var json = await File.ReadAllTextAsync(_productsFilePath);
             var products = JsonSerializer.Deserialize<List<ProductModel>>(json) ?? new List<ProductModel>();
             
-            // Кешируем результат
+            // Сохраняем в кеш на 30 минут
             var cacheOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(30))
-                .SetAbsoluteExpiration(TimeSpan.FromHours(2));
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(30))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(10));
                 
-            _memoryCache.Set(ProductsCacheKey, products, cacheOptions);
+            _cache.Set(PRODUCTS_CACHE_KEY, products, cacheOptions);
             
             return products;
         }
@@ -78,8 +83,24 @@ public class ProductService
     
     public async Task<List<ProductModel>> GetActiveProductsAsync()
     {
+        // Проверяем, есть ли активные продукты в кеше
+        if (_cache.TryGetValue(ACTIVE_PRODUCTS_CACHE_KEY, out List<ProductModel>? cachedActiveProducts) && cachedActiveProducts != null)
+        {
+            _logger.LogInformation("Получаем активные продукты из кеша");
+            return cachedActiveProducts;
+        }
+        
         var allProducts = await GetAllProductsAsync();
-        return allProducts.Where(p => p.IsActive).OrderBy(p => p.SortOrder).ToList();
+        var activeProducts = allProducts.Where(p => p.IsActive).OrderBy(p => p.SortOrder).ToList();
+        
+        // Сохраняем в кеш на 30 минут
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromMinutes(30))
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10));
+            
+        _cache.Set(ACTIVE_PRODUCTS_CACHE_KEY, activeProducts, cacheOptions);
+        
+        return activeProducts;
     }
     
     public async Task<ProductModel?> GetProductByIdAsync(string id)
@@ -95,6 +116,7 @@ public class ProductService
             var products = await GetAllProductsAsync();
             products.Add(product);
             await SaveProductsAsync(products);
+            ClearCache();
             return true;
         }
         catch (Exception ex)
@@ -119,6 +141,7 @@ public class ProductService
             product.UpdatedAt = DateTime.Now;
             products[index] = product;
             await SaveProductsAsync(products);
+            ClearCache();
             return true;
         }
         catch (Exception ex)
@@ -142,6 +165,7 @@ public class ProductService
             
             products.Remove(product);
             await SaveProductsAsync(products);
+            ClearCache();
             return true;
         }
         catch (Exception ex)
@@ -159,12 +183,12 @@ public class ProductService
         });
         
         await File.WriteAllTextAsync(_productsFilePath, json);
-        
-        // Обновляем кэш
-        var cacheOptions = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromMinutes(30))
-            .SetAbsoluteExpiration(TimeSpan.FromHours(2));
-            
-        _memoryCache.Set(ProductsCacheKey, products, cacheOptions);
+    }
+    
+    private void ClearCache()
+    {
+        _logger.LogInformation("Очищаем кеш продуктов");
+        _cache.Remove(PRODUCTS_CACHE_KEY);
+        _cache.Remove(ACTIVE_PRODUCTS_CACHE_KEY);
     }
 } 
