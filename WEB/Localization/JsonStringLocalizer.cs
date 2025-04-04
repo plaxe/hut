@@ -128,28 +128,22 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         var culture = GetCurrentLanguage();
         var cacheKey = $"{STRING_CACHE_KEY_PREFIX}{culture}_{name}";
         
-        _logger.LogInformation($"EC2 DEBUG: GetString для ключа '{name}', язык: {culture}");
-        
         // Проверка кеша
         if (_cache != null && _cache.TryGetValue(cacheKey, out string cachedValue))
         {
-            _logger.LogDebug($"EC2 DEBUG: Возвращено кешированное значение для ключа {name} для языка {culture}");
             return cachedValue;
         }
         
         var filePath = GetJsonPath();
         
-        _logger.LogInformation($"EC2 DEBUG: GetString использует файл: {filePath}");
-        
         if (!File.Exists(filePath))
         {
-            _logger.LogWarning($"EC2 DEBUG: Файл ресурсов не найден: {filePath}");
+            _logger.LogWarning($"Файл ресурсов не найден: {filePath}");
             return name;
         }
 
         try
         {
-            _logger.LogInformation($"EC2 DEBUG: Чтение содержимого файла: {filePath}");
             var jsonString = GetJsonContent(filePath);
             var jsonDoc = JsonDocument.Parse(jsonString);
 
@@ -160,13 +154,11 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             {
                 if (current.ValueKind != JsonValueKind.Object)
                 {
-                    _logger.LogWarning($"EC2 DEBUG: Текущий элемент не является объектом для части: {part}");
                     return name;
                 }
 
                 if (!current.TryGetProperty(part, out var property))
                 {
-                    _logger.LogWarning($"EC2 DEBUG: Свойство не найдено: {part}");
                     return name;
                 }
 
@@ -174,8 +166,6 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             }
 
             var result = current.GetString() ?? name;
-            
-            _logger.LogInformation($"EC2 DEBUG: Найдено значение для ключа '{name}': '{result}'");
             
             // Сохраняем в кеш
             if (_cache != null)
@@ -187,14 +177,13 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                     .SetSize(1);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
-                _logger.LogDebug($"EC2 DEBUG: Кеширован ключ {name} для языка {culture}");
             }
             
             return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"EC2 DEBUG: Ошибка при получении локализованной строки для ключа: {name}");
+            _logger.LogError(ex, $"Ошибка при получении локализованной строки для ключа: {name}");
             return name;
         }
     }
@@ -308,70 +297,11 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                 if (supportedLanguages.Contains(languageCookie.ToLower()))
                 {
                     culture = languageCookie.ToLower();
-                    _logger.LogInformation($"EC2 DEBUG: Язык из куки '{LANGUAGE_COOKIE_NAME}': {culture}");
-                    
-                    // Дополнительно проверяем существование файла локализации
-                    var culturePath = Path.Combine(_resourcesPath, $"{culture}.json");
-                    if (File.Exists(culturePath))
-                    {
-                        _logger.LogInformation($"EC2 DEBUG: Файл локализации существует: {culturePath}");
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"EC2 DEBUG: Файл локализации не найден: {culturePath}");
-                        _logger.LogWarning($"EC2 DEBUG: Полный путь: {Path.GetFullPath(culturePath)}");
-                        _logger.LogWarning($"EC2 DEBUG: ResourcesPath: {_resourcesPath}");
-                        
-                        // Логируем содержимое директории
-                        try
-                        {
-                            var dirPath = Path.GetDirectoryName(culturePath);
-                            if (Directory.Exists(dirPath))
-                            {
-                                var files = Directory.GetFiles(dirPath);
-                                _logger.LogInformation($"EC2 DEBUG: Файлы в директории ({files.Length}): {string.Join(", ", files)}");
-                            }
-                            else
-                            {
-                                _logger.LogWarning($"EC2 DEBUG: Директория не существует: {dirPath}");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "EC2 DEBUG: Ошибка при попытке получить файлы в директории");
-                        }
-                    }
-                    
-                    // Принудительно очищаем кеш при каждом запросе, пока отлаживаем
-                    if (_cache != null)
-                    {
-                        // Очищаем кеш для текущего языка
-                        _cache.Remove($"{RESOURCES_CACHE_KEY_PREFIX}{culture}");
-                        _cache.Remove($"{JSON_CONTENT_CACHE_KEY_PREFIX}{Path.Combine(_resourcesPath, $"{culture}.json")}");
-                        _logger.LogInformation($"EC2 DEBUG: Кеш локализации для {culture} очищен");
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning($"EC2 DEBUG: Неподдерживаемый язык в куки '{LANGUAGE_COOKIE_NAME}': {languageCookie}");
-                }
-            }
-            else
-            {
-                _logger.LogInformation($"EC2 DEBUG: Куки '{LANGUAGE_COOKIE_NAME}' не найдена, использую язык по умолчанию: {culture}");
-                
-                // Логируем все куки для отладки
-                _logger.LogInformation("EC2 DEBUG: Все куки:");
-                foreach (var cookie in httpContext.Request.Cookies)
-                {
-                    _logger.LogInformation($"EC2 DEBUG: Куки: {cookie.Key} = {cookie.Value}");
                 }
             }
         }
         else
         {
-            _logger.LogWarning("EC2 DEBUG: HttpContext недоступен в JsonStringLocalizer");
-            
             // Для совместимости, если HttpContext недоступен
             culture = Thread.CurrentThread.CurrentUICulture.Name.ToLower();
             
@@ -386,8 +316,6 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
             {
                 culture = "ua";
             }
-            
-            _logger.LogInformation($"EC2 DEBUG: Используется язык из потока: {culture}");
         }
         
         return culture;

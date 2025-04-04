@@ -128,61 +128,25 @@ public class Program
             var localizationPreloader = scope.ServiceProvider.GetRequiredService<LocalizationPreloadService>();
             localizationPreloader.PreloadResources();
             
-            // Логируем пути к файлам ресурсов для отладки на EC2
+            // Проверяем наличие файлов локализации
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation($"EC2 DEBUG: ContentRootPath: {builder.Environment.ContentRootPath}");
-            logger.LogInformation($"EC2 DEBUG: ResourcesPath: {resourcesPath}");
-            logger.LogInformation($"EC2 DEBUG: ResourcesPath полный путь: {Path.GetFullPath(resourcesPath)}");
+            logger.LogInformation($"Путь к ресурсам локализации: {resourcesPath}");
             
             try
             {
                 if (Directory.Exists(resourcesPath))
                 {
                     var files = Directory.GetFiles(resourcesPath);
-                    logger.LogInformation($"EC2 DEBUG: Файлы ресурсов ({files.Length}): {string.Join(", ", files)}");
-                    
-                    // Проверяем права на чтение файлов
-                    foreach (var file in files)
-                    {
-                        try
-                        {
-                            logger.LogInformation($"EC2 DEBUG: Проверка прав на файл: {file}");
-                            
-                            // Проверка разрешений
-                            var fileInfo = new FileInfo(file);
-                            logger.LogInformation($"EC2 DEBUG: Файл существует: {fileInfo.Exists}");
-                            logger.LogInformation($"EC2 DEBUG: Размер файла: {fileInfo.Length} байт");
-                            logger.LogInformation($"EC2 DEBUG: Атрибуты файла: {fileInfo.Attributes}");
-                            
-                            // Пробуем прочитать файл
-                            var content = File.ReadAllText(file);
-                            logger.LogInformation($"EC2 DEBUG: Файл успешно прочитан, размер содержимого: {content.Length} символов");
-                            
-                            // Проверяем, это JSON?
-                            try
-                            {
-                                using var jsonDoc = System.Text.Json.JsonDocument.Parse(content);
-                                logger.LogInformation($"EC2 DEBUG: Файл содержит корректный JSON");
-                            }
-                            catch
-                            {
-                                logger.LogWarning($"EC2 DEBUG: Файл не содержит корректный JSON");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.LogError(ex, $"EC2 DEBUG: Ошибка при проверке файла: {file}");
-                        }
-                    }
+                    logger.LogInformation($"Файлы ресурсов ({files.Length}): {string.Join(", ", files)}");
                 }
                 else
                 {
-                    logger.LogWarning($"EC2 DEBUG: Директория ресурсов не существует: {resourcesPath}");
+                    logger.LogWarning($"Директория ресурсов не существует: {resourcesPath}");
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "EC2 DEBUG: Ошибка при получении файлов ресурсов");
+                logger.LogError(ex, "Ошибка при проверке ресурсов локализации");
             }
         }
 
@@ -211,7 +175,7 @@ public class Program
         app.UseOutputCache();
 
         // Маршрут для смены языка (без кеширования)
-        app.MapGet("set-language/{culture}", async (string culture, string returnUrl, HttpContext context, ILogger<Program> logger, IMemoryCache memoryCache) =>
+        app.MapGet("set-language/{culture}", async (string culture, string returnUrl, HttpContext context, ILogger<Program> logger) =>
         {
             if (string.IsNullOrEmpty(returnUrl))
             {
@@ -224,13 +188,7 @@ public class Program
                 culture = "ua";
             }
             
-            // Логируем для отладки EC2
-            logger.LogInformation($"EC2 DEBUG: Запрос на смену языка на {culture}, returnUrl={returnUrl}");
-            logger.LogInformation($"EC2 DEBUG: User-Agent: {context.Request.Headers.UserAgent}");
-            logger.LogInformation($"EC2 DEBUG: Host: {context.Request.Host.Value}");
-            logger.LogInformation($"EC2 DEBUG: Remote IP: {context.Connection.RemoteIpAddress}");
-            
-            // Устанавливаем куки для языка, необходимые для нашей JsonStringLocalizer
+            // Устанавливаем cookie для языка
             var cookieOptions = new CookieOptions { 
                 Expires = DateTimeOffset.UtcNow.AddYears(1),
                 IsEssential = true,
@@ -239,62 +197,35 @@ public class Program
                 Path = "/",
                 Secure = context.Request.IsHttps
             };
-
-            // Попробуем установить куки без домена
+            
+            // Устанавливаем cookie без указания домена
             context.Response.Cookies.Append(
                 "Language",
                 culture.ToLower(),
                 cookieOptions
             );
-
-            // Логируем установленную куку
-            logger.LogInformation($"EC2 DEBUG: Куки установлены без указания домена: Language={culture.ToLower()}");
-
-            // Дополнительно установим куку для текущего домена, если он есть
+            
+            // Добавляем cookie для работы на поддоменах, если они есть
             var host = context.Request.Host.Host;
-            if (!string.IsNullOrEmpty(host))
+            if (!string.IsNullOrEmpty(host) && host.Contains('.') && !host.Equals("localhost"))
             {
                 try 
                 {
-                    // Также добавим версию с точкой впереди, чтобы куки работала на поддоменах
-                    if (host.Contains('.') && !host.Equals("localhost"))
+                    var domainCookieOptions = new CookieOptions(cookieOptions)
                     {
-                        var domainCookieOptions = new CookieOptions(cookieOptions)
-                        {
-                            Domain = "." + host  // Добавляем точку для поддоменов
-                        };
-                        
-                        context.Response.Cookies.Append(
-                            "Language",
-                            culture.ToLower(),
-                            domainCookieOptions
-                        );
-                        
-                        logger.LogInformation($"EC2 DEBUG: Установлена куки для домена: .{host}");
-                    }
+                        Domain = "." + host  // Точка в начале для работы на поддоменах
+                    };
+                    
+                    context.Response.Cookies.Append(
+                        "Language",
+                        culture.ToLower(),
+                        domainCookieOptions
+                    );
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"EC2 DEBUG: Ошибка при установке куки с доменом {host}");
+                    logger.LogError(ex, $"Ошибка при установке cookie для домена {host}");
                 }
-            }
-            
-            // Очистка кеша локализации для всех языков
-            try {
-                var cacheKeys = new[] { 
-                    $"JsonStringLocalizer_ua", 
-                    $"JsonStringLocalizer_en", 
-                    $"JsonContent_ua.json", 
-                    $"JsonContent_en.json"
-                };
-                
-                foreach (var key in cacheKeys) {
-                    memoryCache.Remove(key);
-                    logger.LogInformation($"EC2 DEBUG: Очищен кеш: {key}");
-                }
-            }
-            catch (Exception ex) {
-                logger.LogError(ex, "EC2 DEBUG: Ошибка при очистке кеша");
             }
             
             // Перенаправляем на указанный URL
