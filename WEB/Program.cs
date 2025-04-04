@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using WEB.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.FileProviders;
 
 namespace WEB;
 
@@ -34,7 +35,7 @@ public class Program
         });
 
         // Configure JSON localization
-        var resourcesPath = Path.Combine(builder.Environment.ContentRootPath, "Resources");
+        var resourcesPath = Path.Combine(builder.Environment.ContentRootPath, "Persistent", "Resources");
         
         builder.Services.AddSingleton<IStringLocalizerFactory>(sp => 
         {
@@ -51,7 +52,7 @@ public class Program
                 loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), memoryCache);
         });
 
-        builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
+        builder.Services.AddLocalization(opt => { opt.ResourcesPath = "Persistent/Resources"; });
 
         // Добавляем HttpContext
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -157,6 +158,14 @@ public class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         
+        // Добавляем поддержку статических файлов из Persistent/Images
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(
+                Path.Combine(builder.Environment.ContentRootPath, "Persistent", "Images")),
+            RequestPath = "/Persistent/Images"
+        });
+
         // Правильный порядок middleware
         app.UseRouting();
 

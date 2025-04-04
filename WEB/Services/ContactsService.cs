@@ -13,12 +13,12 @@ public class ContactsService
     
     public ContactsService(IWebHostEnvironment env, IMemoryCache memoryCache, ILogger<ContactsService> logger)
     {
-        _contactsFilePath = Path.Combine(env.ContentRootPath, "Data", "contacts.json");
+        _contactsFilePath = Path.Combine(env.ContentRootPath, "Persistent", "Data", "contacts.json");
         _memoryCache = memoryCache;
         _logger = logger;
         
-        // Создаем директорию Data, если она не существует
-        var dataDirectory = Path.Combine(env.ContentRootPath, "Data");
+        // Создаем директорию Persistent/Data, если она не существует
+        var dataDirectory = Path.Combine(env.ContentRootPath, "Persistent", "Data");
         if (!Directory.Exists(dataDirectory))
         {
             Directory.CreateDirectory(dataDirectory);
@@ -37,6 +37,21 @@ public class ContactsService
             };
             var json = JsonSerializer.Serialize(defaultContacts, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(_contactsFilePath, json);
+            
+            // Копируем файл из старого расположения, если он существует
+            var oldFilePath = Path.Combine(env.ContentRootPath, "Data", "contacts.json");
+            if (File.Exists(oldFilePath))
+            {
+                try
+                {
+                    File.Copy(oldFilePath, _contactsFilePath, overwrite: true);
+                    _logger.LogInformation("Контакты успешно перенесены из старого расположения в новое.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Ошибка при копировании файла контактов из старого расположения");
+                }
+            }
         }
     }
     

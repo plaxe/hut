@@ -13,12 +13,12 @@ public class ProductService
     
     public ProductService(IWebHostEnvironment env, IMemoryCache memoryCache, ILogger<ProductService> logger)
     {
-        _productsFilePath = Path.Combine(env.ContentRootPath, "Data", "products.json");
+        _productsFilePath = Path.Combine(env.ContentRootPath, "Persistent", "Data", "products.json");
         _memoryCache = memoryCache;
         _logger = logger;
         
-        // Создаем директорию Data, если она не существует
-        var dataDirectory = Path.Combine(env.ContentRootPath, "Data");
+        // Создаем директорию Persistent/Data, если она не существует
+        var dataDirectory = Path.Combine(env.ContentRootPath, "Persistent", "Data");
         if (!Directory.Exists(dataDirectory))
         {
             Directory.CreateDirectory(dataDirectory);
@@ -28,6 +28,21 @@ public class ProductService
         if (!File.Exists(_productsFilePath))
         {
             File.WriteAllText(_productsFilePath, "[]");
+            
+            // Копируем файл из старого расположения, если он существует
+            var oldFilePath = Path.Combine(env.ContentRootPath, "Data", "products.json");
+            if (File.Exists(oldFilePath))
+            {
+                try
+                {
+                    File.Copy(oldFilePath, _productsFilePath, overwrite: true);
+                    _logger.LogInformation("Продукты успешно перенесены из старого расположения в новое.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Ошибка при копировании файла продуктов из старого расположения");
+                }
+            }
         }
     }
     

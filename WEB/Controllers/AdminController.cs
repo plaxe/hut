@@ -117,14 +117,22 @@ public class AdminController : Controller
         if (imageFile != null && imageFile.Length > 0)
         {
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
-            var filePath = Path.Combine("wwwroot", "images", "products", fileName);
+            
+            // Создаем директорию Persistent/Images/products, если не существует
+            var imagesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Images", "products");
+            if (!Directory.Exists(imagesDirectory))
+            {
+                Directory.CreateDirectory(imagesDirectory);
+            }
+            
+            var filePath = Path.Combine(imagesDirectory, fileName);
             
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
             }
             
-            model.ImagePath = $"/images/products/{fileName}";
+            model.ImagePath = $"/Persistent/Images/products/{fileName}";
         }
         // Если новый файл не загружен, но выбрано существующее изображение
         else if (!string.IsNullOrEmpty(existingImage))
@@ -179,14 +187,22 @@ public class AdminController : Controller
         {
             // Не удаляем старое изображение, просто сохраняем новое
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
-            var filePath = Path.Combine("wwwroot", "images", "products", fileName);
+            
+            // Создаем директорию Persistent/Images/products, если не существует
+            var imagesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Images", "products");
+            if (!Directory.Exists(imagesDirectory))
+            {
+                Directory.CreateDirectory(imagesDirectory);
+            }
+            
+            var filePath = Path.Combine(imagesDirectory, fileName);
             
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
             }
             
-            model.ImagePath = $"/images/products/{fileName}";
+            model.ImagePath = $"/Persistent/Images/products/{fileName}";
         }
         // Если новый файл не загружен, но выбрано существующее изображение
         else if (!string.IsNullOrEmpty(existingImage) && existingImage != existingProduct.ImagePath)
@@ -255,15 +271,31 @@ public class AdminController : Controller
     // Вспомогательный метод для получения списка существующих изображений продуктов
     private List<string> GetExistingProductImages()
     {
-        var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
         var images = new List<string>();
         
-        if (Directory.Exists(imagesFolder))
+        // Сначала проверяем в новой директории
+        var newImagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Images", "products");
+        if (Directory.Exists(newImagesFolder))
         {
-            foreach (var file in Directory.GetFiles(imagesFolder))
+            foreach (var file in Directory.GetFiles(newImagesFolder))
             {
                 var fileName = Path.GetFileName(file);
-                images.Add($"/images/products/{fileName}");
+                images.Add($"/Persistent/Images/products/{fileName}");
+            }
+        }
+        
+        // Для совместимости проверяем также в старой директории
+        var oldImagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+        if (Directory.Exists(oldImagesFolder))
+        {
+            foreach (var file in Directory.GetFiles(oldImagesFolder))
+            {
+                var fileName = Path.GetFileName(file);
+                var imagePath = $"/images/products/{fileName}";
+                if (!images.Contains(imagePath)) // Избегаем дубликатов
+                {
+                    images.Add(imagePath);
+                }
             }
         }
         

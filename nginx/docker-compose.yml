@@ -9,6 +9,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      # Монтируем локальные папки вместо томов
+      - ./Persistent/Data:/app/Persistent/Data
+      - ./Persistent/Resources:/app/Persistent/Resources
+      - ./Persistent/Images:/app/Persistent/Images
     expose:
       - "5000"
     restart: always

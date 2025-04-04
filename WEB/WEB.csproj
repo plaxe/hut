@@ -75,11 +75,45 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.slim.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.slim.min.map" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
+      <_ContentIncludedByDefault Remove="Resources\en.json" />
+      <_ContentIncludedByDefault Remove="Resources\ua.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\2.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\amarant.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\bird.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\culture-logo.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\footer-logos.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\header_logo.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\arrow-right.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\facebook.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\image-placeholder.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\insta.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\language-switch.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\linkedin.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\map.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\map_en.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\phytosterols.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\principles_line2.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\principles_line3.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\protein.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\squalene.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\vitamins.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\icons\whatsup.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\ish-logo.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\KHUTIR-logo.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\KHUTIR-logo.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\logo.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\logos.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\natru_photo.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\ua-logo.svg" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="LibSassHost" Version="1.3.3" />
       <PackageReference Include="LibSassHost.Native.win-x64" Version="1.3.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Persistent\Images\" />
     </ItemGroup>
 
 </Project>

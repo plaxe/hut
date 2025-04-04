@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: WEB/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      # Монтируем тома для сохранения данных
+      - persistent_data:/app/Persistent/Data
+      - persistent_resources:/app/Persistent/Resources
+      - persistent_images:/app/Persistent/Images
+    restart: unless-stopped
+    networks:
+      - hut_network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    restart: unless-stopped
+    networks:
+      - hut_network
+
+networks:
+  hut_network:
+    driver: bridge
+
+# Названные тома для хранения данных между перезапусками
+volumes:
+  persistent_data:
+    driver: local
+  persistent_resources:
+    driver: local
+  persistent_images:
+    driver: local 

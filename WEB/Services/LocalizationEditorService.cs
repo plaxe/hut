@@ -19,9 +19,39 @@ public class LocalizationEditorService
         ILogger<LocalizationEditorService> logger,
         IMemoryCache memoryCache)
     {
-        _resourcesPath = Path.Combine(env.ContentRootPath, "Resources");
+        _resourcesPath = Path.Combine(env.ContentRootPath, "Persistent", "Resources");
         _logger = logger;
         _memoryCache = memoryCache;
+        
+        // Создаем директорию Persistent/Resources, если она не существует
+        if (!Directory.Exists(_resourcesPath))
+        {
+            Directory.CreateDirectory(_resourcesPath);
+            
+            // Копируем файлы из старого расположения, если они существуют
+            var oldResourcesPath = Path.Combine(env.ContentRootPath, "Resources");
+            if (Directory.Exists(oldResourcesPath))
+            {
+                try
+                {
+                    foreach (var language in _supportedLanguages)
+                    {
+                        var oldFilePath = Path.Combine(oldResourcesPath, $"{language}.json");
+                        var newFilePath = Path.Combine(_resourcesPath, $"{language}.json");
+                        
+                        if (File.Exists(oldFilePath) && !File.Exists(newFilePath))
+                        {
+                            File.Copy(oldFilePath, newFilePath);
+                            logger.LogInformation($"Файл локализации {language}.json успешно перенесен в новое расположение.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Ошибка при копировании файлов локализации из старого расположения");
+                }
+            }
+        }
     }
     
     public async Task<LocalizationViewModel> GetLocalizationResourcesAsync(string language)
