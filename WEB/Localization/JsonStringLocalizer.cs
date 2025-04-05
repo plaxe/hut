@@ -16,6 +16,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
     private const string RESOURCES_CACHE_KEY_PREFIX = "JsonStringLocalizer_";
     private const string JSON_CONTENT_CACHE_KEY_PREFIX = "JsonContent_";
     private const string STRING_CACHE_KEY_PREFIX = "LocalizedString_";
+    private const string CACHE_VERSION_KEY = "LocalizationCacheVersion";
 
     public JsonStringLocalizer(
         string resourcesPath, 
@@ -54,12 +55,13 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
     {
         // Получаем язык из куки через GetCurrentLanguage
         var culture = GetCurrentLanguage();
-        var cacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
+        var cacheVersion = GetCacheVersion();
+        var cacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}_{cacheVersion}";
         
         // Проверка кеша
         if (_cache != null && _cache.TryGetValue(cacheKey, out IEnumerable<LocalizedString> cachedStrings))
         {
-            _logger.LogDebug($"Returning cached strings for culture {culture}");
+            _logger.LogDebug($"Returning cached strings for culture {culture} from version {cacheVersion}");
             return cachedStrings;
         }
         
@@ -72,7 +74,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
 
         try
         {
-            var jsonString = GetJsonContent(filePath);
+            var jsonString = GetJsonContent(filePath, cacheVersion);
             var jsonDoc = JsonDocument.Parse(jsonString);
 
             var result = new List<LocalizedString>();
@@ -88,7 +90,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                     .SetSize(1);
                 
                 _cache.Set(cacheKey, result, cacheOptions);
-                _logger.LogDebug($"Cached {result.Count} strings for culture {culture}");
+                _logger.LogDebug($"Cached {result.Count} strings for culture {culture}, version {cacheVersion}");
             }
 
             return result;
@@ -126,7 +128,8 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
     {
         // Получаем язык из куки через GetCurrentLanguage
         var culture = GetCurrentLanguage();
-        var cacheKey = $"{STRING_CACHE_KEY_PREFIX}{culture}_{name}";
+        var cacheVersion = GetCacheVersion();
+        var cacheKey = $"{STRING_CACHE_KEY_PREFIX}{culture}_{cacheVersion}_{name}";
         
         // Проверка кеша
         if (_cache != null && _cache.TryGetValue(cacheKey, out string cachedValue))
@@ -144,7 +147,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
 
         try
         {
-            var jsonString = GetJsonContent(filePath);
+            var jsonString = GetJsonContent(filePath, cacheVersion);
             var jsonDoc = JsonDocument.Parse(jsonString);
 
             var parts = name.Split('.');
@@ -188,9 +191,10 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         }
     }
 
-    private string GetJsonContent(string filePath)
+    private string GetJsonContent(string filePath, string cacheVersion = null)
     {
-        var cacheKey = $"{JSON_CONTENT_CACHE_KEY_PREFIX}{filePath}";
+        cacheVersion = cacheVersion ?? GetCacheVersion();
+        var cacheKey = $"{JSON_CONTENT_CACHE_KEY_PREFIX}{filePath}_{cacheVersion}";
         
         // Проверка кеша
         if (_cache != null && _cache.TryGetValue(cacheKey, out string cachedContent))
@@ -211,7 +215,7 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
                 .SetSize(1);
             
             _cache.Set(cacheKey, jsonString, cacheOptions);
-            _logger.LogDebug($"Cached JSON content for {filePath}");
+            _logger.LogDebug($"Cached JSON content for {filePath}, version {cacheVersion}");
         }
         
         return jsonString;
@@ -237,20 +241,38 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         
         var culture = GetCurrentLanguage();
         
+        _logger.LogInformation($"Начинаем очистку кеша локализации для языка {culture}");
+        
         // Очищаем основной кеш для текущей культуры
         var resourcesCacheKey = $"{RESOURCES_CACHE_KEY_PREFIX}{culture}";
         _cache.Remove(resourcesCacheKey);
+        _logger.LogInformation($"Очищен кеш: {resourcesCacheKey}");
         
         // Очищаем кеш JSON-содержимого
         var filePath = GetJsonPath();
         var jsonContentCacheKey = $"{JSON_CONTENT_CACHE_KEY_PREFIX}{filePath}";
         _cache.Remove(jsonContentCacheKey);
+        _logger.LogInformation($"Очищен кеш: {jsonContentCacheKey}");
         
-        // Ищем и удаляем все кеши строк для текущей культуры
-        // Это грубое решение, так как IMemoryCache не поддерживает поиск по префиксу
-        // В реальном приложении следует использовать более продвинутый механизм
+        // Очищаем дополнительные ключи кеша
+        var additionalKeys = new[]
+        {
+            $"LocalizationResources_{culture}",
+            $"Localization_{culture}_AllStrings"
+        };
         
-        _logger.LogInformation($"Очищен кеш локализации для культуры {culture}");
+        foreach (var key in additionalKeys)
+        {
+            _cache.Remove(key);
+            _logger.LogInformation($"Очищен кеш: {key}");
+        }
+        
+        // Обновляем версию кеша
+        var newVersion = DateTime.UtcNow.Ticks.ToString();
+        _cache.Set(CACHE_VERSION_KEY, newVersion);
+        _logger.LogInformation($"Обновлена версия кеша локализации на {newVersion}");
+        
+        _logger.LogInformation($"Завершена очистка кеша локализации для языка {culture}");
     }
     
     // Очищает кеш для всех культур - используется при административном обновлении
@@ -261,17 +283,44 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         // Очищаем кеш для всех поддерживаемых культур
         var cultures = new[] { "ua", "en", "uk" }; // Добавьте все поддерживаемые культуры
         
+        _logger.LogInformation("Начинаем полную очистку всех кешей локализации");
+        
+        // Очищаем кеши по разным префиксам
         foreach (var culture in cultures)
         {
-            // Очищаем основной кеш ресурсов
-            _cache.Remove($"{RESOURCES_CACHE_KEY_PREFIX}{culture}");
+            // Основные ключи кеша
+            var cacheKeys = new[] 
+            { 
+                $"{RESOURCES_CACHE_KEY_PREFIX}{culture}",
+                $"{JSON_CONTENT_CACHE_KEY_PREFIX}{Path.Combine(_resourcesPath, $"{culture}.json")}",
+                $"LocalizationResources_{culture}",
+                $"Localization_{culture}_AllStrings",
+                // Добавляем другие возможные ключи кеша
+                $"LastCacheKey_{culture}"
+            };
             
-            // Очищаем кеш JSON-файла
-            var jsonPath = Path.Combine(_resourcesPath, $"{culture}.json");
-            _cache.Remove($"{JSON_CONTENT_CACHE_KEY_PREFIX}{jsonPath}");
+            // Очищаем все указанные ключи
+            foreach (var key in cacheKeys)
+            {
+                _cache.Remove(key);
+                _logger.LogInformation($"Очищен кеш для ключа: {key}");
+            }
             
-            _logger.LogInformation($"Очищен кеш локализации для культуры {culture}");
+            // Попытка очистить возможные ключи для конкретных строк
+            // Это не будет работать полностью, но может помочь
+            for (int i = 0; i < 20; i++) // Предполагаем до 20 кешированных строк
+            {
+                var randomKey = $"{STRING_CACHE_KEY_PREFIX}{culture}_key{i}";
+                _cache.Remove(randomKey);
+            }
         }
+        
+        // Обновляем версию кеша
+        var newVersion = DateTime.UtcNow.Ticks.ToString();
+        _cache.Set(CACHE_VERSION_KEY, newVersion);
+        _logger.LogInformation($"Обновлена версия кеша локализации на {newVersion}");
+        
+        _logger.LogInformation("Очистка кешей локализации завершена");
     }
 
     // Метод для получения текущего языка из куки
@@ -319,5 +368,29 @@ public class JsonStringLocalizer<T> : IStringLocalizer<T>
         }
         
         return culture;
+    }
+
+    private string GetCacheVersion()
+    {
+        if (_cache == null) return DateTime.UtcNow.Ticks.ToString();
+        
+        // Пытаемся получить версию кеша из кеша
+        if (_cache.TryGetValue(CACHE_VERSION_KEY, out string version))
+        {
+            return version;
+        }
+        
+        // Если версии нет - создаем новую
+        version = DateTime.UtcNow.Ticks.ToString();
+        
+        var cacheOptions = new MemoryCacheEntryOptions()
+            .SetAbsoluteExpiration(TimeSpan.FromDays(7))
+            .SetPriority(CacheItemPriority.High)
+            .SetSize(1);
+        
+        _cache.Set(CACHE_VERSION_KEY, version, cacheOptions);
+        _logger.LogInformation($"Создана новая версия кеша локализации: {version}");
+        
+        return version;
     }
 } 

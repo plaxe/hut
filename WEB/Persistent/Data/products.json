@@ -11,5 +11,18 @@
     "SortOrder": 0,
     "CreatedAt": "2025-04-03T09:58:39.7317024+03:00",
     "UpdatedAt": "2025-04-04T19:03:58.8732458+03:00"
+  },
+  {
+    "Id": "f2fc18c6-ac5f-4fea-b66b-605293866368",
+    "Name": "sdf",
+    "NameEn": "sdv",
+    "Category": "\u0421\u043D\u0435\u043A\u0438",
+    "Description": "sdv",
+    "DescriptionEn": "sdv",
+    "ImagePath": "/Persistent/Images/products/6f57966f-73c9-42fc-8a3b-f5b4d31e320a.png",
+    "IsActive": true,
+    "SortOrder": 0,
+    "CreatedAt": "2025-04-04T22:41:06.1278117+03:00",
+    "UpdatedAt": "2025-04-04T22:41:06.1278258+03:00"
   }
 ]

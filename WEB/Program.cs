@@ -118,6 +118,9 @@ public class Program
             // app.UseHsts();
         } 
         
+        // Обрабатываем ошибки 404 перенаправлением на специальную страницу
+        app.UseStatusCodePagesWithReExecute("/404");
+        
         // Компилируем SCSS при запуске приложения
         using (var scope = app.Services.CreateScope())
         {

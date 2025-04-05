@@ -15,6 +15,7 @@ public class LocalizationEditorService
     private readonly IMemoryCache _cache;
     private readonly string[] _supportedLanguages = { "ua", "en" };
     private const string LOCALIZATION_RESOURCES_CACHE_KEY_PREFIX = "LocalizationResources_";
+    private const string CACHE_VERSION_KEY = "LocalizationCacheVersion";
     private readonly ILoggerFactory _loggerFactory;
 
     public LocalizationEditorService(
@@ -153,7 +154,10 @@ public class LocalizationEditorService
             currentNode[lastKeyPart] = value;
             
             // Сохраняем обновленный JSON
-            var options = new JsonSerializerOptions { WriteIndented = true };
+            var options = new JsonSerializerOptions { 
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
             var updatedJson = jsonObject.ToJsonString(options);
             
             await File.WriteAllTextAsync(filePath, updatedJson);
@@ -161,12 +165,8 @@ public class LocalizationEditorService
             // Очищаем кеш для всех языков, так как ресурсы были обновлены администратором
             _logger.LogInformation($"Администратор обновил ресурс локализации: {language}.{key}");
             
-            // Создаем локализатор для очистки кеша
-            var stringLocalizer = new JsonStringLocalizer<SharedResource>(_resourcesPath, nameof(SharedResource), 
-                _loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), _cache);
-            
-            // Очищаем кеш для всех языков
-            stringLocalizer.ClearAllCaches();
+            // Очищаем все кеши связанные с локализацией
+            ClearLocalizationCaches();
             
             return true;
         }
@@ -230,5 +230,58 @@ public class LocalizationEditorService
         }
         
         return categories;
+    }
+
+    private void ClearLocalizationCaches()
+    {
+        try
+        {
+            _logger.LogInformation("Начинаем очистку кешей локализации");
+            
+            // 1. Очищаем кеш ресурсов локализации (используемый в админке)
+            foreach (var language in _supportedLanguages)
+            {
+                var cacheKey = GetCacheKey(language);
+                _cache.Remove(cacheKey);
+                _logger.LogInformation($"Очищен кеш администратора для языка {language}");
+            }
+            
+            // 2. Очищаем все кеши JsonStringLocalizer
+            var stringLocalizer = new JsonStringLocalizer<SharedResource>(_resourcesPath, nameof(SharedResource), 
+                _loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), _cache);
+            stringLocalizer.ClearAllCaches();
+            
+            // 3. Очищаем кеши конкретных строк для всех языков
+            foreach (var language in _supportedLanguages)
+            {
+                // Удаляем все возможные префиксы кеша
+                var prefixes = new[]
+                {
+                    $"JsonStringLocalizer_{language}",
+                    $"LocalizedString_{language}",
+                    $"JsonContent_{language}.json"
+                };
+                
+                foreach (var prefix in prefixes)
+                {
+                    _logger.LogInformation($"Очищен кеш для ключа {prefix}");
+                    _cache.Remove(prefix);
+                }
+            }
+            
+            // 4. Сбрасываем все другие связанные кеши
+            _cache.Remove("Localization_AllStrings");
+            
+            // 5. Обновляем версию кеша локализации (этот шаг важен для синхронизации кеша между различными экземплярами)
+            var newCacheVersion = DateTime.UtcNow.Ticks.ToString();
+            _cache.Set(CACHE_VERSION_KEY, newCacheVersion);
+            _logger.LogInformation($"Обновлена версия кеша локализации: {newCacheVersion}");
+            
+            _logger.LogInformation("Все кеши локализации очищены");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при очистке кешей локализации");
+        }
     }
 } 

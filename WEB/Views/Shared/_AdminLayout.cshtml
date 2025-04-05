@@ -81,6 +81,28 @@
                     <span>Локалізація</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#backupDropdown" role="button" aria-expanded="false" aria-controls="backupDropdown">
+                    <i class="bi bi-archive"></i>
+                    <span>Бекап</span>
+                </a>
+                <div class="collapse @(ViewContext.RouteData.Values["Action"]?.ToString() == "ExportBackup" || ViewContext.RouteData.Values["Action"]?.ToString() == "ImportBackup" ? "show" : "")" id="backupDropdown">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link py-1 @(ViewContext.RouteData.Values["Action"]?.ToString() == "ExportBackup" ? "active" : "")" href="/admin/backup/export">
+                                <i class="bi bi-download"></i>
+                                <span>Експорт</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 @(ViewContext.RouteData.Values["Action"]?.ToString() == "ImportBackup" ? "active" : "")" href="/admin/backup/import">
+                                <i class="bi bi-upload"></i>
+                                <span>Імпорт</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li class="nav-item d-md-none">
                 <a class="nav-link" href="/" target="_blank">
                     <i class="bi bi-box-arrow-up-right"></i>

@@ -12,6 +12,9 @@ public class LanguageService
     // Константа для имени куки
     private const string LANGUAGE_COOKIE_NAME = "Language";
     
+    // Константы
+    private const string CACHE_VERSION_KEY = "LocalizationCacheVersion";
+    
     public LanguageService(
         IHttpContextAccessor httpContextAccessor,
         ILogger<LanguageService> logger,
@@ -99,10 +102,27 @@ public class LanguageService
         // Очищаем кеш локализации для указанного языка
         if (_memoryCache != null)
         {
-            _memoryCache.Remove($"JsonStringLocalizer_{language}");
-            _memoryCache.Remove($"JsonContent_{language}.json");
+            // Очищаем основные ключи кеша для указанного языка
+            var keysToRemove = new[] 
+            {
+                $"JsonStringLocalizer_{language}",
+                $"JsonContent_{language}.json",
+                $"LocalizationResources_{language}",
+                $"LocalizedString_{language}"
+            };
             
-            _logger.LogInformation($"Локализационный кеш для языка {language} очищен");
+            foreach (var key in keysToRemove)
+            {
+                _memoryCache.Remove(key);
+                _logger.LogInformation($"Удален ключ кеша: {key}");
+            }
+            
+            // Обновляем версию кеша, чтобы принудительно инвалидировать его для всех компонентов
+            var newVersion = DateTime.UtcNow.Ticks.ToString();
+            _memoryCache.Set(CACHE_VERSION_KEY, newVersion);
+            _logger.LogInformation($"Обновлена версия кеша локализации: {newVersion}");
+            
+            _logger.LogInformation($"Локализационный кеш для языка {language} полностью очищен");
         }
     }
 } 

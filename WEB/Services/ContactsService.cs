@@ -38,7 +38,10 @@ public class ContactsService
                 InstagramUrl = "#",
                 WhatsAppUrl = "#"
             };
-            var json = JsonSerializer.Serialize(defaultContacts, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(defaultContacts, new JsonSerializerOptions { 
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
             File.WriteAllText(_contactsFilePath, json);
             
             // Копируем файл из старого расположения, если он существует
@@ -96,7 +99,8 @@ public class ContactsService
         {
             var json = JsonSerializer.Serialize(contacts, new JsonSerializerOptions
             {
-                WriteIndented = true
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
             
             await File.WriteAllTextAsync(_contactsFilePath, json);

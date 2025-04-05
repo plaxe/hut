@@ -1,0 +1,37 @@
+﻿@using Microsoft.Extensions.Localization
+@using WEB.Models
+@inject IStringLocalizer<SharedResource> Localizer
+
+@{
+    var contacts = ViewData["Contacts"] as ContactsModel ?? new ContactsModel();
+}
+
+<!DOCTYPE html>
+<html lang="@(ViewData["CurrentLanguage"]?.ToString() ?? "ua")">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#3E5F8A">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true">
+    
+    <!-- Предварительная загрузка иконок для мгновенного отображения -->
+    <link rel="preload" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23062D24' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M6 6L24 24M6 24L24 6'/%3e%3c/svg%3e" as="image">
+</head>
+<body>
+    @RenderBody()
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 
+
+

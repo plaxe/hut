@@ -14,10 +14,6 @@ public class ProductModel
     [Display(Name = "Name (English)")]
     public string NameEn { get; set; } = string.Empty;
     
-    [Required(ErrorMessage = "Категорія обов'язкова")]
-    [Display(Name = "Категорія")]
-    public string Category { get; set; } = string.Empty;
-    
     [Display(Name = "Опис")]
     public string Description { get; set; } = string.Empty;
     

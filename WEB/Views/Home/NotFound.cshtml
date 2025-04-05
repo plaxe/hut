@@ -1,0 +1,44 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+
+@{
+    Layout = "_Layout404";
+}
+
+<div class="container error-page">
+    <div class="row justify-content-center my-5">
+        <div class="col-md-8 text-center">
+            <div class="error-code">404</div>
+            <h1 class="mb-4">@ViewData["Title"]</h1>
+            
+            <p class="lead mb-4">@Localizer["error.notfound.message"]</p>
+            
+            <div class="mt-5">
+                <a href="/" class="btn btn-success btn-lg">@Localizer["error.backToHome"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-page {
+        padding: 50px 0;
+    }
+    
+    .error-code {
+        font-size: 120px;
+        font-weight: bold;
+        color: #75AC91;
+        margin-bottom: 20px;
+    }
+    
+    .error-page h1 {
+        color: #062D24;
+        font-size: 32px;
+    }
+    
+    .error-page .lead {
+        font-size: 20px;
+        color: #555;
+    }
+</style> 

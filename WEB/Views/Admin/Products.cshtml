@@ -67,7 +67,6 @@
                             <th>Зображення</th>
                             <th>Назва</th>
                             <th>Назва (EN)</th>
-                            <th>Категорія</th>
                             <th>Статус</th>
                             <th>Оновлено</th>
                             <th class="text-end">Дії</th>
@@ -93,7 +92,6 @@
                                 </td>
                                 <td class="text-truncate" style="max-width: 150px;">@product.Name</td>
                                 <td class="text-truncate" style="max-width: 150px;">@product.NameEn</td>
-                                <td>@product.Category</td>
                                 <td>
                                     <span class="badge @(product.IsActive ? "bg-success" : "bg-danger")">
                                         @(product.IsActive ? "Активний" : "Неактивний")
@@ -148,9 +146,6 @@
                                         </span>
                                     </div>
                                     <div class="small text-muted text-truncate mb-1">EN: @product.NameEn</div>
-                                    <div class="small text-muted mb-2">
-                                        <i class="bi bi-tag me-1"></i>@product.Category
-                                    </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <small class="text-muted">
                                             <i class="bi bi-clock me-1"></i>@product.UpdatedAt.ToString("dd.MM.yyyy")

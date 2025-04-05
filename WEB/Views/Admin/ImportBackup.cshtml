@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Импорт бекапа";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Импорт бекапа</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/admin">Админ-панель</a></li>
+        <li class="breadcrumb-item active">Импорт бекапа</li>
+    </ol>
+    
+    <div class="row">
+        <div class="col-12">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-upload me-1"></i> Импорт данных из бекапа
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Внимание!</strong> Импорт бекапа заменит все существующие данные в системе. Перед импортом рекомендуется сделать <a href="/admin/backup/export">экспорт текущих данных</a>.
+                    </div>
+                    
+                    <form asp-action="ImportBackup" asp-controller="Admin" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-3">
+                            <label for="backupFile" class="form-label">Выберите файл бекапа (.zip)</label>
+                            <input type="file" class="form-control" id="backupFile" name="backupFile" accept=".zip" required>
+                            <div class="form-text">Выберите файл бекапа, созданный с помощью функции экспорта.</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Импортировать</button>
+                            <a href="/admin" class="btn btn-secondary">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

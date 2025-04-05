@@ -8,12 +8,19 @@ using WEB.Services;
 using Microsoft.Extensions.Caching.Memory;
 using WEB.Localization;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO.Compression;
 
 namespace WEB.Controllers;
 
 [Route("admin")]
 public class AdminController(AdminAuthService authService, ILogger<AdminController> logger, ProductService productService, LocalizationEditorService localizationEditorService, ContactsService contactsService) : Controller
 {
+    private const string OriginalImagesPath = "wwwroot/img/original";
+    private const string CACHE_VERSION_KEY = "LocalizationCacheVersion";
+    private readonly DateTime originalImagesCreationTime = new(2023, 01, 01);
+
     [HttpGet("login")]
     public IActionResult Login(string returnUrl = null)
     {
@@ -363,6 +370,34 @@ public class AdminController(AdminAuthService authService, ILogger<AdminControll
             // Очищаем все кеши локализации
             stringLocalizer.ClearAllCaches();
             
+            // Дополнительно очистим кеши с другими префиксами
+            var supportedLanguages = new[] { "ua", "en" };
+            foreach (var language in supportedLanguages)
+            {
+                // Удаляем все возможные префиксы кеша
+                var prefixes = new[]
+                {
+                    $"JsonStringLocalizer_{language}",
+                    $"LocalizedString_{language}",
+                    $"JsonContent_{language}.json",
+                    $"LocalizationResources_{language}"
+                };
+                
+                foreach (var prefix in prefixes)
+                {
+                    memoryCache.Remove(prefix);
+                    logger.LogInformation($"Очищен кеш для ключа {prefix}");
+                }
+            }
+            
+            // Принудительно очищаем общие кеши
+            memoryCache.Remove("Localization_AllStrings");
+            
+            // Обновляем версию кеша
+            var newCacheVersion = DateTime.UtcNow.Ticks.ToString();
+            memoryCache.Set(CACHE_VERSION_KEY, newCacheVersion);
+            logger.LogInformation($"Обновлена версия кеша локализации: {newCacheVersion}");
+            
             TempData["SuccessMessage"] = "Кеш локализации успешно очищен";
         }
         catch (Exception ex)
@@ -406,5 +441,345 @@ public class AdminController(AdminAuthService authService, ILogger<AdminControll
         }
         
         return RedirectToAction(nameof(Contacts));
+    }
+
+    // Временное действие для переформатирования файла products.json
+    [HttpGet("reformat-products")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> ReformatProducts()
+    {
+        try
+        {
+            // Получаем все продукты
+            var products = await productService.GetAllProductsAsync();
+            
+            // Просто сохраняем их обратно - они будут сохранены с новыми настройками сериализации
+            foreach (var product in products)
+            {
+                await productService.UpdateProductAsync(product);
+            }
+            
+            TempData["SuccessMessage"] = "Файл продуктов успешно переформатирован";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Ошибка при переформатировании файла продуктов: {ex.Message}";
+        }
+        
+        return RedirectToAction(nameof(Products));
+    }
+
+    // Временное действие для переформатирования файла contacts.json
+    [HttpGet("reformat-contacts")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> ReformatContacts()
+    {
+        try
+        {
+            // Получаем контакты
+            var contacts = await contactsService.GetContactsAsync();
+            
+            // Сохраняем их обратно - они будут сохранены с новыми настройками сериализации
+            await contactsService.UpdateContactsAsync(contacts);
+            
+            TempData["SuccessMessage"] = "Файл контактов успешно переформатирован";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Ошибка при переформатировании файла контактов: {ex.Message}";
+        }
+        
+        return RedirectToAction(nameof(Contacts));
+    }
+
+    // Временное действие для переформатирования файлов локализации
+    [HttpGet("reformat-localization")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> ReformatLocalization()
+    {
+        try
+        {
+            var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Resources");
+            var languages = new[] { "ua", "en" };
+            
+            foreach (var language in languages)
+            {
+                var filePath = Path.Combine(resourcesPath, $"{language}.json");
+                if (!System.IO.File.Exists(filePath))
+                {
+                    continue;
+                }
+                
+                // Считываем JSON
+                var jsonString = await System.IO.File.ReadAllTextAsync(filePath);
+                
+                // Десериализуем и сериализуем с новыми настройками
+                using var document = JsonDocument.Parse(jsonString);
+                var element = document.RootElement.Clone();
+                
+                var options = new JsonSerializerOptions { 
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                };
+                
+                var updatedJson = JsonSerializer.Serialize(
+                    JsonSerializer.Deserialize<object>(jsonString), 
+                    options
+                );
+                
+                // Перезаписываем файл
+                await System.IO.File.WriteAllTextAsync(filePath, updatedJson);
+            }
+            
+            // Очищаем кеш локализации
+            var loggerFactory = HttpContext.RequestServices.GetRequiredService<ILoggerFactory>();
+            var memoryCache = HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
+            
+            var stringLocalizer = new JsonStringLocalizer<SharedResource>(
+                resourcesPath, 
+                nameof(SharedResource),
+                loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), 
+                memoryCache);
+                
+            // Очищаем все кеши локализации
+            stringLocalizer.ClearAllCaches();
+            
+            // Явно обновляем версию кеша для надежности
+            var newCacheVersion = DateTime.UtcNow.Ticks.ToString();
+            memoryCache.Set(CACHE_VERSION_KEY, newCacheVersion);
+            logger.LogInformation($"Обновлена версия кеша локализации: {newCacheVersion}");
+            
+            TempData["SuccessMessage"] = "Файлы локализации успешно переформатированы";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Ошибка при переформатировании файлов локализации: {ex.Message}";
+        }
+        
+        return RedirectToAction(nameof(Localization));
+    }
+
+    // Backup methods
+    [HttpGet("backup/export")]
+    [Authorize(Roles = "Administrator")]
+    public IActionResult ExportBackup()
+    {
+        try
+        {
+            // Путь к директории Persistent
+            var persistentPath = Path.Combine(Directory.GetCurrentDirectory(), "Persistent");
+            
+            // Временный файл для zip архива
+            var tempZipPath = Path.Combine(Path.GetTempPath(), $"hut-backup-{DateTime.Now:yyyyMMdd-HHmmss}.zip");
+            
+            // Создаем архив
+            if (System.IO.File.Exists(tempZipPath))
+            {
+                System.IO.File.Delete(tempZipPath);
+            }
+            
+            ZipFile.CreateFromDirectory(persistentPath, tempZipPath);
+            
+            logger.LogInformation($"Создан архив бекапа {tempZipPath}");
+            
+            // Возвращаем файл для скачивания
+            var fileName = Path.GetFileName(tempZipPath);
+            var fileBytes = System.IO.File.ReadAllBytes(tempZipPath);
+            
+            // Очищаем временный файл после отправки
+            System.IO.File.Delete(tempZipPath);
+            
+            return File(fileBytes, "application/zip", fileName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при создании бекапа");
+            TempData["ErrorMessage"] = $"Ошибка при создании бекапа: {ex.Message}";
+            return RedirectToAction(nameof(Dashboard));
+        }
+    }
+    
+    [HttpGet("backup/import")]
+    [Authorize(Roles = "Administrator")]
+    public IActionResult ImportBackup()
+    {
+        return View();
+    }
+    
+    [HttpPost("backup/import")]
+    [Authorize(Roles = "Administrator")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ImportBackup(IFormFile backupFile)
+    {
+        try
+        {
+            if (backupFile == null || backupFile.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Файл не выбран или пустой";
+                return RedirectToAction(nameof(ImportBackup));
+            }
+            
+            // Путь к директории Persistent
+            var persistentPath = Path.Combine(Directory.GetCurrentDirectory(), "Persistent");
+            
+            // Создаем временную директорию для распаковки архива
+            var tempExtractPath = Path.Combine(Path.GetTempPath(), $"hut-restore-{Guid.NewGuid()}");
+            Directory.CreateDirectory(tempExtractPath);
+            
+            // Временный файл для загруженного архива
+            var tempZipPath = Path.Combine(tempExtractPath, "backup.zip");
+            
+            // Сохраняем загруженный файл
+            using (var fileStream = new FileStream(tempZipPath, FileMode.Create))
+            {
+                await backupFile.CopyToAsync(fileStream);
+            }
+            
+            // Проверяем, что это действительно zip и содержит нужные директории
+            bool isValidBackup = false;
+            try
+            {
+                using (var archive = ZipFile.OpenRead(tempZipPath))
+                {
+                    // Проверяем наличие основных директорий в архиве
+                    isValidBackup = archive.Entries.Any(e => e.FullName.StartsWith("Resources/")) &&
+                                    archive.Entries.Any(e => e.FullName.StartsWith("Data/"));
+                }
+            }
+            catch
+            {
+                isValidBackup = false;
+            }
+            
+            if (!isValidBackup)
+            {
+                // Очищаем временные файлы
+                Directory.Delete(tempExtractPath, true);
+                
+                TempData["ErrorMessage"] = "Некорректный файл бекапа";
+                return RedirectToAction(nameof(ImportBackup));
+            }
+            
+            // Распаковываем архив во временную директорию
+            var extractPath = Path.Combine(tempExtractPath, "extracted");
+            Directory.CreateDirectory(extractPath);
+            ZipFile.ExtractToDirectory(tempZipPath, extractPath, true);
+            
+            // Создаем резервную копию текущей директории Persistent
+            var backupPath = Path.Combine(Path.GetTempPath(), $"hut-backup-before-restore-{DateTime.Now:yyyyMMdd-HHmmss}");
+            Directory.CreateDirectory(backupPath);
+            
+            // Копируем текущие файлы в резервную директорию
+            CopyDirectory(persistentPath, backupPath);
+            
+            // Удаляем текущее содержимое Persistent
+            try
+            {
+                // Удаляем содержимое поддиректорий, но не сами директории
+                foreach (var dir in Directory.GetDirectories(persistentPath))
+                {
+                    var dirInfo = new DirectoryInfo(dir);
+                    foreach (var file in dirInfo.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                    foreach (var subDir in dirInfo.GetDirectories())
+                    {
+                        subDir.Delete(true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при очистке директории Persistent");
+                // Пытаемся восстановить из резервной копии
+                CopyDirectory(backupPath, persistentPath);
+                
+                TempData["ErrorMessage"] = $"Ошибка при импорте бекапа: {ex.Message}";
+                return RedirectToAction(nameof(ImportBackup));
+            }
+            
+            // Копируем файлы из распакованного архива в Persistent
+            try
+            {
+                CopyDirectory(extractPath, persistentPath);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при копировании файлов из бекапа");
+                // Пытаемся восстановить из резервной копии
+                CopyDirectory(backupPath, persistentPath);
+                
+                TempData["ErrorMessage"] = $"Ошибка при импорте бекапа: {ex.Message}";
+                return RedirectToAction(nameof(ImportBackup));
+            }
+            
+            // Очищаем временные файлы
+            try
+            {
+                Directory.Delete(tempExtractPath, true);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Не удалось удалить временные файлы");
+            }
+            
+            // Очищаем кеш локализации
+            try
+            {
+                var loggerFactory = HttpContext.RequestServices.GetRequiredService<ILoggerFactory>();
+                var memoryCache = HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
+                
+                var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), "Persistent", "Resources");
+                var stringLocalizer = new JsonStringLocalizer<SharedResource>(
+                    resourcesPath, 
+                    nameof(SharedResource),
+                    loggerFactory.CreateLogger<JsonStringLocalizer<SharedResource>>(), 
+                    memoryCache);
+                    
+                // Очищаем все кеши локализации
+                stringLocalizer.ClearAllCaches();
+                
+                // Явно обновляем версию кеша для надежности
+                var newCacheVersion = DateTime.UtcNow.Ticks.ToString();
+                memoryCache.Set(CACHE_VERSION_KEY, newCacheVersion);
+                logger.LogInformation($"Обновлена версия кеша локализации: {newCacheVersion}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Ошибка при очистке кеша локализации после импорта");
+            }
+            
+            TempData["SuccessMessage"] = "Бекап успешно импортирован";
+            return RedirectToAction(nameof(Dashboard));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при импорте бекапа");
+            TempData["ErrorMessage"] = $"Ошибка при импорте бекапа: {ex.Message}";
+            return RedirectToAction(nameof(ImportBackup));
+        }
+    }
+    
+    // Вспомогательный метод для рекурсивного копирования директорий
+    private void CopyDirectory(string sourceDir, string targetDir)
+    {
+        Directory.CreateDirectory(targetDir);
+        
+        // Копируем файлы
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var fileName = Path.GetFileName(file);
+            var destFile = Path.Combine(targetDir, fileName);
+            System.IO.File.Copy(file, destFile, true);
+        }
+        
+        // Рекурсивно копируем поддиректории
+        foreach (var directory in Directory.GetDirectories(sourceDir))
+        {
+            var dirName = Path.GetFileName(directory);
+            var destDir = Path.Combine(targetDir, dirName);
+            CopyDirectory(directory, destDir);
+        }
     }
 } 

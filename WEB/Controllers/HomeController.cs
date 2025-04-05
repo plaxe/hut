@@ -81,4 +81,25 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    
+    [Route("/404")]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult NotFound()
+    {
+        string currentLanguage = DEFAULT_LANGUAGE;
+        
+        if (HttpContext.Request.Cookies.TryGetValue(LANGUAGE_COOKIE_NAME, out string languageCookie))
+        {
+            if (_supportedLanguages.Contains(languageCookie))
+            {
+                currentLanguage = languageCookie;
+            }
+        }
+        
+        ViewData["CurrentLanguage"] = currentLanguage;
+        ViewData["Title"] = _localizer["error.notfound.title"];
+        
+        Response.StatusCode = 404;
+        return View();
+    }
 }

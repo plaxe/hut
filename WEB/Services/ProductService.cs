@@ -181,7 +181,8 @@ public class ProductService
     {
         var json = JsonSerializer.Serialize(products, new JsonSerializerOptions
         {
-            WriteIndented = true
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         });
         
         await File.WriteAllTextAsync(_productsFilePath, json);
