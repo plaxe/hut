@@ -290,7 +290,7 @@
   color: $color-light;
   border: 1px solid rgba($color-light, 0.3);
   border-radius: $border-radius-lg;
-  padding: 1.2rem;
+  padding: 1.5rem;
   width: 48%;
   transition: $transition-base;
   
@@ -306,7 +306,7 @@
   }
   
   @media (max-width: $breakpoint-sm) {
-    padding: 0.5rem;
+    padding: 1rem;
     
     a {
       font-size: 0.75rem;

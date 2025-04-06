@@ -17,6 +17,10 @@
     position: relative;
     z-index: 2;
   }
+  
+  @include respond-to(md) {
+    padding-top: 10rem;
+  }
 }
 
 .bird-image {
@@ -39,6 +43,21 @@
 .logo-image {
   height: 64px;
   width: auto;
+}
+
+// Стиль для iconas на мобильных устройствах
+.iconas {
+  @include respond-to(lg) {
+    margin-top: 2rem;
+  }
+  
+  @include respond-to(md) {
+    margin-top: 2rem;
+  }
+  
+  @include respond-to(sm) {
+    margin-top: 2rem;
+  }
 }
 
 // Стили для секции Амарант
