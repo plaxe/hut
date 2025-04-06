@@ -369,21 +369,50 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     
     <script>
-        // Простой скрипт для карточек продуктов
+        // Скрипт для карточек продуктов с адаптивной высотой
         document.addEventListener('DOMContentLoaded', function() {
             // Инициализация карточек продуктов
             const productCards = document.querySelectorAll('.product-card');
             
             productCards.forEach(card => {
+                const cardInner = card.querySelector('.product-card-inner');
+                const cardBack = card.querySelector('.product-card-back');
+                
                 // Обработчик клика для десктопов
                 card.addEventListener('click', function() {
                     this.classList.toggle('flipped');
+                    
+                    // Если карточка перевернута, установим высоту в зависимости от контента
+                    if (this.classList.contains('flipped')) {
+                        // Даем время для завершения анимации переворота
+                        setTimeout(() => {
+                            const contentHeight = cardBack.scrollHeight;
+                            const minHeight = parseInt(window.getComputedStyle(this).minHeight);
+                            this.style.height = Math.max(contentHeight, minHeight) + 'px';
+                        }, 300);
+                    } else {
+                        // Возвращаем исходную высоту, когда карточка закрывается
+                        this.style.height = '';
+                    }
                 });
                 
                 // Обработчик касаний для мобильных устройств
                 card.addEventListener('touchstart', function(e) {
                     e.preventDefault(); // Предотвращаем стандартное поведение
                     this.classList.toggle('flipped');
+                    
+                    // Если карточка перевернута, установим высоту в зависимости от контента
+                    if (this.classList.contains('flipped')) {
+                        // Даем время для завершения анимации переворота
+                        setTimeout(() => {
+                            const contentHeight = cardBack.scrollHeight;
+                            const minHeight = parseInt(window.getComputedStyle(this).minHeight);
+                            this.style.height = Math.max(contentHeight, minHeight) + 'px';
+                        }, 300);
+                    } else {
+                        // Возвращаем исходную высоту, когда карточка закрывается
+                        this.style.height = '';
+                    }
                 }, { passive: false });
             });
         });
