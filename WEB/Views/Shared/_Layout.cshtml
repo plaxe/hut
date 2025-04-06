@@ -369,7 +369,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     
     <script>
-        // Скрипт для карточек продуктов с адаптивной высотой
+        // Скрипт для карточек продуктов с плавной адаптивной высотой
         document.addEventListener('DOMContentLoaded', function() {
             // Инициализация карточек продуктов
             const productCards = document.querySelectorAll('.product-card');
@@ -377,6 +377,7 @@
             productCards.forEach(card => {
                 const cardInner = card.querySelector('.product-card-inner');
                 const cardBack = card.querySelector('.product-card-back');
+                const cardFront = card.querySelector('.product-card-front');
                 
                 // Обработчик клика для десктопов
                 card.addEventListener('click', function() {
@@ -384,15 +385,20 @@
                     
                     // Если карточка перевернута, установим высоту в зависимости от контента
                     if (this.classList.contains('flipped')) {
-                        // Даем время для завершения анимации переворота
+                        // Даем время для начала анимации переворота
                         setTimeout(() => {
-                            const contentHeight = cardBack.scrollHeight;
+                            const contentHeight = cardBack.scrollHeight + 30; // Добавляем отступ для предотвращения обрезки
                             const minHeight = parseInt(window.getComputedStyle(this).minHeight);
                             this.style.height = Math.max(contentHeight, minHeight) + 'px';
-                        }, 300);
+                        }, 100);
                     } else {
-                        // Возвращаем исходную высоту, когда карточка закрывается
-                        this.style.height = '';
+                        // Даем время на завершение анимации переворота перед сжатием высоты
+                        setTimeout(() => {
+                            // Используем исходную высоту в зависимости от устройства
+                            const computedStyle = window.getComputedStyle(this);
+                            const originalHeight = computedStyle.flexBasis; 
+                            this.style.height = originalHeight;
+                        }, 100);
                     }
                 });
                 
@@ -403,17 +409,40 @@
                     
                     // Если карточка перевернута, установим высоту в зависимости от контента
                     if (this.classList.contains('flipped')) {
-                        // Даем время для завершения анимации переворота
+                        // Даем время для начала анимации переворота
                         setTimeout(() => {
-                            const contentHeight = cardBack.scrollHeight;
+                            const contentHeight = cardBack.scrollHeight + 30; // Добавляем отступ для предотвращения обрезки
                             const minHeight = parseInt(window.getComputedStyle(this).minHeight);
                             this.style.height = Math.max(contentHeight, minHeight) + 'px';
-                        }, 300);
+                        }, 100);
                     } else {
-                        // Возвращаем исходную высоту, когда карточка закрывается
-                        this.style.height = '';
+                        // Даем время на завершение анимации переворота перед сжатием высоты
+                        setTimeout(() => {
+                            // Используем исходную высоту в зависимости от устройства
+                            const computedStyle = window.getComputedStyle(this);
+                            const originalHeight = computedStyle.flexBasis;
+                            this.style.height = originalHeight;
+                        }, 100);
                     }
                 }, { passive: false });
+                
+                // Предварительно вычисляем высоту содержимого для плавности
+                window.addEventListener('load', function() {
+                    // Предварительно вычисляем высоту для плавности анимации
+                    cardBack.style.visibility = 'hidden';
+                    cardBack.style.position = 'absolute';
+                    cardBack.style.transform = 'none';
+                    cardBack.style.height = 'auto';
+                    const contentHeight = cardBack.scrollHeight;
+                    // Сбрасываем стили обратно
+                    cardBack.style.visibility = '';
+                    cardBack.style.position = '';
+                    cardBack.style.transform = '';
+                    cardBack.style.height = '';
+                    
+                    // Сохраняем высоту как атрибут данных для будущего использования
+                    card.dataset.contentHeight = contentHeight;
+                });
             });
         });
     </script>
